@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.OrderHistory
+import com.example.stocker.pojo.Stocker
 import com.example.stocker.view.adapter.OrderHistoryAdapter
 import com.example.stocker.view.adapter.decorator.OrderHistoryDecorator
 import com.example.stocker.view.customviews.SortImageButton
+import com.example.stocker.view.fragments.util.SharedPreferenceHelper
 import com.example.stocker.view.util.DisplayUtil
 import com.example.stocker.viewmodel.CustomerViewModel
 import com.google.android.material.appbar.MaterialToolbar
@@ -100,6 +102,12 @@ class OrderHistoryFragment : Fragment() {
                         linearLayoutManager.startSmoothScroll(smoothScroller)
                         }
                     }
+                    true
+                }
+                R.id.logout->{
+                    Stocker.logout()
+                    SharedPreferenceHelper.writeCustomerPreference(activity!!,null)
+
                     true
                 }
                 else -> {false}
