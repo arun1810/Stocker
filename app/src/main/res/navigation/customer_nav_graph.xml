@@ -32,7 +32,14 @@
         android:id="@+id/order_History_fragment"
         android:name="com.example.stocker.view.fragments.OrderHistoryFragment"
         android:label="fragment_order__history_fragment"
-        tools:layout="@layout/fragment_order__history_fragment" />
+        tools:layout="@layout/fragment_order__history_fragment" >
+        <action
+            android:id="@+id/action_order_History_fragment_to_loginActivity2"
+            app:destination="@id/loginActivity2"
+            app:popUpTo="@id/loginActivity2"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.example.stocker.view.fragments.CartFragment"

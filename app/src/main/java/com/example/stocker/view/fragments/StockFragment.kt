@@ -3,6 +3,7 @@ package com.example.stocker.view.fragments
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -133,6 +134,9 @@ class StockFragment : Fragment() {
             if(model.selectedArray.isNotEmpty()){
                 navController.navigate(R.id.action_stock_fragment_to_cartFragment)
             }
+            else{
+                Toast.makeText(context,"Cart Empty",Toast.LENGTH_SHORT).show()
+            }
 
         }
 
@@ -177,7 +181,7 @@ class StockFragment : Fragment() {
                     //navController.popBackStack(R.id.stock_fragment,false)
                     //activity!!.supportFragmentManager.popBackStack()
                     //activity!!.onBackPressed()
-                    navController.navigate(R.id.action_stock_fragment_to_loginActivity2)
+                    activity!!.finish()
                     true
                 }
                 else -> {super.onOptionsItemSelected(item)}

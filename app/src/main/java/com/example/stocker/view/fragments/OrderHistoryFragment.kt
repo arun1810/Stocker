@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -41,6 +43,9 @@ class OrderHistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navController  = navHost.navController
 
         model.resultStatus.observe(this,{status->
             status?.let {
@@ -107,6 +112,7 @@ class OrderHistoryFragment : Fragment() {
                 R.id.logout->{
                     Stocker.logout()
                     SharedPreferenceHelper.writeCustomerPreference(activity!!,null)
+                    activity!!.finish()
 
                     true
                 }
