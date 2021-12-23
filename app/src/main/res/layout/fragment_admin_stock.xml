@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragments.AdminStockFragment"
+
+    >
+
+   <com.google.android.material.appbar.MaterialToolbar
+       android:id="@+id/admin_stock_toolbar"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintBottom_toTopOf="@id/sort_layout"
+
+       />
+    <include
+        android:id="@+id/sort_layout"
+        layout="@layout/stock_sort_layout"
+        android:layout_height="45dp"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/admin_stock_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/admin_stock_recycler"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/admin_stock_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sort_layout"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/admin_add_stock_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_plus"
+
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintVertical_bias="0.95"
+        app:fabSize="normal"
+
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/admin_stock_toolbar"
+        app:layout_constraintStart_toStartOf="@+id/admin_stock_toolbar"
+        app:layout_constraintTop_toTopOf="@+id/admin_stock_toolbar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

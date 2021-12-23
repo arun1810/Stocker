@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    app:cardCornerRadius="2dp"
+    android:elevation="5dp"
+    app:strokeColor="@color/white"
+    app:strokeWidth="1.5dp"
+    android:padding="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:padding="8dp"
+    >
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_name"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:textSize="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/customer_id"
+        app:layout_constraintEnd_toStartOf="@id/guide"
+
+        />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_id"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="20dp"
+        android:alpha="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customer_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guide"
+
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_dob"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="20dp"
+        app:layout_constraintStart_toEndOf="@id/guide"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/customer_ph"
+
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_ph"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="18dp"
+        app:layout_constraintStart_toEndOf="@id/guide"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customer_dob"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

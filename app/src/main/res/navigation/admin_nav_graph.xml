@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_nav_graph"
+    app:startDestination="@id/adminStockFragment">
+    <fragment
+        android:id="@+id/adminStockFragment"
+        android:name="com.example.stocker.view.fragments.AdminStockFragment"
+        android:label="fragment_admin_stock"
+        tools:layout="@layout/fragment_admin_stock" />
+    <fragment
+        android:id="@+id/adminCustomerFragment"
+        android:name="com.example.stocker.view.fragments.AdminCustomerFragment"
+        android:label="fragment_admin_customer"
+        tools:layout="@layout/fragment_admin_customer" />
+    <fragment
+        android:id="@+id/adminOrderHistoryFragment"
+        android:name="com.example.stocker.view.fragments.AdminOrderHistoryFragment"
+        android:label="fragment_admin_order_history"
+        tools:layout="@layout/fragment_admin_order_history" />
+    <dialog
+        android:id="@+id/customerDetailsGetterFragment2"
+        android:name="com.example.stocker.view.fragments.CustomerDetailsGetterFragment"
+        android:label="fragment_customer_details_getter"
+        tools:layout="@layout/fragment_customer_details_getter" >
+        <argument
+            android:name="arg"
+            android:defaultValue="null" />
+    </dialog>
+    <dialog
+        android:id="@+id/stockDetailsGetterFragment"
+        android:name="com.example.stocker.view.fragments.StockDetailsGetterFragment"
+        android:label="fragment_stock_details_getter"
+        tools:layout="@layout/fragment_stock_details_getter" />
+</navigation>

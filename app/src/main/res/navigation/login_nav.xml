@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_nav"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/adminLoginFragment"
+        android:name="com.example.stocker.view.fragments.AdminLoginFragment"
+        android:label="fragment_admin_login"
+        tools:layout="@layout/fragment_admin_login" >
+        <action
+            android:id="@+id/action_adminLoginFragment_to_adminActivity"
+            app:destination="@id/adminActivity"
+            app:popUpTo="@id/adminLoginFragment"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/customerLoginFragment"
+        android:name="com.example.stocker.view.fragments.CustomerLoginFragment"
+        android:label="fragment_customer_login"
+        tools:layout="@layout/fragment_customer_login" >
+        <action
+            android:id="@+id/action_customerLoginFragment_to_customerActivity"
+            app:destination="@id/customerActivity"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.stocker.view.fragments.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_adminLoginFragment"
+            app:destination="@id/adminLoginFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_customerLoginFragment"
+            app:destination="@id/customerLoginFragment"
+            />
+    </fragment>
+    <activity
+        android:id="@+id/customerActivity"
+        android:name="com.example.stocker.view.activity.CustomerActivity"
+        android:label="activity_customer"
+        tools:layout="@layout/activity_customer" />
+    <activity
+        android:id="@+id/adminActivity"
+        android:name="com.example.stocker.view.activity.AdminActivity"
+        android:label="activity_admin"
+        tools:layout="@layout/activity_admin" />
+</navigation>

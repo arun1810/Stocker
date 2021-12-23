@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/customer_activity_nav_graph"
+    app:startDestination="@id/stock_fragment">
+
+
+    <fragment
+        android:id="@+id/stock_fragment"
+        android:name="com.example.stocker.view.fragments.StockFragment"
+        android:label="Stock_fragment" >
+        <action
+            android:id="@+id/action_stock_fragment_to_order_History_fragment"
+            app:destination="@id/order_History_fragment" />
+        <action
+            android:id="@+id/action_stock_fragment_to_cartFragment"
+            app:destination="@id/cartFragment"
+            app:enterAnim="@anim/nav_default_pop_enter_anim"
+            app:exitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_stock_fragment_to_loginActivity2"
+            app:destination="@id/loginActivity2"
+            app:popUpTo="@id/loginActivity2"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/order_History_fragment"
+        android:name="com.example.stocker.view.fragments.OrderHistoryFragment"
+        android:label="fragment_order__history_fragment"
+        tools:layout="@layout/fragment_order__history_fragment" />
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.stocker.view.fragments.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_stock_fragment"
+            app:destination="@id/stock_fragment" />
+    </fragment>
+    <activity
+        android:id="@+id/loginActivity2"
+        android:name="com.example.stocker.view.activity.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+</navigation>

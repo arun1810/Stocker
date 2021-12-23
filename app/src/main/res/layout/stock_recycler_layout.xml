@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="330dp"
+    android:layout_width="match_parent"
+    android:elevation="5dp"
+    app:cardCornerRadius="2dp"
+    app:strokeColor="@color/white"
+    app:strokeWidth="2.5dp"
+    >
+    <include
+        android:id="@+id/stock_layout"
+        layout="@layout/admin_stock_recycler_layout"
+        />
+    <TextView
+        android:id="@+id/badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="100000000000000"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:background="@drawable/badge_shape"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/stock_layout"
+        app:layout_constraintBottom_toTopOf="@id/stock_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="1"
+        />
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+
+        android:id="@+id/btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:weightSum="2"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@color/white"
+
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stock_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/minus_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_minus__1_"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:background="@drawable/image_btn_ripple_effect"
+            />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/plus_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+
+            android:src="@drawable/ic_plus"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:background="@drawable/image_btn_ripple_effect"
+            />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
