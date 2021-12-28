@@ -152,7 +152,7 @@ class AdminCustomerFragment : Fragment() {
         }
         recycler.adapter = adapter
         recycler.layoutManager  = LinearLayoutManager(context)
-        recycler.addItemDecoration(FabRecyclerDecorator(height/24))
+        recycler.addItemDecoration(FabRecyclerDecorator(height/64))
 
         addCustomerBtn.setOnClickListener {
             navController.navigate(R.id.customerDetailsGetterFragment2, bundleOf("mode" to Mode.Create))

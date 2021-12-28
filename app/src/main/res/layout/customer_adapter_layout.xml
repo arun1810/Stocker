@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    android:layout_width="match_parent"
-    android:layout_height="100dp"
+<com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+    android:layout_height="70sp"
+    xmlns:tool="http://schemas.android.com/tools"
     app:cardCornerRadius="2dp"
-    android:elevation="5dp"
-    app:strokeColor="@color/white"
-    app:strokeWidth="1.5dp"
-    android:padding="8dp"
+    android:elevation="8dp"
+    app:strokeColor="@color/colorOnPrimary"
+    app:strokeWidth="1dp"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:padding="8dp"
     >
 
     <androidx.constraintlayout.widget.Guideline
@@ -22,26 +23,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.65"
+        app:layout_constraintGuide_percent="0.60"
         />
 
-    <com.google.android.material.textview.MaterialTextView
+    <com.example.stocker.view.customviews.ScrollableTextView
         android:id="@+id/customer_name"
-        android:layout_height="0dp"
+        android:layout_height="20dp"
         android:layout_width="0dp"
-        android:textSize="22dp"
+
+        android:textSize="18sp"
+        tool:text="customer name"
+        android:gravity="center_vertical"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="14dp"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/customer_id"
         app:layout_constraintEnd_toStartOf="@id/guide"
 
         />
-    <com.google.android.material.textview.MaterialTextView
+    <com.example.stocker.view.customviews.ScrollableTextView
         android:id="@+id/customer_id"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:textSize="20dp"
+        android:layout_height="20dp"
+        android:textSize="15sp"
         android:alpha="0.7"
+        tool:text="#customer_id"
+
+
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_goneMarginEnd="14dp"
+        android:layout_marginTop="2dp"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/customer_name"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -52,8 +69,17 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_dob"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:textSize="20dp"
+        android:layout_height="20dp"
+
+        android:textSize="14sp"
+        tool:text="18-10-2000"
+        android:gravity="end"
+
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="16dp"
+
+
         app:layout_constraintStart_toEndOf="@id/guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -64,8 +90,16 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_ph"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:textSize="18dp"
+        android:layout_height="20dp"
+        android:textSize="16sp"
+        tool:text="ph:1234567890"
+        android:gravity="end"
+
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="14dp"
+
         app:layout_constraintStart_toEndOf="@id/guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/customer_dob"

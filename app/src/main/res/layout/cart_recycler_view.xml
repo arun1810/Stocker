@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="@dimen/recycler_item_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
-    android:paddingStart="10dp"
-    android:paddingEnd="5dp"
     >
 
     <androidx.constraintlayout.widget.Guideline
@@ -14,58 +11,90 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6"/>
+        app:layout_constraintGuide_percent="0.5"/>
 
-    <com.google.android.material.textview.MaterialTextView
+   <com.example.stocker.view.customviews.ScrollableTextView
         android:id="@+id/cart_stock_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/recycler_primary_text_height"
         tools:text="Stock1"
-        android:textSize="25dp"
-        app:layout_constraintStart_toStartOf="parent"
+
+       android:background="@android:color/transparent"
+       android:clickable="false"
+       android:cursorVisible="false"
+       android:focusable="false"
+       android:gravity="center_vertical|top"
+
+        android:textSize="18sp"
+        android:textStyle="bold"
+
+       app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cart_stock_count"
         app:layout_constraintEnd_toStartOf="@id/guide"
+       app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginStart="16dp"
+
         />
-    <com.google.android.material.textview.MaterialTextView
+    <com.example.stocker.view.customviews.ScrollableTextView
         android:id="@+id/cart_stock_count"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
+
         tools:text="x1234"
-        android:textSize="22dp"
+        android:textSize="15sp"
+        android:textStyle="normal"
         android:alpha="0.8"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cart_stock_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guide"
+
+        android:layout_marginStart="16dp"
+
         />
 
-    <com.google.android.material.textview.MaterialTextView
+    <com.example.stocker.view.customviews.ScrollableTextView
         android:id="@+id/cart_stock_id"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/recycler_secondary_text_height"
+
         tools:text="#stockID1245"
-        android:textSize="20dp"
-        android:gravity="end"
+        android:textSize="15sp"
+        android:gravity="end|bottom"
+        android:maxLines="1"
+
+
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="28dp"
+
+        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@id/guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cart_stock_total_price"
+
+
+
         />
 
-    <com.google.android.material.textview.MaterialTextView
+    <com.example.stocker.view.customviews.ScrollableTextView
         android:id="@+id/cart_stock_total_price"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/recycler_primary_text_height"
         tools:text="₹756283"
-        android:textSize="35dp"
-        android:gravity="end"
+        android:textSize="18sp"
+        android:gravity="end|bottom"
+        android:textStyle="bold"
+        android:maxLines="1"
+
         app:layout_constraintTop_toBottomOf="@id/cart_stock_id"
         app:layout_constraintStart_toEndOf="@id/guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="28dp"
         />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

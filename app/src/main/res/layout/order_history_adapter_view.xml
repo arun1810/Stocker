@@ -4,16 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:layout_height="100dp"
+    android:layout_height="72dp"
     android:layout_width="match_parent"
-    android:elevation="10dp"
-    app:strokeColor="@color/white"
+    android:elevation="8dp"
+    app:strokeColor="@color/colorOnPrimary"
     app:strokeWidth="1dp"
+    app:cardCornerRadius="5dp"
     >
 <androidx.constraintlayout.widget.ConstraintLayout
 
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
@@ -22,58 +23,89 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.6" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/order_history_id"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingStart="10dp"
+        android:layout_height="@dimen/recycler_secondary_text_height"
+
+        tools:text="orderID"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:alpha="0.65"
+        android:maxLines="1"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="2dp"
 
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/customer_id"
-        tools:text="orderID"
-        android:textSize="25dp"
-        />
 
-    <TextView
+        />
+    <com.example.stocker.view.customviews.ScrollableTextView
         android:id="@+id/customer_id"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/recycler_primary_text_height"
+
         tools:text="customerID"
-        android:paddingStart="10dp"
-        android:textSize="25dp"
+        android:textSize="17sp"
+        android:gravity="center_vertical"
+
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="14dp"
+
         app:layout_constraintTop_toBottomOf="@id/order_history_id"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
-    <TextView
-        android:id="@+id/order_total"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/order_date"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/recycler_secondary_text_height"
+
+
+        tools:text="18-1-1980"
+        android:textSize="16sp"
+        android:gravity="end"
+        android:alpha="0.65"
+
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="2dp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintBottom_toTopOf="@id/order_date"
-        tools:text="10000"
-        android:textSize="25dp"
-        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toTopOf="@id/order_total"
+
         />
-    <TextView
-        android:id="@+id/order_date"
+
+    <com.example.stocker.view.customviews.ScrollableTextView
+        android:id="@+id/order_total"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/order_total"
+        android:layout_height="@dimen/recycler_primary_text_height"
+
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="16dp"
+
+        app:layout_constraintTop_toBottomOf="@id/order_date"
         app:layout_constraintStart_toStartOf="@id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="18-1-1980"
-        android:textSize="25dp"
-        android:gravity="center_horizontal"
+
+        tools:text="10000"
+        android:textSize="18sp"
+        android:gravity="end|center_vertical"
+
         />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

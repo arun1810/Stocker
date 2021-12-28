@@ -18,6 +18,12 @@ class DisplayUtil {
 
         fun getDisplaySize(activity: Activity): Point {
 
+            val displayMetrics=activity.resources.displayMetrics
+
+
+
+
+
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                 val windowMetrics = activity.windowManager.currentWindowMetrics
                 val insets: Insets =
@@ -25,17 +31,16 @@ class DisplayUtil {
 
 
                 return Point().apply {
-                    x =
-                        windowMetrics.bounds.height() - insets.top - insets.bottom // bounds gives size of match_parent . insets gives views surrounding it.
-                    y = windowMetrics.bounds.width() - insets.left - insets.right
+                    val density = displayMetrics.density
+                    x = ((windowMetrics.bounds.height() - insets.top - insets.bottom )/density).toInt() // bounds gives size of match_parent . insets gives views surrounding it.
+                    y = ((windowMetrics.bounds.width() - insets.left - insets.right)/density).toInt()
                 }
             } else {
-                val displayMetrics = DisplayMetrics()
 
-                activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
                 return Point().apply {
-                    x = displayMetrics.heightPixels
-                    y = displayMetrics.widthPixels
+                    val density = displayMetrics.density
+                    x = (displayMetrics.heightPixels/density).toInt()
+                    y = (displayMetrics.widthPixels/density).toInt()
                 }
             }
 

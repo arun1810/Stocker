@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.ContentLoadingProgressBar
@@ -12,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
@@ -90,6 +92,8 @@ class CartFragment : Fragment() {
             activity!!.onBackPressed()
 
         }
+        val orderCountTextView = view.findViewById<TextView>(R.id.cart_order_count_textview)
+        orderCountTextView.text = "${model.selectedArray.size} items in your cart"
 
 
         lifecycleScope.launch {
@@ -99,7 +103,9 @@ class CartFragment : Fragment() {
             isloaded=true
         }
 
+
         recycler.layoutManager = LinearLayoutManager(context)
+        recycler.addItemDecoration(DividerItemDecoration(context!!,DividerItemDecoration.VERTICAL))
 
         buyBtn.setOnClickListener {
             buy(view)

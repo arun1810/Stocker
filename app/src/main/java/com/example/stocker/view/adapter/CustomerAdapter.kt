@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Customer
+import com.example.stocker.view.customviews.ScrollableTextView
 import com.google.android.material.textview.MaterialTextView
 
 class CustomerAdapter(val context: Context,private val selectedCustomer:MutableList<Customer>, private val selectionListener: SelectionListener): RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
@@ -33,7 +34,10 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+
+
         holder.itemView.setOnLongClickListener{
+            val data = diff.currentList
             if(holder.state == ViewHolder.State.Unselected) {
                 selectCustomer(holder)
                 true
@@ -42,8 +46,9 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         }
 
         holder.itemView.setOnClickListener {
+            val data = diff.currentList
             if(oneSelectionActive || multipleSelectionActive){
-                if(selectedCustomer.contains(diff.currentList[holder.adapterPosition])){
+                if(selectedCustomer.contains(data[holder.adapterPosition])){
                     unSelectCustomer(holder)
                 }
                 else{
@@ -52,7 +57,8 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
             }
         }
 
-        if(selectedCustomer.contains(diff.currentList[position])){
+        val data = diff.currentList
+        if(selectedCustomer.contains(data[position])){
             changeToSelectedState(holder)
         }
         else{
@@ -60,10 +66,10 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         }
 
 
-        holder.customerId.text = diff.currentList[position].customerId
-        holder.customerDob.text = diff.currentList[position].dob.toString()
-        holder.customerPh.text = diff.currentList[position].mobile_number
-        holder.customerName.text = diff.currentList[position].name
+        holder.customerId.setText(data[position].customerId)
+        holder.customerDob.text = data[position].dob.toString()
+        holder.customerPh.text = "ph:${data[position].mobile_number}"
+        holder.customerName.setText(data[position].name)
     }
 
     override fun getItemCount(): Int {
@@ -77,18 +83,12 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
             changeSelectionState()
     }
     private fun unSelectCustomer(holder:ViewHolder) {
-        if (selectedCustomer.contains(diff.currentList[holder.adapterPosition])) {
+        val data = diff.currentList
+        if (selectedCustomer.contains(data[holder.adapterPosition])) {
             changeToUnselectedState(holder)
-            selectedCustomer.remove(diff.currentList[holder.adapterPosition])
+            selectedCustomer.remove(data[holder.adapterPosition])
             changeSelectionState()
-            /*if (selectedCustomer.size == 0) {
-                oneSelectionActive = false
-                selectionListener.selectionDisabled()
-            }
-            else {
-                select()
-            }
-             */
+
         }
     }
 
@@ -133,8 +133,8 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         enum class State{Selected,Unselected}
 
         var state:State=State.Unselected
-        val customerName:MaterialTextView = view.findViewById(R.id.customer_name)
-        val customerId:MaterialTextView = view.findViewById(R.id.customer_id)
+        val customerName:ScrollableTextView = view.findViewById(R.id.customer_name)
+        val customerId:ScrollableTextView = view.findViewById(R.id.customer_id)
         val customerDob:MaterialTextView = view.findViewById(R.id.customer_dob)
         val customerPh:MaterialTextView = view.findViewById(R.id.customer_ph)
     }

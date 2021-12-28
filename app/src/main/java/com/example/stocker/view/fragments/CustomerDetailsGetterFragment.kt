@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.stocker.R
@@ -18,7 +19,9 @@ import com.example.stocker.pojo.Customer
 import com.example.stocker.view.fragments.util.Mode
 import com.example.stocker.view.util.DisplayUtil
 import com.example.stocker.viewmodel.AdminViewModel
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -37,16 +40,18 @@ class CustomerDetailsGetterFragment : DialogFragment() {
     private lateinit var customerPasswordLayout:TextInputLayout
     private lateinit var customerMobileNumberEtx:TextInputEditText
     private lateinit var customerMobileNumberLayout:TextInputLayout
-    private lateinit var maleBtn:MaterialButton
-    private lateinit var femaleBtn:MaterialButton
+    private lateinit var customerGenderToggleGrp:MaterialButtonToggleGroup
     private lateinit var dobBtn:MaterialButton
-    private lateinit var addBtn:MaterialButton
-    private lateinit var cancelBtn:MaterialButton
     private var dob = LocalDate.now()
     private var gender:Char='M'
     private val model:AdminViewModel by activityViewModels()
-
+    private lateinit var toolbar:MaterialToolbar
     private var mode = Mode.Create
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL,R.style.AppTheme_FullScreenDialog)
+    }
 
 
 
@@ -71,12 +76,17 @@ class CustomerDetailsGetterFragment : DialogFragment() {
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
+        if(dialog!=null){
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val height = ViewGroup.LayoutParams.MATCH_PARENT
+            dialog!!.window!!.setLayout(width, height)
+        }
 
         dialog!!.setCancelable(false)
-        val size = DisplayUtil.getDisplaySize(activity!!)
-        val height = size.x
-        val width = size.y
-        dialog!!.window!!.setLayout(width, (height/1.5).toInt())
+        //val size = DisplayUtil.getDisplaySize(activity!!)
+        //val height = size.x
+        //val width = size.y
+        //dialog!!.window!!.setLayout(width, (height/1.5).toInt())
 
 
 
@@ -88,12 +98,27 @@ class CustomerDetailsGetterFragment : DialogFragment() {
         customerNameLayout = view.findViewById(R.id.admin_enter_customer_name_layout)
         customerMobileNumberEtx = view.findViewById(R.id.admin_enter_customer_mobile_number)
         customerMobileNumberLayout = view.findViewById(R.id.admin_enter_customer_mobile_number_layout)
-        maleBtn = view.findViewById(R.id.admin_customer_male)
-        femaleBtn = view.findViewById(R.id.admin_customer_female)
-        cancelBtn = view.findViewById(R.id.admin_cancel_btn)
-        addBtn = view.findViewById(R.id.admin_add_btn)
-        dobBtn = view.findViewById(R.id.admin_customer_dob_btn)
 
+        dobBtn = view.findViewById(R.id.admin_customer_dob_btn)
+        toolbar = view.findViewById(R.id.admin_enter_customer_toolbar)
+        customerGenderToggleGrp = view.findViewById(R.id.admin_customer_gender_toggle_grp)
+
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
+        toolbar.setNavigationOnClickListener {
+            dialog!!.cancel()
+        }
+        toolbar.inflateMenu(R.menu.dialog_menu)
+        toolbar.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.add->{
+                    add()
+                    true
+                }
+                else->{
+                    false
+                }
+            }
+        }
 
         model.resultStatus.observe(this,{status->
             status?.let {
@@ -106,6 +131,21 @@ class CustomerDetailsGetterFragment : DialogFragment() {
             }
 
         })
+
+        customerGenderToggleGrp.isSingleSelection=true
+        customerGenderToggleGrp.check(R.id.admin_customer_male)
+        customerGenderToggleGrp.addOnButtonCheckedListener { _, checkedId, _ ->
+
+            when(checkedId){
+                R.id.admin_customer_male->{
+                    gender='M'
+                }
+
+                R.id.admin_customer_female->{
+                    gender='F'
+                }
+            }
+        }
 
         customerMobileNumberEtx.addTextChangedListener(object:TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -185,48 +225,53 @@ class CustomerDetailsGetterFragment : DialogFragment() {
                 { _, year, month, dayOfMonth ->
                     dob = LocalDate.of(year,month+1, dayOfMonth)
                     dobBtn.text=dob.toString()
+                    dobBtn.setStrokeColorResource(R.color.success)
                 },
                 year,month,day)
             datePicker.show()
         }
-
-        cancelBtn.setOnClickListener {
-            dialog?.cancel()
-        }
-
-        maleBtn.setOnClickListener {
+/*
+       maleBtn.setOnClickListener {
             gender='M'
-            it.setBackgroundColor(context!!.getColor(R.color.black))
+            it.setBackgroundColor(context!!.getColor(R.color.colorOnSecondary))
             femaleBtn.setBackgroundColor(context!!.getColor(R.color.design_default_color_on_primary))
         }
         femaleBtn.setOnClickListener {
             gender='F'
-            it.setBackgroundColor(context!!.getColor(R.color.black))
+            it.setBackgroundColor(context!!.getColor(R.color.colorOnSecondary))
             maleBtn.setBackgroundColor(context!!.getColor(R.color.design_default_color_on_primary))
         }
 
-        addBtn.setOnClickListener {
-            var canAdd=true
-            customerNameEtx.text?.isEmpty().apply {
-                if(this!!) {
-                    customerNameLayout.error = "name cannot be empty"
-                    canAdd = false
-                }
+ */
+
+    }
+
+    private fun add(){
+        var canAdd=true
+        if(dobBtn.text==context?.getString(R.string.select_dob)){
+            dobBtn.setStrokeColorResource(R.color.error)
+            canAdd=false
+        }
+        customerNameEtx.text?.isEmpty().apply {
+            if(this!!) {
+                customerNameLayout.error = "name cannot be empty"
+                canAdd = false
             }
-            customerPasswordEtx.text?.isEmpty().apply{
-                if(this!!) {
-                    customerPasswordLayout.error = "password cannot be empty"
-                    canAdd = false
-                }
+        }
+        customerPasswordEtx.text?.isEmpty().apply{
+            if(this!!) {
+                customerPasswordLayout.error = "password cannot be empty"
+                canAdd = false
             }
-            customerIdEtx.text?.isEmpty().apply{
-                if(this!!) {
-                    customerIdLayout.error = "Id cannot be empty"
-                    canAdd = false
-                }
+        }
+        customerIdEtx.text?.isEmpty().apply{
+            if(this!!) {
+                customerIdLayout.error = "Id cannot be empty"
+                canAdd = false
             }
-            customerMobileNumberEtx.text?.let{
-                it.isEmpty().apply {
+        }
+        customerMobileNumberEtx.text?.let{
+            it.isEmpty().apply {
                 if (this) {
                     customerMobileNumberLayout.error = "mobile number cannot be empty"
                     canAdd = false
@@ -240,38 +285,37 @@ class CustomerDetailsGetterFragment : DialogFragment() {
                 }
 
             }
-            }
+        }
 
-             if(canAdd) {
-                val customer = Customer(
-                    customerId = customerIdEtx.text!!.toString(),
-                    name = customerNameEtx.text!!.toString(),
-                    password = customerPasswordEtx.text!!.toString(),
-                    gender = gender,
-                    dob = dob,
-                    mobile_number = customerMobileNumberEtx.text!!.toString()
-                )
-                when (mode) {
+        if(canAdd) {
+            val customer = Customer(
+                customerId = customerIdEtx.text!!.toString(),
+                name = customerNameEtx.text!!.toString(),
+                password = customerPasswordEtx.text!!.toString(),
+                gender = gender,
+                dob = dob,
+                mobile_number = customerMobileNumberEtx.text!!.toString()
+            )
+            when (mode) {
 
 
-               Mode.Create -> {
-                   model.createNewCustomer(customer)
-                   model.join {
-                       Toast.makeText(context!!, "Customer added", Toast.LENGTH_LONG).show()
-                       dialog?.cancel()
-                   }
-               }
-                    Mode.Update->{
-                        model.updateCustomer(model.selectedCustomer[0],customer)
-                        model.join {
-                            Toast.makeText(context!!, "Customer updated", Toast.LENGTH_LONG).show()
-                            dialog?.cancel()
-                        }
+                Mode.Create -> {
+                    model.createNewCustomer(customer)
+                    model.join {
+                        Toast.makeText(context!!, "Customer added", Toast.LENGTH_LONG).show()
+                        dialog?.cancel()
+                    }
+                }
+                Mode.Update->{
+                    model.updateCustomer(model.selectedCustomer[0],customer)
+                    model.join {
+                        Toast.makeText(context!!, "Customer updated", Toast.LENGTH_LONG).show()
+                        dialog?.cancel()
                     }
                 }
             }
-
         }
+
     }
 
     override fun onStart() {
@@ -287,15 +331,19 @@ class CustomerDetailsGetterFragment : DialogFragment() {
                 customerMobileNumberEtx.setText(this.mobile_number)
                 dobBtn.text = this.dob.toString()
 
-                if (this.gender == 'M') {
-                    maleBtn.setBackgroundColor(context!!.getColor(R.color.black))
-                    femaleBtn.setBackgroundColor(context!!.getColor(R.color.design_default_color_on_primary))
-                } else {
-                    femaleBtn.setBackgroundColor(context!!.getColor(R.color.black))
-                    maleBtn.setBackgroundColor(context!!.getColor(R.color.design_default_color_on_primary))
-
+                when(this.gender){
+                    'M'->{
+                        customerGenderToggleGrp.check(R.id.admin_customer_male)
+                    }
+                    'F'->{
+                        customerGenderToggleGrp.check(R.id.admin_customer_female)
+                    }
                 }
-                addBtn.text="update"
+
+
+
+                toolbar.title="update customer"
+                toolbar.menu.findItem(R.id.add).title="update"
 
             }
         }

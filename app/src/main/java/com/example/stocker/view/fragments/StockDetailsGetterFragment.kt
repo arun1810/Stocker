@@ -15,6 +15,7 @@ import com.example.stocker.pojo.Stock
 import com.example.stocker.view.fragments.util.Mode
 import com.example.stocker.view.util.DisplayUtil
 import com.example.stocker.viewmodel.AdminViewModel
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -42,8 +43,8 @@ class StockDetailsGetterFragment : DialogFragment() {
     private lateinit var stockCountEtx:TextInputEditText
     private lateinit var stockDiscountLayout:TextInputLayout
     private lateinit var stockDiscountEtx:TextInputEditText
-    private lateinit var addBtn:MaterialButton
-    private lateinit var cancelBtn:MaterialButton
+    private lateinit var toolbar:MaterialToolbar
+
     private var mode = Mode.Create
 
     override fun onAttach(context: Context) {
@@ -56,12 +57,24 @@ class StockDetailsGetterFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_stock_details_getter, container, false)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL,R.style.AppTheme_FullScreenDialog)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(dialog!=null){
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val height = ViewGroup.LayoutParams.MATCH_PARENT
+            dialog!!.window!!.setLayout(width, height)
+        }
 
         stockIdLayout = view.findViewById(R.id.admin_stock_id_layout)
         stockIdEtx = view.findViewById(R.id.admin_stock_id_etx)
@@ -73,8 +86,25 @@ class StockDetailsGetterFragment : DialogFragment() {
         stockCountEtx = view.findViewById(R.id.admin_stock_count_etx)
         stockDiscountLayout = view.findViewById(R.id.admin_stock_discount_layout)
         stockDiscountEtx = view.findViewById(R.id.admin_stock_discount_etx)
-        addBtn = view.findViewById(R.id.admin_stock_add_btn)
-        cancelBtn = view.findViewById(R.id.admin_stock_cancel_btn)
+
+        toolbar= view.findViewById(R.id.admin_stock_toolbar)
+
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
+        toolbar.setNavigationOnClickListener {
+            dialog!!.dismiss()
+        }
+
+        toolbar.inflateMenu(R.menu.dialog_menu)
+        toolbar.setOnMenuItemClickListener {
+             when(it.itemId){
+                R.id.add->{
+                    add()
+                    true
+                }
+
+                 else->{false}
+            }
+        }
 
 
         model.resultStatus.observe(this,{status->
@@ -89,10 +119,12 @@ class StockDetailsGetterFragment : DialogFragment() {
         })
 
         dialog!!.setCancelable(false)
-        val size = DisplayUtil.getDisplaySize(activity!!)
+        /*val size = DisplayUtil.getDisplaySize(activity!!)
         val height = size.x
         val width = size.y
         dialog!!.window!!.setLayout(width, (height/1.5).toInt())
+
+         */
 
         stockIdEtx.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -185,7 +217,7 @@ class StockDetailsGetterFragment : DialogFragment() {
 
             override fun afterTextChanged(s: Editable?) {
                 if (s!!.isEmpty()) {
-                    if (stockDiscountLayout.error != null) stockPriceLayout.error = null
+                    if (stockDiscountLayout.error != null) stockDiscountLayout.error = null
                 } else {
                     try {
                         s.toString().toInt()
@@ -201,90 +233,83 @@ class StockDetailsGetterFragment : DialogFragment() {
 
 
 
-        cancelBtn.setOnClickListener {
-            dialog!!.cancel()
+
+    }
+
+    private fun add(){
+        var canAdd=true
+        stockIdEtx.text?.isEmpty()!!.doIfTrue {
+            stockIdLayout.error="stock ID cannot be empty"
+            canAdd=false
+        }
+        stockNameEtx.text?.isEmpty()!!.doIfTrue {
+            stockNameLayout.error="stock Name cannot be empty"
+            canAdd=false
         }
 
-        addBtn.setOnClickListener {
-            var canAdd=true
-            stockIdEtx.text?.isEmpty()!!.doIfTrue {
-                stockIdLayout.error="stock ID cannot be empty"
+        if(stockPriceLayout.error!=null) {
+            canAdd=false
+        }
+        else{
+            stockPriceEtx.text!!.isEmpty().doIfTrue {
+                stockPriceLayout.error="stock price cannot be empty"
                 canAdd=false
             }
-            stockNameEtx.text?.isEmpty()!!.doIfTrue {
-                stockNameLayout.error="stock Name cannot be empty"
+        }
+
+        if(stockCountLayout.error!=null) {
+            canAdd=false
+        }
+        else{
+            stockCountEtx.text!!.isEmpty().doIfTrue {
+                stockCountLayout.error="stock Count cannot be empty"
                 canAdd=false
             }
+        }
 
-            if(stockPriceLayout.error!=null) {
+        if(stockDiscountLayout.error!=null) {
+            canAdd=false
+        }
+        else{
+            stockDiscountEtx.text!!.isEmpty().doIfTrue {
+                stockDiscountLayout.error="stock Discount cannot be empty"
                 canAdd=false
             }
-            else{
-                stockPriceEtx.text!!.isEmpty().doIfTrue {
-                    stockPriceLayout.error="stock price cannot be empty"
-                    canAdd=false
-                }
-            }
-
-            if(stockCountLayout.error!=null) {
-                canAdd=false
-            }
-            else{
-                stockCountEtx.text!!.isEmpty().doIfTrue {
-                    stockCountLayout.error="stock Count cannot be empty"
-                    canAdd=false
-                }
-            }
-
-            if(stockDiscountLayout.error!=null) {
-                canAdd=false
-            }
-            else{
-                stockDiscountEtx.text!!.isEmpty().doIfTrue {
-                    stockDiscountLayout.error="stock Discount cannot be empty"
-                    canAdd=false
-                }
-            }
-
-
-
-            if(canAdd){
-                val stock = Stock(
-                    stockID = stockIdEtx.text.toString(),
-                    stockName = stockNameEtx.text.toString(),
-                    price = stockPriceEtx.text.toString().toInt(),
-                    count = stockCountEtx.text.toString().toInt(),
-                    discount = stockDiscountEtx.text.toString().toInt()
-                )
-                when(mode){
-                    Mode.Create -> {
-                        model.addStock(stock)
-                        model.join {
-                            Toast.makeText(context!!, "Stock added", Toast.LENGTH_LONG).show()
-                            dialog?.cancel()
-                        }
-                    }
-                    Mode.Update->{
-                        model.updateStock(model.selectedStocks[0],stock)
-                        model.join {
-                            Toast.makeText(context!!, "Stock updated", Toast.LENGTH_LONG).show()
-                            dialog?.cancel()
-                        }
-                    }
-                }
-
-
-                model.join {
-                    Toast.makeText(context!!,"Stock added", Toast.LENGTH_LONG).show()
-                    dialog?.cancel()
-                }
-            }
-
-
-
         }
 
 
+
+        if(canAdd){
+            val stock = Stock(
+                stockID = stockIdEtx.text.toString(),
+                stockName = stockNameEtx.text.toString(),
+                price = stockPriceEtx.text.toString().toInt(),
+                count = stockCountEtx.text.toString().toInt(),
+                discount = stockDiscountEtx.text.toString().toInt()
+            )
+            when(mode){
+                Mode.Create -> {
+                    model.addStock(stock)
+                    model.join {
+                        Toast.makeText(context!!, "Stock added", Toast.LENGTH_LONG).show()
+                        dialog?.cancel()
+                    }
+                }
+                Mode.Update->{
+                    model.updateStock(model.selectedStocks[0],stock)
+                    model.join {
+                        Toast.makeText(context!!, "Stock updated", Toast.LENGTH_LONG).show()
+                        dialog?.cancel()
+                    }
+                }
+            }
+
+
+            model.join {
+                Toast.makeText(context!!,"Stock added", Toast.LENGTH_LONG).show()
+                dialog?.cancel()
+            }
+        }
     }
 
     override fun onStart() {
@@ -300,7 +325,8 @@ class StockDetailsGetterFragment : DialogFragment() {
                 stockDiscountEtx.setText(this.discount.toString())
                 stockPriceEtx.setText(this.price.toString())
             }
-            addBtn.text = "update"
+            toolbar.menu.findItem(R.id.add).title="update"
+            toolbar.title="update stock"
         }
     }
 

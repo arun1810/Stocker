@@ -1,6 +1,7 @@
 package com.example.stocker.view.adapter
 
 import android.content.Context
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.OrderHistory
+import com.example.stocker.view.customviews.ScrollableTextView
+import com.google.android.material.textview.MaterialTextView
 
 class OrderHistoryAdapter(val context: Context, ): RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder>() {
 
@@ -26,10 +29,10 @@ class OrderHistoryAdapter(val context: Context, ): RecyclerView.Adapter<OrderHis
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = diff.currentList
 
-        holder.orderId.text=data[position].orderID
-        holder.customerId.text=data[position].customerId
+        holder.orderId.text="order id: ${data[position].orderID}"
+        holder.customerId.setText("customer id: ${data[position].customerId}")
         holder.orderDate.text=data[position].dateOfPurchase.toString()
-        holder.orderTotal.text=data[position].total.toString()
+        holder.orderTotal.setText("₹${data[position].total}")
     }
 
     override fun getItemCount(): Int {
@@ -45,10 +48,12 @@ class OrderHistoryAdapter(val context: Context, ): RecyclerView.Adapter<OrderHis
     }
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
 
-        val orderId: TextView = view.findViewById(R.id.order_history_id)
-        val customerId:TextView = view.findViewById(R.id.customer_id)
-        val orderTotal:TextView = view.findViewById(R.id.order_total)
+        val orderId: MaterialTextView = view.findViewById(R.id.order_history_id)
+        val customerId:ScrollableTextView = view.findViewById(R.id.customer_id)
+        val orderTotal:ScrollableTextView = view.findViewById(R.id.order_total)
         val orderDate:TextView = view.findViewById(R.id.order_date)
+
+
 
     }
 }

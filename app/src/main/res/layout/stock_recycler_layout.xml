@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:elevation="5dp"
     app:cardCornerRadius="2dp"
-    app:strokeColor="@color/white"
+    app:strokeColor="@color/colorOnPrimary"
     app:strokeWidth="2.5dp"
     >
     <include
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         tools:text="100000000000000"
         android:textSize="20dp"
-        android:textColor="@color/black"
+        android:textColor="@color/colorOnSecondary"
         android:background="@drawable/badge_shape"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/stock_layout"
@@ -40,7 +40,7 @@
         android:weightSum="2"
         android:gravity="center"
         android:orientation="horizontal"
-        android:background="@color/white"
+        android:background="@color/colorOnPrimary"
 
 
 

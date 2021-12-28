@@ -25,11 +25,13 @@ class LoginActivity : AppCompatActivity() {
             val customer = GsonHelper.stringToObject(str,Customer::class.java)
             Stocker.createInstance(customer)
             startActivity(Intent(this,CustomerActivity::class.java))
+            finish()
         }
         else{
             val state= SharedPreferenceHelper.readAdminPreference(this)
             if(state){
                 startActivity(Intent(this,AdminActivity::class.java))
+                finish()
             }
         }
 
