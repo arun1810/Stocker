@@ -10,12 +10,14 @@ import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 import com.example.stocker.repository.AdminRepository
 import com.example.stocker.repository.helper.SortUtil
+import com.example.stocker.view.adapter.AdminStockAdapter.*
+import com.example.stocker.view.fragments.util.Type
 import com.example.stocker.viewmodel.helper.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
- class AdminViewModel(application: Application): AndroidViewModel(application) {
+class AdminViewModel(application: Application): AndroidViewModel(application) {
 
     private val adminRepository = AdminRepository(getApplication())
 
@@ -32,11 +34,10 @@ import kotlinx.coroutines.launch
      private var filterOnOrders = false
      private var filterOnCustomer = false
      val selectedCustomer = mutableListOf<Customer>()
-     val customerSelectionState = MutableLiveData<Boolean>()
-     val selectedOrders = mutableListOf<OrderHistory>()
-     val orderSelectionState = MutableLiveData<Boolean>()
+     val customerSelectionState = MutableLiveData(Type.Nothing)
+
      val selectedStocks = mutableListOf<Stock>()
-     val stockSelectionState = MutableLiveData<Boolean>()
+     val stockSelectionState = MutableLiveData(Type.Nothing)
 
 
     init{
@@ -44,9 +45,6 @@ import kotlinx.coroutines.launch
         _stocksLiveData.value= listOf()
         _orderHistoriesLiveData.value= listOf()
         _result.value=Status()
-        customerSelectionState.value=true
-        orderSelectionState.value=true
-        stockSelectionState.value=true
 
         getAllCustomers()
         getAllStocks()
@@ -243,7 +241,7 @@ import kotlinx.coroutines.launch
                          remove(oldCustomer)
                          add(0,newCustomer)
                      })
-                     customerSelectionState.postValue(false)
+                     customerSelectionState.postValue(Type.Update)
                      selectedCustomer.clear()
 
                  }
@@ -323,7 +321,7 @@ import kotlinx.coroutines.launch
                         remove(oldStock)
                         add(0,newStock)
                     })
-                    stockSelectionState.postValue(false)
+                    stockSelectionState.postValue(Type.Update)
                     selectedStocks.clear()
 
                 }
@@ -345,7 +343,7 @@ import kotlinx.coroutines.launch
             updateStockInList(updatedStock)
         }
     }
-
+/*
     fun removeOrderHistory(){
       job =   viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -374,6 +372,8 @@ import kotlinx.coroutines.launch
         }
     }
 
+ */
+
     fun removeStock(){
        job =  viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -389,7 +389,7 @@ import kotlinx.coroutines.launch
                         }
                     }
                     selectedStocks.clear()
-                    stockSelectionState.postValue(true)
+                    stockSelectionState.postValue(Type.Delete)
                     _stocksLiveData.postValue(mutableList)
                 }
             }catch(e:Exception){
@@ -417,7 +417,7 @@ import kotlinx.coroutines.launch
                             }
                         }
                         selectedCustomer.clear()
-                        customerSelectionState.postValue(true)
+                        customerSelectionState.postValue(Type.Delete)
                         _customersLiveData.postValue(mutableList)
                     }
                 }

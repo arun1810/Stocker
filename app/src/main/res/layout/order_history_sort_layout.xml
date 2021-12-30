@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:elevation="5dp"
+    android:layout_height="@dimen/sort_layout_height"
+    android:elevation="8dp"
     android:background="@color/colorPrimaryVariant"
     >
 

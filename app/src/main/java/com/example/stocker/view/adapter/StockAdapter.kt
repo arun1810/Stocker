@@ -16,11 +16,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
+import com.example.stocker.view.util.DisplayUtil
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.imageview.ShapeableImageView
+import kotlin.random.Random
 
-class StockAdapter( private val context:Context,private val cardHeight:Int,private val selectedArray:HashMap<Stock,Int>):RecyclerView.Adapter<StockAdapter.ViewHolder>() {
+class StockAdapter( private val context:Context,private val selectedArray:HashMap<Stock,Int>,private val width:Int,private val viewHeight:Int,private val stockViewHeight:Int,private val btnLayoutHeight:Int,private val parent:RecyclerView):RecyclerView.Adapter<StockAdapter.ViewHolder>() {
 
     private val diff = AsyncListDiffer(this, DiffCalc())
+    private val imgs = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
+
+
 
     fun setNewList(newData:List<Stock>){
         diff.submitList(newData)
@@ -28,27 +34,22 @@ class StockAdapter( private val context:Context,private val cardHeight:Int,priva
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-
         val layout= LayoutInflater.from(context).inflate(R.layout.stock_recycler_layout,parent,false)
-        val viewHolder = ViewHolder(layout)
+        val viewHolder = ViewHolder(layout,viewHeight,stockViewHeight ,width,imgs[Random.nextInt(imgs.size)])
 
-        viewHolder.parentLayout.layoutParams = viewHolder.parentLayout.layoutParams.apply {
-            this.height=cardHeight
-        }
+        viewHolder.itemView.setOnClickListener {
 
-        viewHolder.parentLayout.setOnClickListener {
+
             val position = viewHolder.adapterPosition
             val currentStock = diff.currentList[position]
             var count = selectedArray[currentStock] ?: 0
             //var count=10
             if(viewHolder.badge.visibility==View.INVISIBLE && currentStock.count>0){
-                selectedArray[currentStock] = ++count
-                viewHolder.badge.visibility=View.VISIBLE
-                viewHolder.badge.text = count.toString()
 
-                TransitionManager.beginDelayedTransition(viewHolder.parentLayout)
-                viewHolder.btnLayout.visibility=View.VISIBLE
+                TransitionManager.beginDelayedTransition(this@StockAdapter.parent)
+                selectedArray[currentStock] = ++count
+                showBtnLayout(viewHolder,count)
+
             }
             else if(currentStock.count==0){
                 Toast.makeText(context,"Out of Stock!",Toast.LENGTH_LONG).show()
@@ -74,8 +75,9 @@ class StockAdapter( private val context:Context,private val cardHeight:Int,priva
 
             when {
                 count==1 -> {
-                    viewHolder.btnLayout.visibility=View.GONE
-                    viewHolder.badge.visibility=View.INVISIBLE
+                    TransitionManager.beginDelayedTransition(this@StockAdapter.parent)
+                    hideBtnLayout(viewHolder)
+
                     selectedArray[currentStock] = --count
                     selectedArray.remove(currentStock)
                 }
@@ -83,9 +85,7 @@ class StockAdapter( private val context:Context,private val cardHeight:Int,priva
                     selectedArray[currentStock] = --count
                     viewHolder.badge.text=count.toString()
                 }
-
             }
-
         }
 
 
@@ -100,22 +100,25 @@ class StockAdapter( private val context:Context,private val cardHeight:Int,priva
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = diff.currentList
         holder.stockName.text= data[position].stockName
-        holder.stockPrice.text = data[position].price.toString()
-        holder.stockCount.text = data[position].count.toString()
-        holder.stockId.text=data[position].stockID
+        holder.stockPrice.text = "₹ ${data[position].price}"
+        holder.stockId.text="id: ${data[position].stockID}"
 
         val currentStock = data[position]
 
-
         val count = selectedArray[currentStock] ?: 0
         if(count!=0){
-            holder.badge.visibility=View.VISIBLE
+            /*holder.badge.visibility=View.VISIBLE
             holder.badge.text=selectedArray[currentStock].toString()
             holder.btnLayout.visibility=View.VISIBLE
+
+             */
+            showBtnLayout(viewHolder = holder,count)
         }
         else{
-            holder.badge.visibility=View.INVISIBLE
+           /* holder.badge.visibility=View.INVISIBLE
             holder.btnLayout.visibility=View.GONE
+            */
+            hideBtnLayout(viewHolder = holder)
         }
 
     }
@@ -124,20 +127,62 @@ class StockAdapter( private val context:Context,private val cardHeight:Int,priva
         return diff.currentList.size
     }
 
+    private fun showBtnLayout(viewHolder: ViewHolder,count:Int){
+        if(viewHolder.canShowBtnLayout){
 
-    class ViewHolder(view: View):RecyclerView.ViewHolder(view){
+            viewHolder.itemView.layoutParams = viewHolder.itemView.layoutParams.apply {
+                this.width=this@StockAdapter.width
+                this.height=(this@StockAdapter.viewHeight+btnLayoutHeight)
+            }
 
+        }
+        viewHolder.badge.visibility=View.VISIBLE
+        viewHolder.badge.text = count.toString()
+        viewHolder.btnLayout.visibility=View.VISIBLE
+        viewHolder.canShowBtnLayout=false
+    }
+
+    private fun hideBtnLayout(viewHolder:ViewHolder){
+        if(! viewHolder.canShowBtnLayout){
+            viewHolder.itemView.layoutParams = viewHolder.itemView.layoutParams.apply {
+                this.width=this@StockAdapter.width
+                this.height=(this@StockAdapter.viewHeight)
+            }
+
+        }
+        viewHolder.btnLayout.visibility=View.GONE
+        viewHolder.badge.visibility=View.INVISIBLE
+        viewHolder.canShowBtnLayout=true
+    }
+
+
+    class ViewHolder(view: View, viewHeight: Int,stockHeight:Int,  width: Int, imgResource:Int):RecyclerView.ViewHolder(view){
+         var canShowBtnLayout=true
+        val parent:MaterialCardView = view.findViewById(R.id.parent)
         val stockName: TextView = view.findViewById(R.id.stock_name)
         val stockId: TextView = view.findViewById(R.id.stock_id)
         val stockPrice: TextView = view.findViewById(R.id.stock_price)
-        val stockCount: TextView = view.findViewById(R.id.stock_count)
-
-        val stockLayout = view.findViewById<MaterialCardView>(R.id.stock_layout)
         val badge:TextView = view.findViewById(R.id.badge)
-        val parentLayout:ConstraintLayout = view.findViewById(R.id.parent_layout)
         val btnLayout:LinearLayoutCompat = view.findViewById(R.id.btn_layout)
+        private val img :ShapeableImageView = view.findViewById(R.id.stock_img)
         val plusBtn:ImageView = view.findViewById(R.id.plus_btn)
         val minusBtn:ImageView = view.findViewById(R.id.minus_btn)
+        private val stockLayout = view.findViewById<View>(R.id.stock_layout)
+
+        init{
+            img.setImageResource(imgResource)
+
+            view.layoutParams = view.layoutParams.apply {
+                this.width=width
+                this.height=viewHeight
+            }
+
+            stockLayout.layoutParams = stockLayout.layoutParams.apply {
+                this.height=stockHeight
+
+            }
+
+        }
 
     }
 

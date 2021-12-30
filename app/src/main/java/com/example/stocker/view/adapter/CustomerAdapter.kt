@@ -5,12 +5,15 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Customer
 import com.example.stocker.view.customviews.ScrollableTextView
+import com.example.stocker.view.fragments.util.Type
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 
 class CustomerAdapter(val context: Context,private val selectedCustomer:MutableList<Customer>, private val selectionListener: SelectionListener): RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
@@ -22,21 +25,17 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
     fun setNewList(newData:List<Customer>){
         diff.submitList(newData)
     }
-    fun selectionListChanged(){
+    fun selectionListChanged(type: Type){
+        if(type== Type.Update) notifyDataSetChanged()
             changeSelectionState()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layout= LayoutInflater.from(context).inflate(R.layout.customer_adapter_layout,parent,false)
-        return  ViewHolder(layout)
 
-    }
+        val holder = ViewHolder(layout)
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-
-
-        holder.itemView.setOnLongClickListener{
+        holder.layout.setOnLongClickListener{
             val data = diff.currentList
             if(holder.state == ViewHolder.State.Unselected) {
                 selectCustomer(holder)
@@ -45,7 +44,7 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
             else{false}
         }
 
-        holder.itemView.setOnClickListener {
+        holder.layout.setOnClickListener {
             val data = diff.currentList
             if(oneSelectionActive || multipleSelectionActive){
                 if(selectedCustomer.contains(data[holder.adapterPosition])){
@@ -56,6 +55,15 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
                 }
             }
         }
+        return  holder
+
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+
+
+
 
         val data = diff.currentList
         if(selectedCustomer.contains(data[position])){
@@ -112,7 +120,7 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
            }
         }
         else{
-            if(oneSelectionActive) {
+            if(oneSelectionActive || multipleSelectionActive) {
                 oneSelectionActive = false
                 multipleSelectionActive = false
                 selectionListener.selectionDisabled()
@@ -129,6 +137,7 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         holder.state = ViewHolder.State.Unselected
     }
 
+
     class ViewHolder(view: View):RecyclerView.ViewHolder(view){
         enum class State{Selected,Unselected}
 
@@ -137,6 +146,8 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         val customerId:ScrollableTextView = view.findViewById(R.id.customer_id)
         val customerDob:MaterialTextView = view.findViewById(R.id.customer_dob)
         val customerPh:MaterialTextView = view.findViewById(R.id.customer_ph)
+        val layout:ConstraintLayout = view.findViewById(R.id.parent)
+
     }
     class DiffCalc: DiffUtil.ItemCallback<Customer>(){
         override fun areItemsTheSame(oldItem: Customer, newItem: Customer): Boolean {

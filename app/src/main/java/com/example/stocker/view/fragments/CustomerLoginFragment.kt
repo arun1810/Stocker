@@ -1,9 +1,14 @@
 package com.example.stocker.view.fragments
 
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +25,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textview.MaterialTextView
 
 class CustomerLoginFragment : Fragment() {
 
@@ -30,12 +36,19 @@ class CustomerLoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        activity?.requestedOrientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         return inflater.inflate(R.layout.fragment_customer_login, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val title:MaterialTextView = view.findViewById(R.id.title)
+         val s="Hello\nLogin to continue"
+        val spannable = SpannableString(s)
+        spannable.setSpan(RelativeSizeSpan(2f),0,5,0)
+        spannable.setSpan(ForegroundColorSpan(Color.argb(180,254,254,254)),6,23,0)
+        title.text=spannable
 
         val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController  = navHost.navController
@@ -55,7 +68,7 @@ class CustomerLoginFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if(usernameLayout.error!=null) usernameEtx.error = null
+                if(usernameLayout.error!=null) usernameLayout.error = null
             }
 
         })

@@ -1,1 +1,9 @@
-<resources></resources>
+<resources>
+    <dimen name="recycler_item_height">72dp</dimen>
+    <dimen name="recycler_primary_text_height">28dp</dimen>
+    <dimen name="recycler_secondary_text_height">20dp</dimen>
+    <dimen name="sort_layout_height">28dp</dimen>
+    <dimen name="bottom_nav_height">52dp</dimen>
+    <dimen name="stock_card_height">250dp</dimen>
+    <dimen name="stock_card_width">300dp</dimen>
+</resources>

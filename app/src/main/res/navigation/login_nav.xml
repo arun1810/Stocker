@@ -13,7 +13,7 @@
         <action
             android:id="@+id/action_adminLoginFragment_to_adminActivity"
             app:destination="@id/adminActivity"
-            app:popUpTo="@id/adminLoginFragment"
+            app:popUpTo="@id/adminActivity"
             app:popUpToInclusive="true"
             />
     </fragment>
@@ -25,6 +25,8 @@
         <action
             android:id="@+id/action_customerLoginFragment_to_customerActivity"
             app:destination="@id/customerActivity"
+            app:popUpTo="@id/customerActivity"
+            app:popUpToInclusive="true"
             />
     </fragment>
     <fragment
@@ -34,11 +36,20 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_adminLoginFragment"
-            app:destination="@id/adminLoginFragment" />
+            app:destination="@id/adminLoginFragment"
+
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            />
         <action
             android:id="@+id/action_loginFragment_to_customerLoginFragment"
             app:destination="@id/customerLoginFragment"
-            />
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <activity
         android:id="@+id/customerActivity"

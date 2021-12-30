@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/parent"
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="@dimen/stock_card_height"
+    android:layout_width="@dimen/stock_card_width"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:elevation="2dp"
+    app:strokeWidth="1.5dp"
+    app:strokeColor="@color/colorOnPrimary"
+    >
+
+    <include
+        layout="@layout/admin_stock_recycler_layout"
+        />
+
+</com.google.android.material.card.MaterialCardView>

@@ -12,31 +12,35 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
+import com.example.stocker.view.fragments.util.Type
+import com.google.android.material.imageview.ShapeableImageView
+import kotlin.random.Random
 
-class AdminStockAdapter(private val context: Context, private val cardHeight:Int,private val selectedStocks:MutableList<Stock>,private val selectionListener: SelectionListener): RecyclerView.Adapter<AdminStockAdapter.ViewHolder>() {
+class AdminStockAdapter(private val context: Context,private val selectedStocks:MutableList<Stock>,private val width:Int,private val height:Int,private val selectionListener: SelectionListener): RecyclerView.Adapter<AdminStockAdapter.ViewHolder>() {
 
 
     private var oneSelectionActive = false
     private var multipleSelectionActive = false
     private val diff = AsyncListDiffer(this, DiffCalc())
+    private val imgs = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
+
+
 
     fun setNewList(newData:List<Stock>){
         diff.submitList(newData)
     }
-    fun selectionListChanged(){
+    fun selectionListChanged(type: Type){
+       if(type==Type.Update)notifyDataSetChanged()
         changeSelectionState()
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layout= LayoutInflater.from(context).inflate(R.layout.admin_stock_recycler_layout,parent,false)
-        val viewHolder = ViewHolder(layout)
+        val layout = LayoutInflater.from(context)
+            .inflate(R.layout.admin_stock_recycler_card_layout, parent, false)
 
-        viewHolder.layout.layoutParams = viewHolder.layout.layoutParams.apply {
-            this.height=cardHeight
-        }
-        
-        return viewHolder
+
+        return ViewHolder(layout, width, height,imgs[Random.nextInt(imgs.size)])
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -45,9 +49,8 @@ class AdminStockAdapter(private val context: Context, private val cardHeight:Int
         
         
         holder.stockName.text= data[position].stockName
-        holder.stockPrice.text = data[position].price.toString()
-        holder.stockCount.text = data[position].count.toString()
-        holder.stockId.text=data[position].stockID
+        holder.stockPrice.text = "₹ ${data[position].price}"
+        holder.stockId.text="id: ${data[position].stockID}"
 
         holder.itemView.setOnLongClickListener{
             if(holder.state == ViewHolder.State.Unselected) {
@@ -105,6 +108,7 @@ class AdminStockAdapter(private val context: Context, private val cardHeight:Int
     }
 
         private fun changeSelectionState() {
+
             if (selectedStocks.size > 1) {
                 if (!multipleSelectionActive) {
                     multipleSelectionActive = true
@@ -121,7 +125,7 @@ class AdminStockAdapter(private val context: Context, private val cardHeight:Int
                     selectionListener.onOneSelect()
                 }
             } else {
-                if (oneSelectionActive) {
+                if (oneSelectionActive || multipleSelectionActive) {
                     oneSelectionActive = false
                     multipleSelectionActive = false
                     selectionListener.selectionDisabled()
@@ -131,15 +135,27 @@ class AdminStockAdapter(private val context: Context, private val cardHeight:Int
     
 
 
-    class ViewHolder(view: View):RecyclerView.ViewHolder(view){
+    class ViewHolder(view: View,width:Int,height:Int,imgResource:Int):RecyclerView.ViewHolder(view){
         enum class State{Selected,Unselected}
+
+
 
         var state:State=State.Unselected
         val stockName: TextView = view.findViewById(R.id.stock_name)
         val stockId: TextView = view.findViewById(R.id.stock_id)
         val stockPrice: TextView = view.findViewById(R.id.stock_price)
-        val stockCount: TextView = view.findViewById(R.id.stock_count)
         val layout:ConstraintLayout = view.findViewById(R.id.parent_layout)
+        private val img:ShapeableImageView = view.findViewById(R.id.stock_img)
+
+
+        init {
+            img.setImageResource(imgResource)
+
+            view.layoutParams = view.layoutParams.apply {
+                this.width=width
+                this.height=height
+            }
+        }
 
 
     }

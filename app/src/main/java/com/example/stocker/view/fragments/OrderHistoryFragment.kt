@@ -17,6 +17,7 @@ import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stocker
 import com.example.stocker.view.adapter.OrderHistoryAdapter
 import com.example.stocker.view.adapter.decorator.OrderHistoryDecorator
+import com.example.stocker.view.adapter.decorator.SimpleDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
 import com.example.stocker.view.util.DisplayUtil
@@ -76,7 +77,10 @@ class OrderHistoryFragment : Fragment() {
             }
         }
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(OrderHistoryDecorator(height/25))
+        recyclerView.addItemDecoration(SimpleDecorator(
+            top=DisplayUtil.DpToPixel(activity!!,12),
+            side = DisplayUtil.DpToPixel(activity!!,8)
+        ))
 
         toolbar.title = "Order History"
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
@@ -112,6 +116,7 @@ class OrderHistoryFragment : Fragment() {
                 R.id.logout->{
                     Stocker.logout()
                     SharedPreferenceHelper.writeCustomerPreference(activity!!,null)
+                    navController.navigate(R.id.action_order_History_fragment_to_loginActivity)
                     activity!!.finish()
 
                     true

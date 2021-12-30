@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +38,7 @@ override fun onCreateView(
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+    activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         return inflater.inflate(R.layout.fragment_admin_stock, container, false)
     }
 
@@ -105,7 +108,7 @@ override fun onCreateView(
         searchMenu.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    model.filterOrderHistoryByStockId(query)
+                    model.filterStockByName(query)
                 }
                 return true
             }
@@ -119,9 +122,9 @@ override fun onCreateView(
             when(item.itemId){
                 R.id.order_clear->{
 
-                    if(model.clearOrderFilter()){
+                    if(model.clearStockFilter()){
                         model.join {
-                            // smoothScroller.targetPosition=0
+                             //smoothScroller.targetPosition=0
                             //linearLayoutManager.startSmoothScroll(smoothScroller)
                         }
                     }
@@ -130,6 +133,7 @@ override fun onCreateView(
 
                 R.id.logout->{
                     SharedPreferenceHelper.writeAdminPreference(activity!!,false)
+                    navController.navigate(R.id.action_adminStockFragment_to_loginActivity)
                     activity!!.finish()
                     true
                 }
@@ -165,25 +169,47 @@ override fun onCreateView(
         }
 
         context?.let {
+            val size = DisplayUtil.getDisplaySize(activity!!)
             val spanCount:Int = if(DisplayUtil.getOrientation(activity!!)== Configuration.ORIENTATION_PORTRAIT){
-                adapter = AdminStockAdapter(it,height/4, model.selectedStocks,selectionListener)
+                adapter = AdminStockAdapter(it,
+                    model.selectedStocks,
+                    height = size.x/3,
+                    width = size.y/2,
+                    selectionListener = selectionListener
+                )
+                recycler.addItemDecoration(StockDecorator(DisplayUtil.DpToPixel(activity!!,8)))
+
                 2
             } else{
-                adapter = AdminStockAdapter(it,height/3, model.selectedStocks,selectionListener)
+                adapter = AdminStockAdapter(
+                    it,
+                    model.selectedStocks,
+                    height = size.x,
+                    width = size.y/3,
+                    selectionListener = selectionListener)
+                recycler.addItemDecoration(StockDecorator(DisplayUtil.DpToPixel(activity!!,24)))
                 3
             }
 
             recycler.adapter =adapter
             recycler.layoutManager = StaggeredGridLayoutManager(spanCount,
-                StaggeredGridLayoutManager.VERTICAL).apply {
-                gapStrategy= StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-            }
+                StaggeredGridLayoutManager.VERTICAL)
 
         }
-        recycler.addItemDecoration(StockDecorator(width/40))
 
+        recycler.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if(dy>0 && addStockFab.isShown){
+                    addStockFab.hide()
+                }
+                else if(dy<0 && (!addStockFab.isVisible)){
+
+                    addStockFab.show()
+                }
+            }
+        })
         addStockFab.setOnClickListener {
-            navController.navigate(R.id.stockDetailsGetterFragment, bundleOf("mode" to Mode.Create))
+            navController.navigate(R.id.action_adminStockFragment_to_stockDetailsGetterFragment, bundleOf("mode" to Mode.Create))
         }
 
     }
@@ -195,8 +221,8 @@ override fun onCreateView(
 
         })
 
-        model.stockSelectionState.observe(this,{
-            adapter.selectionListChanged()
+        model.stockSelectionState.observe(this,{type->
+            adapter.selectionListChanged(type)
         })
     }
 }

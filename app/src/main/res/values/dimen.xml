@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="recycler_item_height">72dp</dimen>
-    <dimen name="recycler_primary_text_height">28dp</dimen>
-    <dimen name="recycler_secondary_text_height">20dp</dimen>
-</resources>

@@ -29,8 +29,8 @@ class OrderHistoryAdapter(val context: Context, ): RecyclerView.Adapter<OrderHis
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = diff.currentList
 
-        holder.orderId.text="order id: ${data[position].orderID}"
-        holder.customerId.setText("customer id: ${data[position].customerId}")
+        holder.orderId.text="O id: ${data[position].orderID}"
+        holder.customerId.setText("C id: ${data[position].customerId}")
         holder.orderDate.text=data[position].dateOfPurchase.toString()
         holder.orderTotal.setText("₹${data[position].total}")
     }

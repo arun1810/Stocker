@@ -12,12 +12,12 @@ class StockDecorator(private val space:Int):RecyclerView.ItemDecoration() {
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
+
         outRect.top = space
         outRect.left = space
         outRect.right = space
-        if(parent.getChildAdapterPosition(view)==state.itemCount-1){
-            //outRect.bottom=space*12
-        }
+
+
 
     }
 }

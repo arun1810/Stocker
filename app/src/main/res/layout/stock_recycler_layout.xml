@@ -1,31 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+
+<com.google.android.material.card.MaterialCardView
+
+    android:id="@+id/parent"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="330dp"
+
+    android:layout_height="@dimen/stock_card_height"
+    android:layout_width="@dimen/stock_card_width"
+   >
+
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
+
     android:elevation="5dp"
     app:cardCornerRadius="2dp"
-    app:strokeColor="@color/colorOnPrimary"
-    app:strokeWidth="2.5dp"
     >
     <include
+        android:layout_height="@dimen/stock_card_height"
+        android:layout_width="match_parent"
         android:id="@+id/stock_layout"
+
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+
         layout="@layout/admin_stock_recycler_layout"
-        />
-    <TextView
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintVertical_weight="10"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+         />
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/badge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="100000000000000"
-        android:textSize="20dp"
+        android:layout_height="24dp"
+
+        tools:text="10000"
+        android:textSize="14sp"
+        android:textStyle="bold"
+
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+
         android:textColor="@color/colorOnSecondary"
         android:background="@drawable/badge_shape"
+        android:gravity="bottom|end"
+
+        app:layout_constraintVertical_weight="0.9"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/stock_layout"
-        app:layout_constraintBottom_toTopOf="@id/stock_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+
         app:layout_constraintVertical_bias="0"
         app:layout_constraintHorizontal_bias="1"
         />
@@ -43,18 +80,22 @@
         android:background="@color/colorOnPrimary"
 
 
+        app:layout_constraintVertical_weight="1"
+
+
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/stock_layout"
+
         app:layout_constraintBottom_toBottomOf="parent"
         >
 
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/minus_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+
             android:src="@drawable/ic_minus__1_"
             android:layout_weight="1"
             android:layout_gravity="center"
@@ -63,8 +104,8 @@
             />
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/plus_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
 
             android:src="@drawable/ic_plus"
             android:layout_weight="1"
@@ -77,3 +118,4 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +16,7 @@ import com.example.stocker.R
 import com.example.stocker.view.adapter.OrderHistoryAdapter
 import com.example.stocker.view.adapter.SelectionListener
 import com.example.stocker.view.adapter.decorator.OrderHistoryDecorator
+import com.example.stocker.view.adapter.decorator.SimpleDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
 import com.example.stocker.view.util.DisplayUtil
@@ -24,7 +27,7 @@ import com.google.android.material.snackbar.Snackbar
 
 class AdminOrderHistoryFragment : Fragment() {
     val model : AdminViewModel by activityViewModels()
-    lateinit var adapter: OrderHistoryAdapter
+    private lateinit var adapter: OrderHistoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,9 +54,10 @@ class AdminOrderHistoryFragment : Fragment() {
         val recycler = view.findViewById<RecyclerView>(R.id.admin_order_recycler)
         val toolbar = view.findViewById<MaterialToolbar>(R.id.admin_order_toolbar)
         val linearLayoutManager = LinearLayoutManager(context)
-        val height = DisplayUtil.getDisplaySize(activity!!).x
         val priceSort = view.findViewById<SortImageButton>(R.id.price_sort)
         val dateSortBtn = view.findViewById<SortImageButton>(R.id.date_sort)
+        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
+        val navController  = navHost.navController
 
 
         priceSort.ascIcon=R.drawable.ic_price_ascending_24
@@ -108,7 +112,10 @@ class AdminOrderHistoryFragment : Fragment() {
         adapter = OrderHistoryAdapter(context!!)
         recycler. adapter = adapter
         recycler.layoutManager = LinearLayoutManager(context)
-        recycler.addItemDecoration(OrderHistoryDecorator(height/25))
+        recycler.addItemDecoration(SimpleDecorator(
+            top=DisplayUtil.DpToPixel(activity!!,12),
+            side = DisplayUtil.DpToPixel(activity!!,8)
+        ))
 
         toolbar.title = "Order History"
 
@@ -143,22 +150,11 @@ class AdminOrderHistoryFragment : Fragment() {
                 }
                 R.id.logout->{
                     SharedPreferenceHelper.writeAdminPreference(activity!!,false)
+                    navController.navigate(R.id.action_adminOrderHistoryFragment_to_loginActivity)
                     activity!!.finish()
-                    true
-                }
 
-               /* R.id.edit->{
-                    println("edit")
-                    //model.updateOrder()
                     true
                 }
-                R.id.delete->{
-                    println("delete")
-                    model.removeOrderHistory()
-                    true
-                }
-
-                */
                 else -> {false}
             }
         }

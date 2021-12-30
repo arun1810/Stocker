@@ -1,5 +1,6 @@
 package com.example.stocker.view.fragments
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -23,6 +24,8 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        activity?.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
@@ -36,11 +39,11 @@ class LoginFragment : Fragment() {
         val navController  = navHost.navController
 
         adminLoginBtn.setOnClickListener {
-            navController.navigate(R.id.adminLoginFragment)
+            navController.navigate(R.id.action_loginFragment_to_adminLoginFragment)
         }
 
         customerLoginBtn.setOnClickListener {
-            navController.navigate(R.id.customerLoginFragment)
+            navController.navigate(R.id.action_loginFragment_to_customerLoginFragment)
         }
     }
 }

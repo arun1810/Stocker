@@ -8,17 +8,37 @@
         android:id="@+id/adminStockFragment"
         android:name="com.example.stocker.view.fragments.AdminStockFragment"
         android:label="fragment_admin_stock"
-        tools:layout="@layout/fragment_admin_stock" />
+        tools:layout="@layout/fragment_admin_stock" >
+        <action
+            android:id="@+id/action_adminStockFragment_to_loginActivity"
+            app:destination="@id/loginActivity" />
+        <action
+            android:id="@+id/action_adminStockFragment_to_stockDetailsGetterFragment"
+            app:destination="@id/stockDetailsGetterFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/adminCustomerFragment"
         android:name="com.example.stocker.view.fragments.AdminCustomerFragment"
         android:label="fragment_admin_customer"
-        tools:layout="@layout/fragment_admin_customer" />
+        tools:layout="@layout/fragment_admin_customer" >
+        <action
+            android:id="@+id/action_adminCustomerFragment_to_loginActivity"
+            app:destination="@id/loginActivity" />
+        <action
+            android:id="@+id/action_adminCustomerFragment_to_customerDetailsGetterFragment2"
+            app:destination="@id/customerDetailsGetterFragment2" />
+    </fragment>
     <fragment
         android:id="@+id/adminOrderHistoryFragment"
         android:name="com.example.stocker.view.fragments.AdminOrderHistoryFragment"
         android:label="fragment_admin_order_history"
-        tools:layout="@layout/fragment_admin_order_history" />
+        tools:layout="@layout/fragment_admin_order_history" >
+        <action
+            android:id="@+id/action_adminOrderHistoryFragment_to_loginActivity"
+            app:destination="@id/loginActivity" />
+    </fragment>
     <dialog
         android:id="@+id/customerDetailsGetterFragment2"
         android:name="com.example.stocker.view.fragments.CustomerDetailsGetterFragment"
@@ -33,4 +53,9 @@
         android:name="com.example.stocker.view.fragments.StockDetailsGetterFragment"
         android:label="fragment_stock_details_getter"
         tools:layout="@layout/fragment_stock_details_getter" />
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.example.stocker.view.activity.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
 </navigation>

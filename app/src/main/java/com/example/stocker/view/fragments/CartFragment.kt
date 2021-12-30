@@ -93,7 +93,7 @@ class CartFragment : Fragment() {
 
         }
         val orderCountTextView = view.findViewById<TextView>(R.id.cart_order_count_textview)
-        orderCountTextView.text = "${model.selectedArray.size} items in your cart"
+        orderCountTextView.text = "${model.selectedArray.size} item(s) in your cart"
 
 
         lifecycleScope.launch {

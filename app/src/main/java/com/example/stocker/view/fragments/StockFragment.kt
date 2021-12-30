@@ -1,10 +1,13 @@
 package com.example.stocker.view.fragments
 
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -28,7 +31,7 @@ class StockFragment : Fragment() {
     private lateinit var adapter:StockAdapter
     private lateinit var recycler:RecyclerView
     private val model:CustomerViewModel by activityViewModels()
-    private lateinit var buyButton:FloatingActionButton
+    private lateinit var buyFab:FloatingActionButton
     private lateinit var toolBar:MaterialToolbar
     private lateinit var searchMenu:SearchView
 
@@ -68,13 +71,10 @@ class StockFragment : Fragment() {
         val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController  = navHost.navController
 
-        val size = DisplayUtil.getDisplaySize(activity!!)
-        val width = size.y
-        val height = size.x
 
         recycler = view.findViewById(R.id.recycler)
         toolBar = view.findViewById(R.id.customer_stock_toolbar)
-        buyButton = view.findViewById(R.id.buy_button)
+        buyFab = view.findViewById(R.id.buy_button)
         countSort = view.findViewById(R.id.count_sort)
         nameSort = view.findViewById(R.id.name_sort)
         priceSort = view.findViewById(R.id.price_sort)
@@ -114,23 +114,51 @@ class StockFragment : Fragment() {
         }
 
         context?.let {
+            val size = DisplayUtil.getDisplaySize(activity!!)
             val spanCount:Int = if(DisplayUtil.getOrientation(activity!!)==ORIENTATION_PORTRAIT){
-                adapter = StockAdapter(it,height/4,model.selectedArray)
+                adapter = StockAdapter(
+                    context = it,
+                    selectedArray = model.selectedArray,
+                    width=size.y/2,
+                    viewHeight = (size.x/3)+DisplayUtil.DpToPixel(activity!!,8),
+                    stockViewHeight = (size.x/3),
+                    btnLayoutHeight = DisplayUtil.DpToPixel(activity!!,24),
+                    parent = recycler
+                )
+                recycler.addItemDecoration(StockDecorator(DisplayUtil.DpToPixel(activity!!,8)))
                 2
             } else{
-                adapter = StockAdapter(it,height/3,model.selectedArray)
+                adapter = StockAdapter(
+                    it,
+                    model.selectedArray,
+                    width=size.y/3,
+                    viewHeight = (size.x)+DisplayUtil.DpToPixel(activity!!,16),
+                    stockViewHeight = (size.x),
+                    btnLayoutHeight = DisplayUtil.DpToPixel(activity!!,24),
+                    parent = recycler
+                )
+                recycler.addItemDecoration(StockDecorator(DisplayUtil.DpToPixel(activity!!,24)))
                 3
             }
 
             recycler.adapter =adapter
-            recycler.layoutManager = StaggeredGridLayoutManager(spanCount,StaggeredGridLayoutManager.VERTICAL).apply {
-                                    gapStrategy=StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-            }
-
+            recycler.layoutManager = StaggeredGridLayoutManager(spanCount,StaggeredGridLayoutManager.VERTICAL)
         }
-        recycler.addItemDecoration(StockDecorator(width/40))
 
-        buyButton.setOnClickListener {
+        recycler.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if(dy>0 && buyFab.isShown){
+                    buyFab.hide()
+
+                }
+                else if(dy<0 && !(buyFab.isVisible)){
+                    buyFab.show()
+
+                }
+            }
+        })
+
+        buyFab.setOnClickListener {
             if(model.selectedArray.isNotEmpty()){
                 navController.navigate(R.id.action_stock_fragment_to_cartFragment)
             }
@@ -187,15 +215,6 @@ class StockFragment : Fragment() {
                 else -> {super.onOptionsItemSelected(item)}
             }
         }
-
-     /*   activity!!.onBackPressedDispatcher.addCallback(object:OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-               navController.navigate(R.id.action_stock_fragment_to_loginActivity2)
-            }
-
-        })
-
-      */
 
     }
 

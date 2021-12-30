@@ -161,12 +161,13 @@ class CustomerDetailsGetterFragment : DialogFragment() {
                     s!!.toString().toInt()
                 }
                 catch(e:NumberFormatException){
-                    customerMobileNumberLayout.error = "number invalid"
+                    if(s!!.isNotEmpty()) customerMobileNumberLayout.error = "number invalid"
                 }
                 when {
 
                     s!!.length > customerMobileNumberLayout.counterMaxLength -> customerMobileNumberLayout.error = "Mobile number cannot exceed 10 digits"
-                    s.isEmpty() && customerMobileNumberLayout.error!=null ->customerMobileNumberLayout.error = null
+                    customerMobileNumberLayout.error!=null ->customerMobileNumberLayout.error = null
+
                 }
             }
 

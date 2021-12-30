@@ -7,15 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
-import com.example.stocker.pojo.Customer
 import com.example.stocker.view.adapter.CustomerAdapter
 import com.example.stocker.view.adapter.SelectionListener
-import com.example.stocker.view.adapter.decorator.FabRecyclerDecorator
+import com.example.stocker.view.adapter.decorator.SimpleDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.Mode
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
@@ -45,7 +45,7 @@ class AdminCustomerFragment : Fragment() {
         val recycler = view.findViewById<RecyclerView>(R.id.admin_customer_recycler)
         val height = DisplayUtil.getDisplaySize(activity!!).x
         val toolbar = view.findViewById<MaterialToolbar>(R.id.admin_customer_toolbar)
-        val addCustomerBtn=view.findViewById<FloatingActionButton>(R.id.admin_add_customer_floating_btn)
+        val addCustomerFab=view.findViewById<FloatingActionButton>(R.id.admin_add_customer_floating_btn)
         val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
         val navController  = navHost.navController
         val dateSortBtn = view.findViewById<SortImageButton>(R.id.date_sort)
@@ -142,6 +142,7 @@ class AdminCustomerFragment : Fragment() {
                 R.id.logout->{
                     SharedPreferenceHelper.writeAdminPreference(activity!!,false)
                     activity!!.finish()
+                    navController.navigate(R.id.action_adminCustomerFragment_to_loginActivity)
                     true
                 }
 
@@ -152,10 +153,22 @@ class AdminCustomerFragment : Fragment() {
         }
         recycler.adapter = adapter
         recycler.layoutManager  = LinearLayoutManager(context)
-        recycler.addItemDecoration(FabRecyclerDecorator(height/64))
-
-        addCustomerBtn.setOnClickListener {
-            navController.navigate(R.id.customerDetailsGetterFragment2, bundleOf("mode" to Mode.Create))
+        recycler.addItemDecoration(SimpleDecorator(
+            top=DisplayUtil.DpToPixel(activity!!,12),
+            side = DisplayUtil.DpToPixel(activity!!,8)
+        ))
+        recycler.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if(dy>0 && addCustomerFab.isShown){
+                    addCustomerFab.hide()
+                }
+                else if(dy<0 && (!addCustomerFab.isVisible)){
+                    addCustomerFab.show()
+                }
+            }
+        })
+        addCustomerFab.setOnClickListener {
+            navController.navigate(R.id.action_adminCustomerFragment_to_customerDetailsGetterFragment2, bundleOf("mode" to Mode.Create))
         }
 
     }
@@ -168,8 +181,8 @@ class AdminCustomerFragment : Fragment() {
 
         })
 
-        model.customerSelectionState.observe(this,{
-            adapter.selectionListChanged()
+        model.customerSelectionState.observe(this,{type->
+            adapter.selectionListChanged(type)
         })
 
     }
