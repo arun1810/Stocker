@@ -10,6 +10,10 @@
 
     android:layout_height="@dimen/stock_card_height"
     android:layout_width="@dimen/stock_card_width"
+
+    app:cardCornerRadius="2dp"
+    app:strokeWidth="@dimen/stroke_width"
+
    >
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +22,7 @@
     android:layout_width="match_parent"
 
     android:elevation="5dp"
-    app:cardCornerRadius="2dp"
+
     >
     <include
         android:layout_height="@dimen/stock_card_height"
@@ -53,7 +57,6 @@
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
 
-        android:textColor="@color/colorOnSecondary"
         android:background="@drawable/badge_shape"
         android:gravity="bottom|end"
 
@@ -77,16 +80,11 @@
         android:weightSum="2"
         android:gravity="center"
         android:orientation="horizontal"
-        android:background="@color/colorOnPrimary"
-
+        android:background="?android:textColorPrimary"
 
         app:layout_constraintVertical_weight="1"
-
-
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintBottom_toBottomOf="parent"
         >
 

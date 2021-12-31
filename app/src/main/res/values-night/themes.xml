@@ -1,3 +1,35 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <style name="Theme.Stocker.noActionBar" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:colorBackground">@color/darkBackgroundColor</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/darkPrimaryColor</item>
+        <item name="colorPrimaryVariant">@color/darkPrimaryLightColor</item>
+        <item name="colorPrimaryDark">@color/darkPrimaryDarkColor</item>
+        <item name="colorOnPrimary">@color/darkPrimaryTextColor</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/darkSecondaryColor</item>
+        <item name="colorSecondaryVariant">@color/darkSecondaryLightColor</item>
+        <item name="colorOnSecondary">@color/darkSecondaryColor</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/darkPrimaryDarkColor</item>
+
+
+
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/darkAccent</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorControlNormal">@color/darkPrimaryTextColor</item>
+        <item name="colorControlHighlight">@color/darkAccent</item>
+        <item name="backgroundTint">@color/darkSecondaryColor</item>
+
+    </style>
+
+    <style name="AppTheme.FullScreenDialog" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimaryDark">@color/darkPrimaryDarkColor</item>
+        <item name="colorAccent">@color/darkAccent</item>
+        <item name="colorPrimary">@color/darkPrimaryColor</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/darkBackgroundColor</item>
+        <item name="actionMenuTextColor">@color/darkPrimaryTextColor</item>
+    </style>
 </resources>

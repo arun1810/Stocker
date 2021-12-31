@@ -32,11 +32,12 @@
         android:text="Customer"
         android:textSize="20sp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:strokeColor="@color/colorPrimary"
-        app:cornerRadius="8dp"
-        android:textColor="@color/colorOnPrimary"
 
-        android:layout_margin="8dp"
+
+        app:cornerRadius="8dp"
+        app:strokeColor="?android:colorPrimary"
+        android:textColor="?android:textColorPrimary"
+        android:layout_margin="16dp"
 
 
         app:layout_constraintStart_toStartOf="parent"
@@ -54,11 +55,11 @@
         android:textSize="20sp"
 
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:strokeColor="@color/colorPrimary"
-        app:cornerRadius="8dp"
-        android:textColor="@color/colorOnPrimary"
 
-        android:layout_margin="8dp"
+        app:cornerRadius="8dp"
+        app:strokeColor="?android:colorPrimary"
+        android:textColor="?android:textColorPrimary"
+        android:layout_margin="16dp"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -6,4 +6,5 @@
     <dimen name="bottom_nav_height">70dp</dimen>
     <dimen name="stock_card_height">300dp</dimen>
     <dimen name="stock_card_width">250dp</dimen>
+    <dimen name="stroke_width">1.5dp</dimen>
 </resources>

@@ -205,6 +205,7 @@ class StockFragment : Fragment() {
                 R.id.logutmenu->{
                     Stocker.logout()
                     SharedPreferenceHelper.writeCustomerPreference(activity!!,null)
+                    navController.navigate(R.id.action_stock_fragment_to_loginActivity)
 
                     //navController.popBackStack(R.id.stock_fragment,false)
                     //activity!!.supportFragmentManager.popBackStack()

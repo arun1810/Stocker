@@ -129,11 +129,11 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
     }
 
     private fun changeToSelectedState(holder:ViewHolder){
-        holder.itemView.setBackgroundColor(Color.BLUE)
+        holder.itemView.setBackgroundColor(context.getColor(R.color.darkPrimaryLightColor))
         holder.state=ViewHolder.State.Selected
     }
     private fun changeToUnselectedState(holder:ViewHolder){
-        holder.itemView.setBackgroundColor(Color.BLACK)
+        holder.itemView.setBackgroundColor(context.getColor(R.color.darkBackgroundColor))
         holder.state = ViewHolder.State.Unselected
     }
 

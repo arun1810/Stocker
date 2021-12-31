@@ -5,16 +5,18 @@
 
     android:layout_width="match_parent"
     android:layout_height="@dimen/sort_layout_height"
-    android:elevation="8dp"
-    android:background="@color/colorPrimaryVariant"
+    android:elevation="5dp"
+    android:background="?android:colorPrimaryDark"
     >
 
     <com.example.stocker.view.customviews.SortImageButton
         android:id="@+id/date_sort"
         android:layout_width="0dp"
+        android:layout_height="22dp"
         android:src="@drawable/ic_sort_clock_ascending_outline"
-        android:scaleType="center"
-        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:tint="?android:textColorPrimary"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,10 +26,10 @@
     <com.example.stocker.view.customviews.SortImageButton
         android:id="@+id/price_sort"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="18dp"
         android:src="@drawable/ic_price_ascending_24"
-        android:scaleType="center"
-
+        android:scaleType="centerInside"
+        android:tint="?android:textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/date_sort"
         app:layout_constraintTop_toTopOf="parent"

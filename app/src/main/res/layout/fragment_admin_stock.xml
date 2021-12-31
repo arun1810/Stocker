@@ -11,7 +11,10 @@
    <com.google.android.material.appbar.MaterialToolbar
        android:id="@+id/admin_stock_toolbar"
        android:layout_width="match_parent"
-       android:layout_height="?attr/actionBarSize"
+       android:layout_height="wrap_content"
+
+       android:elevation="8dp"
+       android:background="?android:colorPrimary"
 
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintEnd_toEndOf="parent"
@@ -24,6 +27,7 @@
         layout="@layout/stock_sort_layout"
         android:layout_height="@dimen/sort_layout_height"
         android:layout_width="match_parent"
+
         app:layout_constraintTop_toBottomOf="@id/admin_stock_toolbar"
         app:layout_constraintBottom_toTopOf="@id/admin_stock_recycler"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +39,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
 

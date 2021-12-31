@@ -9,9 +9,11 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/admin_customer_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         app:title="Customers"
+        android:background="?android:colorPrimary"
 
+android:elevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,8 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
 
@@ -49,6 +50,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_account_plus"
+        android:background="?android:colorSecondary"
+        android:tint="?android:textColorSecondary"
 
 
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,6 +64,6 @@
         app:layout_constraintVertical_bias="0.95"
         app:fabSize="normal"
 
-        />
+        android:contentDescription="@string/add_customer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

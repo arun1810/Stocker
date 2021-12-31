@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.example.stocker.view.fragments.util.Type
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
 import kotlin.random.Random
 
@@ -99,11 +100,11 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
         }
     }
     private fun changeToSelectedState(holder: ViewHolder){
-        holder.itemView.setBackgroundColor(Color.BLUE)
+        holder.itemView.setBackgroundColor(context.getColor(R.color.darkPrimaryLightColor))
         holder.state= ViewHolder.State.Selected
     }
     private fun changeToUnselectedState(holder: ViewHolder){
-        holder.itemView.setBackgroundColor(Color.BLACK)
+        holder.itemView.setBackgroundColor(context.getColor(R.color.darkBackgroundColor))
         holder.state = ViewHolder.State.Unselected
     }
 
@@ -146,6 +147,7 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
         val stockPrice: TextView = view.findViewById(R.id.stock_price)
         val layout:ConstraintLayout = view.findViewById(R.id.parent_layout)
         private val img:ShapeableImageView = view.findViewById(R.id.stock_img)
+       // val card:MaterialCardView = view.findViewById(R.id.)
 
 
         init {

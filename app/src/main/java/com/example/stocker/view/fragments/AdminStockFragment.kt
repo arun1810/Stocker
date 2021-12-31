@@ -38,7 +38,7 @@ override fun onCreateView(
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-    activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    //activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         return inflater.inflate(R.layout.fragment_admin_stock, container, false)
     }
 

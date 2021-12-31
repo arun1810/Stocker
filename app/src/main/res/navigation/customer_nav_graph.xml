@@ -21,7 +21,7 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_stock_fragment_to_loginActivity2"
+            android:id="@+id/action_stock_fragment_to_loginActivity"
             app:destination="@id/loginActivity2"
             app:popUpTo="@id/loginActivity2"
             app:popUpToInclusive="true"

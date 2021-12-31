@@ -12,7 +12,6 @@
         android:id="@+id/admin_enter_customer_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         app:title="add customer"
         />
     <ScrollView
@@ -99,7 +98,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/admin_enter_customer_password_layout"
-        app:layout_constraintBottom_toTopOf="@id/txt"
+        app:layout_constraintBottom_toTopOf="@id/div1"
         >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -231,14 +230,13 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:strokeColor="@color/colorOnPrimary"
-
+        app:strokeWidth="@dimen/stroke_width"
         android:text="@string/select_dob"
         android:textSize="22sp"
         app:cornerRadius="16dp"
 
 
-
+        app:strokeColor="?android:textColorPrimary"
 
         android:layout_margin="8dp"
 
