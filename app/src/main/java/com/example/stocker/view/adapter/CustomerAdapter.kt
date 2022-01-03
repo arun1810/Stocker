@@ -1,7 +1,6 @@
 package com.example.stocker.view.adapter
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.example.stocker.R
 import com.example.stocker.pojo.Customer
 import com.example.stocker.view.customviews.ScrollableTextView
 import com.example.stocker.view.fragments.util.Type
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 
 class CustomerAdapter(val context: Context,private val selectedCustomer:MutableList<Customer>, private val selectionListener: SelectionListener): RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
@@ -36,7 +34,6 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         val holder = ViewHolder(layout)
 
         holder.layout.setOnLongClickListener{
-            val data = diff.currentList
             if(holder.state == ViewHolder.State.Unselected) {
                 selectCustomer(holder)
                 true

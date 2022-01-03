@@ -9,14 +9,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
-import com.example.stocker.view.util.DisplayUtil
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
 import kotlin.random.Random
@@ -24,7 +21,7 @@ import kotlin.random.Random
 class StockAdapter( private val context:Context,private val selectedArray:HashMap<Stock,Int>,private val width:Int,private val viewHeight:Int,private val stockViewHeight:Int,private val btnLayoutHeight:Int,private val parent:RecyclerView):RecyclerView.Adapter<StockAdapter.ViewHolder>() {
 
     private val diff = AsyncListDiffer(this, DiffCalc())
-    private val imgs = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
+    private val images = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
 
 
 
@@ -35,7 +32,7 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layout= LayoutInflater.from(context).inflate(R.layout.stock_recycler_layout,parent,false)
-        val viewHolder = ViewHolder(layout,viewHeight,stockViewHeight ,width,imgs[Random.nextInt(imgs.size)])
+        val viewHolder = ViewHolder(layout,viewHeight,stockViewHeight ,width,images[Random.nextInt(images.size)])
 
         viewHolder.itemView.setOnClickListener {
 

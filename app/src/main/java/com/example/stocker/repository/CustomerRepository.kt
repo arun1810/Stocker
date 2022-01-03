@@ -7,9 +7,7 @@ import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 import com.example.stocker.repository.baseinterface.BaseCustomerRepository
 import com.example.stocker.repository.baseinterface.BaseStockAndOrderHistoryProcessor
-import java.lang.Exception
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class CustomerRepository(context: Context, private val customerId:String): BaseCustomerRepository, BaseStockAndOrderHistoryProcessor by StockAndOrderHistoryProcessor{
     private val database:BaseDataBase = StockerDataBase(context)

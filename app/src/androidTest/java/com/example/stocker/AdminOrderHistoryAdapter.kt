@@ -1,4 +1,4 @@
-package com.example.stocker.view.adapter
+package com.example.stocker
 
 import android.content.Context
 import android.graphics.Color
@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stocker.R
 import com.example.stocker.pojo.OrderHistory
+import com.example.stocker.view.adapter.SelectionListener
 
 class AdminOrderHistoryAdapter(val context: Context, private val selectedOrder:MutableList<OrderHistory>, private val selectionListener: SelectionListener):RecyclerView.Adapter<AdminOrderHistoryAdapter.ViewHolder>() {
 
@@ -141,7 +141,7 @@ class AdminOrderHistoryAdapter(val context: Context, private val selectedOrder:M
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         enum class State{Selected,Unselected}
 
-        var state:State=State.Unselected
+        var state: State = State.Unselected
         val orderId: TextView = view.findViewById(R.id.order_history_id)
         val customerId:TextView = view.findViewById(R.id.customer_id)
         val orderTotal:TextView = view.findViewById(R.id.order_total)

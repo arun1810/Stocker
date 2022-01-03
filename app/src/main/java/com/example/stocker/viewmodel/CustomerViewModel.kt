@@ -22,11 +22,11 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
 
 
 
-    private val _stocksLiveData = MutableLiveData<List<Stock>>()
+    private val _stocksLiveData = MutableLiveData<List<Stock>>(listOf())
     val stocksLiveData:LiveData<List<Stock>> = _stocksLiveData
-    private val _orderHistoryLiveData = MutableLiveData<List<OrderHistory>>()
+    private val _orderHistoryLiveData = MutableLiveData<List<OrderHistory>>(listOf())
     val orderHistoryLiveData:LiveData<List<OrderHistory>> = _orderHistoryLiveData
-    private val _resultStatus = MutableLiveData<Status>()
+    private val _resultStatus = MutableLiveData(Status())
     val resultStatus:LiveData<Status> = _resultStatus
 
     val selectedArray:HashMap<Stock,Int> =HashMap()
@@ -39,9 +39,7 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
 
 
     init {
-        _orderHistoryLiveData.value = listOf<OrderHistory>()
-        _stocksLiveData.value = listOf<Stock>()
-        _resultStatus.value = Status()
+       println("customer viewModel created")
         getAllOrderHistory()
         getAllStocks()
     }
@@ -79,9 +77,9 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
         return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             val selectedStocks = selectedArray.keys.toTypedArray()
             val selectedStockCount = selectedArray.values.toTypedArray()
-            val prices = Array<String>(selectedStocks.size) { "" }
-            val stockNames = Array<String>(selectedStocks.size) { "" }
-            selectedStockIds = Array<String>(selectedStocks.size) { "" }
+            val prices = Array(selectedStocks.size) { "" }
+            val stockNames = Array(selectedStocks.size) { "" }
+            selectedStockIds = Array(selectedStocks.size) { "" }
 
 
             for (i in selectedStocks.indices) {
@@ -184,7 +182,7 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
 
     fun clearStockFilter():Boolean{
         if(filterOnStocks) {
-            getAllStocks();
+            getAllStocks()
             filterOnStocks=false
             return filterOnStocks}
 
@@ -220,7 +218,7 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
 
     }
 
-    private fun updatePurchase(newOrder:OrderHistory,){
+    private fun updatePurchase(newOrder:OrderHistory){
             _orderHistoryLiveData.value?.let{
                 try {
                     val newData =

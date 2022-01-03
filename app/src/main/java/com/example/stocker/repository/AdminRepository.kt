@@ -78,8 +78,8 @@ class AdminRepository(context: Context): BaseAdminRepository, BaseStockAndOrderH
         return dataBase.addStock(stock)
     }
 
-    override fun removeOrderHistory(selectOrders:List<OrderHistory>): Boolean {
-        return dataBase.deleteOrderHistory(selectOrders)
+    override fun removeOrderHistory(orders:List<OrderHistory>): Boolean {
+        return dataBase.deleteOrderHistory(orders)
     }
 
     override fun removeCustomer(customers:List<Customer>):Boolean {

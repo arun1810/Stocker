@@ -2,8 +2,6 @@ package com.example.stocker.view.fragments
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.graphics.Color
-import android.media.MediaCodec.MetricsConstants.MODE
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,13 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.get
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.stocker.R
 import com.example.stocker.pojo.Customer
 import com.example.stocker.view.fragments.util.Mode
-import com.example.stocker.view.util.DisplayUtil
 import com.example.stocker.viewmodel.AdminViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
@@ -25,7 +21,6 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.lang.NumberFormatException
 import java.time.LocalDate
 import java.util.*
 

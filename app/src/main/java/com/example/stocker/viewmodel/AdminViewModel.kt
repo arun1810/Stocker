@@ -10,7 +10,6 @@ import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 import com.example.stocker.repository.AdminRepository
 import com.example.stocker.repository.helper.SortUtil
-import com.example.stocker.view.adapter.AdminStockAdapter.*
 import com.example.stocker.view.fragments.util.Type
 import com.example.stocker.viewmodel.helper.Status
 import kotlinx.coroutines.Dispatchers
@@ -21,30 +20,32 @@ class AdminViewModel(application: Application): AndroidViewModel(application) {
 
     private val adminRepository = AdminRepository(getApplication())
 
-     private val _customersLiveData= MutableLiveData<List<Customer>>()
+     private val _customersLiveData= MutableLiveData<List<Customer>>(listOf())
      val customersLiveData:LiveData<List<Customer>> = _customersLiveData
-     private val _stocksLiveData = MutableLiveData<List<Stock>>()
+     private val _stocksLiveData = MutableLiveData<List<Stock>>(listOf())
      val stockLiveData:LiveData<List<Stock>> = _stocksLiveData
-     private val _orderHistoriesLiveData = MutableLiveData<List<OrderHistory>>()
+     private val _orderHistoriesLiveData = MutableLiveData<List<OrderHistory>>(listOf())
      val orderHistoriesLiveData :LiveData<List<OrderHistory>> = _orderHistoriesLiveData
-     private val _result = MutableLiveData<Status>()
+     private val _result = MutableLiveData<Status>(Status())
      val resultStatus:LiveData<Status> = _result
      private lateinit var job : Job
      private var filterOnStocks = false
      private var filterOnOrders = false
      private var filterOnCustomer = false
      val selectedCustomer = mutableListOf<Customer>()
-     val customerSelectionState = MutableLiveData(Type.Nothing)
+
+    private val _customerSelectionState = MutableLiveData(Type.Nothing)
+    val customerSelectionState:LiveData<Type> = _customerSelectionState
+
 
      val selectedStocks = mutableListOf<Stock>()
-     val stockSelectionState = MutableLiveData(Type.Nothing)
+     private val _stockSelectionState = MutableLiveData(Type.Nothing)
+    val stockSelectionState:LiveData<Type> = _stockSelectionState
+
 
 
     init{
-        _customersLiveData.value= listOf()
-        _stocksLiveData.value= listOf()
-        _orderHistoriesLiveData.value= listOf()
-        _result.value=Status()
+        println("admin viewModel created")
 
         getAllCustomers()
         getAllStocks()
@@ -241,7 +242,7 @@ class AdminViewModel(application: Application): AndroidViewModel(application) {
                          remove(oldCustomer)
                          add(0,newCustomer)
                      })
-                     customerSelectionState.postValue(Type.Update)
+                     _customerSelectionState.postValue(Type.Update)
                      selectedCustomer.clear()
 
                  }
@@ -256,21 +257,7 @@ class AdminViewModel(application: Application): AndroidViewModel(application) {
 
      }
 
-    fun getCustomer(customerId:String){
-     job =    viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _customersLiveData.value?.let {
-                    adminRepository.getCustomer(it.toMutableList(), customerId)
-                }
-            }catch(e:Exception){
-                _result.postValue(_result.value?.apply {
-                    isHandled=false
-                    job.cancel()
-                    msg="Something went wrong while retrieving customer"
-                })
-            }
-        }
-    }
+
 
     fun sortCustomerByName(order:SortUtil.SortOrder){
        job =  viewModelScope.launch(Dispatchers.IO) {
@@ -321,7 +308,7 @@ class AdminViewModel(application: Application): AndroidViewModel(application) {
                         remove(oldStock)
                         add(0,newStock)
                     })
-                    stockSelectionState.postValue(Type.Update)
+                    _stockSelectionState.postValue(Type.Update)
                     selectedStocks.clear()
 
                 }
@@ -335,14 +322,6 @@ class AdminViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun buyStock(stockId:String,count:Int){
-       job =  viewModelScope.launch(Dispatchers.IO) {
-            val stock = findStockFromList(stockId) ?: throw Exception()
-            val updatedStock = Stock(stockID =stock.stockID, stockName = stock.stockName,count = count, price = stock.price, discount = stock.discount)
-            adminRepository.updateStock(updatedStock)
-            updateStockInList(updatedStock)
-        }
-    }
 /*
     fun removeOrderHistory(){
       job =   viewModelScope.launch(Dispatchers.IO) {
@@ -389,7 +368,7 @@ class AdminViewModel(application: Application): AndroidViewModel(application) {
                         }
                     }
                     selectedStocks.clear()
-                    stockSelectionState.postValue(Type.Delete)
+                    _stockSelectionState.postValue(Type.Delete)
                     _stocksLiveData.postValue(mutableList)
                 }
             }catch(e:Exception){
@@ -417,7 +396,7 @@ class AdminViewModel(application: Application): AndroidViewModel(application) {
                             }
                         }
                         selectedCustomer.clear()
-                        customerSelectionState.postValue(Type.Delete)
+                        _customerSelectionState.postValue(Type.Delete)
                         _customersLiveData.postValue(mutableList)
                     }
                 }
@@ -433,24 +412,5 @@ class AdminViewModel(application: Application): AndroidViewModel(application) {
             }
         }
 
-    }
-
-    private fun findStockFromList(stockId:String):Stock?{
-       return  _stocksLiveData.value?.let{
-            return@let it.find { stock->stock.stockID == stockId }
-        }
-    }
-    private fun deleteStockFromList(list:MutableList<Stock>,stock:Stock){
-        list.dropWhile { it.stockID == stock.stockID }
-    }
-
-    private fun updateStockInList(stock:Stock):List<Stock>?{
-
-       return  _stocksLiveData.value?.let { list ->
-            list.toMutableList().apply{
-                deleteStockFromList(this,stock)
-                this.add(0,stock)
-            }
-        }
     }
 }

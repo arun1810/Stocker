@@ -1,17 +1,13 @@
 package com.example.stocker.view.adapter
 
 import android.content.Context
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
-import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.StockInCart
 import com.example.stocker.view.customviews.ScrollableTextView
-import com.google.android.material.textview.MaterialTextView
 
 class CartAdapter(private val context:Context,private val data:StockInCart):RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 

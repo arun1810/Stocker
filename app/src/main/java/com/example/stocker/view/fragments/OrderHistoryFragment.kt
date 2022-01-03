@@ -7,16 +7,13 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
-import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stocker
 import com.example.stocker.view.adapter.OrderHistoryAdapter
-import com.example.stocker.view.adapter.decorator.OrderHistoryDecorator
 import com.example.stocker.view.adapter.decorator.SimpleDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
@@ -59,8 +56,6 @@ class OrderHistoryFragment : Fragment() {
 
         })
 
-        val height = DisplayUtil.getDisplaySize(activity!!).x
-
         toolbar = view.findViewById(R.id.order_history_toolbar)
         recyclerView = view.findViewById(R.id.recycler)
         priceSortBtn = view.findViewById(R.id.price_sort)
@@ -78,8 +73,8 @@ class OrderHistoryFragment : Fragment() {
         }
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(SimpleDecorator(
-            top=DisplayUtil.DpToPixel(activity!!,12),
-            side = DisplayUtil.DpToPixel(activity!!,8)
+            top=DisplayUtil.dpToPixel(activity!!,12),
+            side = DisplayUtil.dpToPixel(activity!!,8)
         ))
 
         toolbar.title = "Order History"
@@ -107,8 +102,7 @@ class OrderHistoryFragment : Fragment() {
                 R.id.order_clear->{
                     if(model.clearOrderFilter()){
                         model.join {
-                            smoothScroller.targetPosition=0
-                        linearLayoutManager.startSmoothScroll(smoothScroller)
+                       recyclerView.smoothScrollToPosition(0)
                         }
                     }
                     true

@@ -43,7 +43,6 @@ class AdminCustomerFragment : Fragment() {
 
 
         val recycler = view.findViewById<RecyclerView>(R.id.admin_customer_recycler)
-        val height = DisplayUtil.getDisplaySize(activity!!).x
         val toolbar = view.findViewById<MaterialToolbar>(R.id.admin_customer_toolbar)
         val addCustomerFab=view.findViewById<FloatingActionButton>(R.id.admin_add_customer_floating_btn)
         val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
@@ -124,8 +123,11 @@ class AdminCustomerFragment : Fragment() {
         toolbar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.order_clear->{
-                    println("clear")
-                    model.clearCustomerFilter()
+                    if(model.clearCustomerFilter()){
+                        model.join {
+                            recycler.smoothScrollToPosition(0)
+                        }
+                    }
 
                     true
                 }
@@ -154,8 +156,8 @@ class AdminCustomerFragment : Fragment() {
         recycler.adapter = adapter
         recycler.layoutManager  = LinearLayoutManager(context)
         recycler.addItemDecoration(SimpleDecorator(
-            top=DisplayUtil.DpToPixel(activity!!,12),
-            side = DisplayUtil.DpToPixel(activity!!,8)
+            top=DisplayUtil.dpToPixel(activity!!,12),
+            side = DisplayUtil.dpToPixel(activity!!,8)
         ))
         recycler.addOnScrollListener(object:RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

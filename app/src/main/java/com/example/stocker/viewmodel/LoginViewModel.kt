@@ -12,12 +12,18 @@ import kotlinx.coroutines.launch
 class LoginViewModel(application: Application): AndroidViewModel(application) {
     enum class State{Pass,Fail,Nothing}
 
-    val customerLoginStatusLiveData = MutableLiveData(State.Nothing)
-    val adminLoginStatusLiveData = MutableLiveData(State.Nothing)
-    var adminRepository: AdminRepository = AdminRepository(application)
+    private val _customerLoginStatusLiveData = MutableLiveData(State.Nothing)
+    val customerLoginStatusLiveData: LiveData<State> = _customerLoginStatusLiveData
+    private val _adminLoginStatusLiveData = MutableLiveData(State.Nothing)
+    val adminLoginStatusLiveData:LiveData<State> = _adminLoginStatusLiveData
+    private var adminRepository: AdminRepository = AdminRepository(application)
     private lateinit var job:Job
     private val _result = MutableLiveData<Status>()
     val resultStatus: LiveData<Status> = _result
+
+    init {
+        println("login viewModel created")
+    }
 
 
     fun validateCustomer(name:String,password:String){
@@ -26,10 +32,10 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                val customer = adminRepository.validateCustomer(name, password)
 
                if (customer != null) {
-                   customerLoginStatusLiveData.postValue(State.Pass)
+                   _customerLoginStatusLiveData.postValue(State.Pass)
                    Stocker.createInstance(customer)
                } else {
-                   customerLoginStatusLiveData.postValue(State.Fail)
+                   _customerLoginStatusLiveData.postValue(State.Fail)
                }
            }
            catch (e:Exception){
@@ -47,9 +53,9 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
        job =  viewModelScope.launch(Dispatchers.IO) {
            try {
                if (adminRepository.validateAdmin(password)) {
-                   adminLoginStatusLiveData.postValue(State.Pass)
+                   _adminLoginStatusLiveData.postValue(State.Pass)
                } else {
-                   adminLoginStatusLiveData.postValue(State.Fail)
+                   _adminLoginStatusLiveData.postValue(State.Fail)
                }
            }catch(e:Exception){
                _result.postValue(_result.value?.apply {

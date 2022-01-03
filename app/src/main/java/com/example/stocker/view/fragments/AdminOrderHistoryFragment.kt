@@ -1,21 +1,17 @@
 package com.example.stocker.view.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.view.adapter.OrderHistoryAdapter
-import com.example.stocker.view.adapter.SelectionListener
-import com.example.stocker.view.adapter.decorator.OrderHistoryDecorator
 import com.example.stocker.view.adapter.decorator.SimpleDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
@@ -53,7 +49,6 @@ class AdminOrderHistoryFragment : Fragment() {
 
         val recycler = view.findViewById<RecyclerView>(R.id.admin_order_recycler)
         val toolbar = view.findViewById<MaterialToolbar>(R.id.admin_order_toolbar)
-        val linearLayoutManager = LinearLayoutManager(context)
         val priceSort = view.findViewById<SortImageButton>(R.id.price_sort)
         val dateSortBtn = view.findViewById<SortImageButton>(R.id.date_sort)
         val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
@@ -82,14 +77,6 @@ class AdminOrderHistoryFragment : Fragment() {
             }
 
         }
-
-
-
-        val smoothScroller = object: LinearSmoothScroller(context){
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
-        }
       /*  adapter = OrderHistoryAdapter(context!!,model.selectedOrders,object:SelectionListener{
             override fun onOneSelect() {
                 toolbar.menu.setGroupVisible(R.id.search_group,false)
@@ -113,8 +100,8 @@ class AdminOrderHistoryFragment : Fragment() {
         recycler. adapter = adapter
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.addItemDecoration(SimpleDecorator(
-            top=DisplayUtil.DpToPixel(activity!!,12),
-            side = DisplayUtil.DpToPixel(activity!!,8)
+            top=DisplayUtil.dpToPixel(activity!!,12),
+            side = DisplayUtil.dpToPixel(activity!!,8)
         ))
 
         toolbar.title = "Order History"
@@ -122,7 +109,7 @@ class AdminOrderHistoryFragment : Fragment() {
         toolbar.inflateMenu(R.menu.customer_order_history_menu)
 
 
-        val searchMenu:SearchView = toolbar.menu.findItem(R.id.order_search).actionView as androidx.appcompat.widget.SearchView
+        val searchMenu:SearchView = toolbar.menu.findItem(R.id.order_search).actionView as SearchView
         searchMenu.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
@@ -142,8 +129,7 @@ class AdminOrderHistoryFragment : Fragment() {
 
                     if(model.clearOrderFilter()){
                         model.join {
-                            smoothScroller.targetPosition=0
-                            linearLayoutManager.startSmoothScroll(smoothScroller)
+                            recycler.smoothScrollToPosition(0)
                         }
                     }
                     true

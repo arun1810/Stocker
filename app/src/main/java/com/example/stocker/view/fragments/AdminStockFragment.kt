@@ -2,14 +2,13 @@ package com.example.stocker.view.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.stocker.R
 import com.example.stocker.view.adapter.AdminStockAdapter
 import com.example.stocker.view.adapter.SelectionListener
-import com.example.stocker.view.adapter.StockAdapter
 import com.example.stocker.view.adapter.decorator.StockDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.Mode
@@ -48,8 +46,6 @@ override fun onCreateView(
         val recycler = view.findViewById<RecyclerView>(R.id.admin_stock_recycler)
         val toolbar = view.findViewById<MaterialToolbar>(R.id.admin_stock_toolbar)
         val addStockFab = view.findViewById<FloatingActionButton>(R.id.admin_add_stock_fab)
-        val height = DisplayUtil.getDisplaySize(activity!!).x
-        val width = DisplayUtil.getDisplaySize(activity!!).y
         val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
         val navController  = navHost.navController
         val countSort = view.findViewById<SortImageButton>(R.id.count_sort)
@@ -104,7 +100,7 @@ override fun onCreateView(
         toolbar.title="Stocks"
         toolbar.inflateMenu(R.menu.customer_order_history_menu)
 
-        val searchMenu: SearchView = toolbar.menu.findItem(R.id.order_search).actionView as androidx.appcompat.widget.SearchView
+        val searchMenu: SearchView = toolbar.menu.findItem(R.id.order_search).actionView as SearchView
         searchMenu.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
@@ -124,8 +120,7 @@ override fun onCreateView(
 
                     if(model.clearStockFilter()){
                         model.join {
-                             //smoothScroller.targetPosition=0
-                            //linearLayoutManager.startSmoothScroll(smoothScroller)
+                            recycler.smoothScrollToPosition(0)
                         }
                     }
                     true
@@ -177,7 +172,7 @@ override fun onCreateView(
                     width = size.y/2,
                     selectionListener = selectionListener
                 )
-                recycler.addItemDecoration(StockDecorator(DisplayUtil.DpToPixel(activity!!,8)))
+                recycler.addItemDecoration(StockDecorator(DisplayUtil.dpToPixel(activity!!,8)))
 
                 2
             } else{
@@ -187,7 +182,7 @@ override fun onCreateView(
                     height = size.x,
                     width = size.y/3,
                     selectionListener = selectionListener)
-                recycler.addItemDecoration(StockDecorator(DisplayUtil.DpToPixel(activity!!,24)))
+                recycler.addItemDecoration(StockDecorator(DisplayUtil.dpToPixel(activity!!,24)))
                 3
             }
 

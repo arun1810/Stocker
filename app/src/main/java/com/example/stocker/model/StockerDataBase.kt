@@ -15,7 +15,7 @@ import java.time.LocalDate
 class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, version), BaseDataBase {
 
 
-    private val Tag="StockerDB"
+    private val tag="StockerDB"
     private val adminPassword="pass12345"
 
     private var stockTableHeper:StockTableHelper = StockTableHelper()
@@ -39,7 +39,7 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
             orderHistoryTableHelper.createTable(db)
             customerTableHelper.createTable(db)
 
-            Log.d(Tag,"tables are created")
+            Log.d(tag,"tables are created")
         }
 
 

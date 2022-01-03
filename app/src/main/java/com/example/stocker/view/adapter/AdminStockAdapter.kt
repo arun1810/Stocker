@@ -1,7 +1,6 @@
 package com.example.stocker.view.adapter
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.example.stocker.view.fragments.util.Type
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
 import kotlin.random.Random
 
@@ -23,7 +21,7 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
     private var oneSelectionActive = false
     private var multipleSelectionActive = false
     private val diff = AsyncListDiffer(this, DiffCalc())
-    private val imgs = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
+    private val images = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
 
 
 
@@ -41,7 +39,7 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
             .inflate(R.layout.admin_stock_recycler_card_layout, parent, false)
 
 
-        return ViewHolder(layout, width, height,imgs[Random.nextInt(imgs.size)])
+        return ViewHolder(layout, width, height,images[Random.nextInt(images.size)])
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

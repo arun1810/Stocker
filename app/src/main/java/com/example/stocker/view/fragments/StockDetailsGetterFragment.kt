@@ -13,10 +13,8 @@ import androidx.fragment.app.activityViewModels
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.example.stocker.view.fragments.util.Mode
-import com.example.stocker.view.util.DisplayUtil
 import com.example.stocker.viewmodel.AdminViewModel
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout

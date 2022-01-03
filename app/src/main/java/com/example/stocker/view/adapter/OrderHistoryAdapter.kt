@@ -1,7 +1,6 @@
 package com.example.stocker.view.adapter
 
 import android.content.Context
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.view.customviews.ScrollableTextView
 import com.google.android.material.textview.MaterialTextView
 
-class OrderHistoryAdapter(val context: Context, ): RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder>() {
+class OrderHistoryAdapter(val context: Context ): RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder>() {
 
        private val diff = AsyncListDiffer(this, DiffCalc())
 

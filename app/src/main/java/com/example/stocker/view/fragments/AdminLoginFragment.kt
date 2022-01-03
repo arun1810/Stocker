@@ -1,6 +1,5 @@
 package com.example.stocker.view.fragments
 
-import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
@@ -9,10 +8,10 @@ import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -86,22 +85,25 @@ class AdminLoginFragment : Fragment() {
         super.onStart()
 
         model.adminLoginStatusLiveData.observe(this,{state->
-            when(state){
-                LoginViewModel.State.Pass->{
-                    SharedPreferenceHelper.writeAdminPreference(activity!!,true)
+            if(state!=null) {
+                when (state) {
+                    LoginViewModel.State.Pass -> {
+                        SharedPreferenceHelper.writeAdminPreference(activity!!, true)
 
-                    navController.navigate(R.id.action_adminLoginFragment_to_adminActivity)
-                    activity!!.finish()
-                }
-                LoginViewModel.State.Fail->{
-                    val snackbar = Snackbar.make(view!!, "invalid password", Snackbar.LENGTH_LONG)
-                    snackbar.setAction("ok") {
-                        snackbar.dismiss()
+                        navController.navigate(R.id.action_adminLoginFragment_to_adminActivity)
+                        activity!!.finish()
                     }
-                    snackbar.show()
-                }
-                LoginViewModel.State.Nothing->{
-                    //do nothing
+                    LoginViewModel.State.Fail -> {
+                        val snackBar =
+                            Snackbar.make(view!!, "invalid password", Snackbar.LENGTH_LONG)
+                        snackBar.setAction("ok") {
+                            snackBar.dismiss()
+                        }
+                        snackBar.show()
+                    }
+                    LoginViewModel.State.Nothing -> {
+                        //do nothing
+                    }
                 }
             }
         })
@@ -109,10 +111,10 @@ class AdminLoginFragment : Fragment() {
         model.resultStatus.observe(this,{status->
             status?.let {
                 if(!status.isHandled) {
-                    val snackbar = Snackbar.make(view!!, status.msg, Snackbar.LENGTH_INDEFINITE)
-                    snackbar.setAction("close") {
+                    val snackBar = Snackbar.make(view!!, status.msg, Snackbar.LENGTH_INDEFINITE)
+                    snackBar.setAction("close") {
                         status.isHandled = true
-                        snackbar.dismiss()
+                        snackBar.dismiss()
                     }.show()
                 }
             }

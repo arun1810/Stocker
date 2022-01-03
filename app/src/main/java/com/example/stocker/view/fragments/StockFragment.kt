@@ -1,12 +1,12 @@
 package com.example.stocker.view.fragments
 
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
-import android.opengl.Visibility
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,9 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.stocker.R
 import com.example.stocker.pojo.Stocker
-import com.example.stocker.view.adapter.decorator.StockDecorator
-
 import com.example.stocker.view.adapter.StockAdapter
+import com.example.stocker.view.adapter.decorator.StockDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
 import com.example.stocker.view.util.DisplayUtil
@@ -120,24 +119,24 @@ class StockFragment : Fragment() {
                     context = it,
                     selectedArray = model.selectedArray,
                     width=size.y/2,
-                    viewHeight = (size.x/3)+DisplayUtil.DpToPixel(activity!!,8),
+                    viewHeight = (size.x/3)+DisplayUtil.dpToPixel(activity!!,8),
                     stockViewHeight = (size.x/3),
-                    btnLayoutHeight = DisplayUtil.DpToPixel(activity!!,24),
+                    btnLayoutHeight = DisplayUtil.dpToPixel(activity!!,24),
                     parent = recycler
                 )
-                recycler.addItemDecoration(StockDecorator(DisplayUtil.DpToPixel(activity!!,8)))
+                recycler.addItemDecoration(StockDecorator(DisplayUtil.dpToPixel(activity!!,8)))
                 2
             } else{
                 adapter = StockAdapter(
                     it,
                     model.selectedArray,
                     width=size.y/3,
-                    viewHeight = (size.x)+DisplayUtil.DpToPixel(activity!!,16),
+                    viewHeight = (size.x)+DisplayUtil.dpToPixel(activity!!,16),
                     stockViewHeight = (size.x),
-                    btnLayoutHeight = DisplayUtil.DpToPixel(activity!!,24),
+                    btnLayoutHeight = DisplayUtil.dpToPixel(activity!!,24),
                     parent = recycler
                 )
-                recycler.addItemDecoration(StockDecorator(DisplayUtil.DpToPixel(activity!!,24)))
+                recycler.addItemDecoration(StockDecorator(DisplayUtil.dpToPixel(activity!!,24)))
                 3
             }
 

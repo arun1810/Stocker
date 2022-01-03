@@ -1,14 +1,13 @@
 package com.example.stocker.view.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.widget.ContentLoadingProgressBar
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -34,7 +33,7 @@ class CartFragment : Fragment() {
     private lateinit var buyBtn:MaterialButton
     private lateinit var totalPriceText:MaterialTextView
     private val model : CustomerViewModel by activityViewModels()
-    private var isloaded=false
+    private var isLoaded=false
     private lateinit var progress:CircularProgressIndicator
     private lateinit var buyLayout:ConstraintLayout
     private  var snackBar:Snackbar?=null
@@ -100,7 +99,7 @@ class CartFragment : Fragment() {
             val data = model.calcCart()
             recycler.adapter = CartAdapter(context!!,data)
             totalPriceText.text = "TOTAL:${data.total}"
-            isloaded=true
+            isLoaded=true
         }
 
 
@@ -115,7 +114,7 @@ class CartFragment : Fragment() {
 
     private fun buy(view:View){
         if(NetworkConnectivity.isNetworkAvailable(context!!)){
-            if(isloaded){
+            if(isLoaded){
 
                 buyBtn.visibility=View.INVISIBLE
                 progress.show()
