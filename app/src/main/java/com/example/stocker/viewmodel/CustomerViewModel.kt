@@ -11,12 +11,12 @@ import com.example.stocker.pojo.StockInCart
 import com.example.stocker.pojo.Stocker
 import com.example.stocker.repository.CustomerRepository
 import com.example.stocker.repository.helper.SortUtil
-import com.example.stocker.viewmodel.helper.IdGenerator
-import com.example.stocker.viewmodel.helper.Status
+import com.example.stocker.viewmodel.helper.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.roundToInt
 
 class CustomerViewModel(application: Application):AndroidViewModel(application) {
 
@@ -26,8 +26,15 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
     val stocksLiveData:LiveData<List<Stock>> = _stocksLiveData
     private val _orderHistoryLiveData = MutableLiveData<List<OrderHistory>>(listOf())
     val orderHistoryLiveData:LiveData<List<OrderHistory>> = _orderHistoryLiveData
-    private val _resultStatus = MutableLiveData(Status())
-    val resultStatus:LiveData<Status> = _resultStatus
+
+    private val _stockErrorStatus = MutableLiveData(Error())
+    val stockErrorStatus:LiveData<Error> = _stockErrorStatus
+
+    private val _orderHistoryErrorStatus = MutableLiveData(Error())
+    val orderHistoryErrorStatus:LiveData<Error> = _orderHistoryErrorStatus
+
+    private val _cartErrorStatus=MutableLiveData(Error())
+    val cartErrorStatus:LiveData<Error> =_cartErrorStatus
 
     val selectedArray:HashMap<Stock,Int> =HashMap()
     private val customerRepository = CustomerRepository(application,Stocker.getInstance()!!.customer!!.customerId)
@@ -35,39 +42,41 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
     private var filterOnOrders = false
     private lateinit var job :Job
     private lateinit var selectedStockIds:Array<String>
-    private var total:Long=0
-
 
     init {
-       println("customer viewModel created")
-        getAllOrderHistory()
+
         getAllStocks()
+        getAllOrderHistory()
+
+       println("customer viewModel created")
+
     }
 
-    private fun getAllStocks(){
+     fun getAllStocks(){
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
                 _stocksLiveData.postValue(customerRepository.getAllStocks())
             }
             catch (e:Exception){
-                _resultStatus.postValue(_resultStatus.value?.apply {
+                _stockErrorStatus.postValue(_stockErrorStatus.value?.apply {
                     job.cancel()
                     isHandled=false
-                    msg="something went wrong while retrieving stocks"
+                    msg= cantRetrieveData
                 })
             }
         }
     }
 
-    private fun getAllOrderHistory(){
+    fun getAllOrderHistory(){
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
                 _orderHistoryLiveData.postValue(customerRepository.getAllOrderHistory())
             }catch(e:Exception){
-                _resultStatus.postValue(_resultStatus.value?.apply {
+                e.printStackTrace()
+                _orderHistoryErrorStatus.postValue(_orderHistoryErrorStatus.value?.apply {
                     job.cancel()
                     isHandled=false
-                    msg="something went wrong while retrieving orderHistory"
+                    msg= cantRetrieveData
                 })
             }
         }
@@ -79,6 +88,7 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
             val selectedStockCount = selectedArray.values.toTypedArray()
             val prices = Array(selectedStocks.size) { "" }
             val stockNames = Array(selectedStocks.size) { "" }
+            var total=0
             selectedStockIds = Array(selectedStocks.size) { "" }
 
 
@@ -86,7 +96,7 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
                 val stock = selectedStocks[i]
                 stockNames[i] = stock.stockName
                 selectedStockIds[i] = stock.stockID
-                val price = calcPrice(stock.price, stock.discount) * selectedStockCount[i]
+                val price = calcPrice(stock.price, stock.discount,selectedStockCount[i])
                 prices[i] = price.toString()
                 total += price
             }
@@ -97,7 +107,7 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
 
     }
 
-    suspend fun placeOrder(): Boolean {
+    suspend fun placeOrder(total: Int): Boolean {
 
         return withContext(viewModelScope.coroutineContext + Dispatchers.IO ) {
             val id = IdGenerator.generateId() ?: return@withContext  false
@@ -208,8 +218,9 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
         }
     }
 
-    private fun calcPrice(price:Int,discount:Int):Int{
-        return price-(price*(discount/100))
+    private fun calcPrice(price: Int, discount: Int, count: Int): Int {
+        val total = price * count
+        return (total - (total * (discount / 100f)).roundToInt())
     }
 
     private fun clearSelection(){
@@ -226,9 +237,9 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
                     _orderHistoryLiveData.postValue(newData)
                 }
                 catch(e:Exception){
-                    _resultStatus.postValue(_resultStatus.value?.apply {
+                    _cartErrorStatus.postValue(_cartErrorStatus.value?.apply {
                         isHandled=false
-                        msg="something went wrong while updating purchase"
+                        msg= otherError
                     })
                 }
             }

@@ -69,8 +69,10 @@ class CustomerTableHelper {
         else null
     }
 
-    fun update(db:SQLiteDatabase,customer:Customer):Boolean{
-        return db.replaceOrThrow(customerTableName,null,customerToContentValues(customer)) >0
+    fun update(db:SQLiteDatabase,customer:Customer,oldId:String):Boolean{
+        return db.updateWithOnConflict(
+            customerTableName,customerToContentValues(customer),"${id}=?",
+            arrayOf(oldId),SQLiteDatabase.CONFLICT_FAIL) >0
     }
 
 

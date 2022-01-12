@@ -1,6 +1,5 @@
 package com.example.stocker.view.fragments
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -15,17 +14,21 @@ import com.example.stocker.R
 import com.example.stocker.pojo.Customer
 import com.example.stocker.view.fragments.util.Mode
 import com.example.stocker.viewmodel.AdminViewModel
+import com.example.stocker.viewmodel.helper.*
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.time.Instant
 import java.time.LocalDate
-import java.util.*
+import java.time.ZoneId
 
 class CustomerDetailsGetterFragment : DialogFragment() {
-
 
    private lateinit var customerNameEtx:TextInputEditText
    private lateinit var customerNameLayout:TextInputLayout
@@ -67,10 +70,6 @@ class CustomerDetailsGetterFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
         if(dialog!=null){
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -100,6 +99,7 @@ class CustomerDetailsGetterFragment : DialogFragment() {
 
         toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
         toolbar.setNavigationOnClickListener {
+
             dialog!!.cancel()
         }
         toolbar.inflateMenu(R.menu.dialog_menu)
@@ -115,13 +115,26 @@ class CustomerDetailsGetterFragment : DialogFragment() {
             }
         }
 
-        model.resultStatus.observe(this,{status->
+        model.customerDetailsGetterError.observe(this,{status->
             status?.let {
                 if(!status.isHandled) {
-                    Snackbar.make(view, status.msg, Snackbar.LENGTH_INDEFINITE).setAction("close") {
-                        status.isHandled = true
-                        dialog!!.cancel()
-                    }.show()
+                    val msg = when(status.msg){
+                        uniqueIdError->{
+                            "Given ID is not unique. Try another ID"
+                        }
+                        otherError->{
+                            "Something went wrong. Try again"
+                        }
+                        else->{
+                            ""
+                        }
+                    }
+                    val snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG).apply {
+                        //this.view.setPadding(0,0,0,32)
+                        show()
+                    }
+
+                    status.isHandled=true
                 }
             }
 
@@ -142,7 +155,7 @@ class CustomerDetailsGetterFragment : DialogFragment() {
             }
         }
 
-        customerMobileNumberEtx.addTextChangedListener(object:TextWatcher{
+        customerMobileNumberEtx.addTextChangedListener(object:TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -152,20 +165,17 @@ class CustomerDetailsGetterFragment : DialogFragment() {
 
             override fun afterTextChanged(s: Editable?) {
 
-                try{
-                    s!!.toString().toInt()
-                }
-                catch(e:NumberFormatException){
-                    if(s!!.isNotEmpty()) customerMobileNumberLayout.error = "number invalid"
-                }
-                when {
 
-                    s!!.length > customerMobileNumberLayout.counterMaxLength -> customerMobileNumberLayout.error = "Mobile number cannot exceed 10 digits"
-                    customerMobileNumberLayout.error!=null ->customerMobileNumberLayout.error = null
+                try {
+                    if(customerMobileNumberLayout.error!=null) customerMobileNumberLayout.error=null
+                    if(s.toString().toLong()<0) customerMobileNumberLayout.error="invalid number"
 
+                } catch (e: NumberFormatException) {
+                    if (s!!.isNotEmpty()) customerMobileNumberLayout.error = "invalid number"
                 }
+
+
             }
-
         })
 
 
@@ -196,6 +206,7 @@ class CustomerDetailsGetterFragment : DialogFragment() {
 
           override fun afterTextChanged(s: Editable?) {
               if(customerIdLayout.error!=null)customerIdLayout.error=null
+              if(s.toString().isNotEmpty() && s.toString().contains(' '))customerIdLayout.error="invalid ID"
           }
 
       })
@@ -217,28 +228,26 @@ class CustomerDetailsGetterFragment : DialogFragment() {
 
 
         dobBtn.setOnClickListener {
-            val datePicker = DatePickerDialog(activity!!,
-                { _, year, month, dayOfMonth ->
-                    dob = LocalDate.of(year,month+1, dayOfMonth)
-                    dobBtn.text=dob.toString()
-                    dobBtn.setStrokeColorResource(R.color.success)
-                },
-                year,month,day)
-            datePicker.show()
-        }
-/*
-       maleBtn.setOnClickListener {
-            gender='M'
-            it.setBackgroundColor(context!!.getColor(R.color.colorOnSecondary))
-            femaleBtn.setBackgroundColor(context!!.getColor(R.color.design_default_color_on_primary))
-        }
-        femaleBtn.setOnClickListener {
-            gender='F'
-            it.setBackgroundColor(context!!.getColor(R.color.colorOnSecondary))
-            maleBtn.setBackgroundColor(context!!.getColor(R.color.design_default_color_on_primary))
-        }
 
- */
+            val constraints = CalendarConstraints.Builder().setValidator(DateValidatorPointBackward.now())
+
+            val picker = MaterialDatePicker.Builder.datePicker().also {
+                it.setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                it.setTitleText("select date")
+                it.setCalendarConstraints(constraints.build())
+            }
+
+            val builder = picker.build().apply {
+
+            }
+            builder.addOnPositiveButtonClickListener {
+
+                dob = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+               dobBtn.text=dob.toString()
+
+            }
+            builder.show(parentFragmentManager,"date picker")
+        }
 
     }
 
@@ -303,13 +312,20 @@ class CustomerDetailsGetterFragment : DialogFragment() {
                     }
                 }
                 Mode.Update->{
-                    model.updateCustomer(model.selectedCustomer[0],customer)
-                    model.join {
-                        Toast.makeText(context!!, "Customer updated", Toast.LENGTH_LONG).show()
+                    dob= LocalDate.parse(dobBtn.text)
+                    if(model.selectedCustomer[0] == customer){
                         dialog?.cancel()
+                    }
+                    else {
+                        model.updateCustomer(model.selectedCustomer[0], customer)
+                        model.join {
+                            Toast.makeText(context!!, "Customer updated", Toast.LENGTH_LONG).show()
+                            dialog?.cancel()
+                        }
                     }
                 }
             }
+
         }
 
     }
@@ -344,5 +360,4 @@ class CustomerDetailsGetterFragment : DialogFragment() {
             }
         }
     }
-
 }

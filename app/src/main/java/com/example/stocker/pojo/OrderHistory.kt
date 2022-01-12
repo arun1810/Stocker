@@ -2,7 +2,14 @@ package com.example.stocker.pojo
 
 import java.time.LocalDate
 
-data class OrderHistory(val orderID:String,val dateOfPurchase:LocalDate,val customerId:String,val stockIds:Array<String>,val counts:Array<Int>,val total:Long) {
+data class OrderHistory(
+    val orderID:String,
+    val dateOfPurchase:LocalDate,
+    val customerId:String,
+    val stockIds:Array<String>,
+    val counts:Array<Int>,
+    val total: Int
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

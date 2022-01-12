@@ -16,7 +16,12 @@ class CustomerRepository(context: Context, private val customerId:String): BaseC
         return database.getAllStocks()
     }
 
-    override fun placeOrder(orderId:String,stocks:HashMap<Stock,Int>,stockIds: Array<String>, counts: Array<Int>,total:Long):Pair<Boolean,OrderHistory>{
+    override fun placeOrder(
+        orderId:String,
+        stocks:HashMap<Stock,Int>,
+        stockIds: Array<String>, counts: Array<Int>,
+        total: Int
+    ):Pair<Boolean,OrderHistory>{
         val orderHistory = OrderHistory(orderID = orderId, dateOfPurchase = LocalDate.now(), customerId = this.customerId, stockIds = stockIds, counts = counts, total = total)
         val result = (database.addOrderHistory(orderHistory) && database.updateStocks(stocks))
         return  result to orderHistory

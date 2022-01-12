@@ -17,6 +17,9 @@
             app:destination="@id/stockDetailsGetterFragment"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_adminStockFragment_to_stockViewer"
+            app:destination="@id/stockViewer" />
     </fragment>
     <fragment
         android:id="@+id/adminCustomerFragment"
@@ -29,6 +32,9 @@
         <action
             android:id="@+id/action_adminCustomerFragment_to_customerDetailsGetterFragment2"
             app:destination="@id/customerDetailsGetterFragment2" />
+        <action
+            android:id="@+id/action_adminCustomerFragment_to_customerViewer"
+            app:destination="@id/customerViewer" />
     </fragment>
     <fragment
         android:id="@+id/adminOrderHistoryFragment"
@@ -38,6 +44,9 @@
         <action
             android:id="@+id/action_adminOrderHistoryFragment_to_loginActivity"
             app:destination="@id/loginActivity" />
+        <action
+            android:id="@+id/action_adminOrderHistoryFragment_to_orderHistroyViewer"
+            app:destination="@id/orderHistroyViewer" />
     </fragment>
     <dialog
         android:id="@+id/customerDetailsGetterFragment2"
@@ -58,4 +67,18 @@
         android:name="com.example.stocker.view.activity.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
+    <dialog
+        android:id="@+id/stockViewer"
+        android:name="com.example.stocker.view.fragments.StockViewer"
+        android:label="StockViewer"
+        tools:layout="@layout/fragment_stock_viewer"
+        />
+    <dialog
+        android:id="@+id/orderHistroyViewer"
+        android:name="com.example.stocker.view.fragments.OrderHistroyViewer"
+        android:label="OrderHistroyViewer" />
+    <dialog
+        android:id="@+id/customerViewer"
+        android:name="com.example.stocker.view.fragments.CustomerViewer"
+        android:label="CustomerViewer" />
 </navigation>

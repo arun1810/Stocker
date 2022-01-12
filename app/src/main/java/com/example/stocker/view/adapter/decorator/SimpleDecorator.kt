@@ -15,10 +15,9 @@ class SimpleDecorator (private val top:Int,private val side:Int): RecyclerView.I
     ) {
 
         outRect.top = top
-        outRect.left = side
-        outRect.right = side
-
-
+        outRect.right=side
+        outRect.left=side
+        outRect.bottom=top
 
     }
 }

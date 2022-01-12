@@ -5,27 +5,43 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Customer
-import com.example.stocker.view.customviews.ScrollableTextView
+import com.example.stocker.view.customviews.CustomTextView
 import com.example.stocker.view.fragments.util.Type
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.textview.MaterialTextView
 
-class CustomerAdapter(val context: Context,private val selectedCustomer:MutableList<Customer>, private val selectionListener: SelectionListener): RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
+class CustomerAdapter(val context: Context,private val selectedCustomer:MutableList<Customer>,val navController: NavController ,private val selectionListener: SelectionListener): RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
 
     private var oneSelectionActive=false
     private var multipleSelectionActive=false
     private val diff = AsyncListDiffer(this, DiffCalc())
+    private var changeType = Type.Nothing
+    lateinit var recyclerView: RecyclerView
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView=recyclerView
+    }
 
     fun setNewList(newData:List<Customer>){
-        diff.submitList(newData)
+        diff.submitList(newData){
+            if(changeType!=Type.Delete){
+                recyclerView.scrollToPosition(0)
+                changeType=Type.Nothing
+            }
+        }
     }
     fun selectionListChanged(type: Type){
         if(type== Type.Update) notifyDataSetChanged()
             changeSelectionState()
+        changeType=type
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,7 +49,7 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
 
         val holder = ViewHolder(layout)
 
-        holder.layout.setOnLongClickListener{
+        holder.itemView.setOnLongClickListener{
             if(holder.state == ViewHolder.State.Unselected) {
                 selectCustomer(holder)
                 true
@@ -41,7 +57,7 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
             else{false}
         }
 
-        holder.layout.setOnClickListener {
+        holder.itemView.setOnClickListener {
             val data = diff.currentList
             if(oneSelectionActive || multipleSelectionActive){
                 if(selectedCustomer.contains(data[holder.adapterPosition])){
@@ -50,6 +66,9 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
                 else{
                     selectCustomer(holder)
                 }
+            }
+            else{
+               navController.navigate(R.id.action_adminCustomerFragment_to_customerViewer, bundleOf("data" to ("data" to data[holder.adapterPosition])))
             }
         }
         return  holder
@@ -71,10 +90,10 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         }
 
 
-        holder.customerId.setText(data[position].customerId)
+        holder.customerId.text = data[position].customerId
         holder.customerDob.text = data[position].dob.toString()
         holder.customerPh.text = "ph:${data[position].mobile_number}"
-        holder.customerName.setText(data[position].name)
+        holder.customerName.text = data[position].name
     }
 
     override fun getItemCount(): Int {
@@ -126,11 +145,12 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
     }
 
     private fun changeToSelectedState(holder:ViewHolder){
-        holder.itemView.setBackgroundColor(context.getColor(R.color.darkPrimaryLightColor))
+        holder.parent.setBackgroundColor(MaterialColors.getColor(context,R.attr.colorPrimary,context.getColor(R.color.darkPrimaryColor)))
         holder.state=ViewHolder.State.Selected
     }
     private fun changeToUnselectedState(holder:ViewHolder){
-        holder.itemView.setBackgroundColor(context.getColor(R.color.darkBackgroundColor))
+
+        holder.parent.setBackgroundColor(MaterialColors.getColor(context,android.R.attr.colorBackground,context.getColor(R.color.darkBackgroundColor)))
         holder.state = ViewHolder.State.Unselected
     }
 
@@ -139,11 +159,11 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         enum class State{Selected,Unselected}
 
         var state:State=State.Unselected
-        val customerName:ScrollableTextView = view.findViewById(R.id.customer_name)
-        val customerId:ScrollableTextView = view.findViewById(R.id.customer_id)
+        val customerName:MaterialTextView = view.findViewById(R.id.customer_name)
+        val customerId:MaterialTextView = view.findViewById(R.id.customer_id)
         val customerDob:MaterialTextView = view.findViewById(R.id.customer_dob)
         val customerPh:MaterialTextView = view.findViewById(R.id.customer_ph)
-        val layout:ConstraintLayout = view.findViewById(R.id.parent)
+        val parent:ConstraintLayout = view.findViewById(R.id.parent)
 
     }
     class DiffCalc: DiffUtil.ItemCallback<Customer>(){

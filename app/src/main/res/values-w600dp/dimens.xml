@@ -1,1 +1,4 @@
-<resources></resources>
+<resources>
+    <dimen name="margin">32dp</dimen>
+    <dimen name="gutter">24dp</dimen>
+</resources>

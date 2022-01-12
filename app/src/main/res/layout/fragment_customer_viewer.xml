@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragments.CustomerViewer">
+
+    <include
+        android:id="@+id/toolbar"
+
+        layout="@layout/toolbar"
+
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="Customer"
+        app:navigationIcon="@drawable/ic_baseline_close_24"
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/customer_img"
+
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="@dimen/margin"
+
+        android:adjustViewBounds="true"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.CircularBorder"
+
+        android:src="@drawable/ic_male_avatar_vector"
+
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        tools:text="Arun"
+
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="4dp"
+        android:textAlignment="center"
+
+        android:textSize="32sp"
+
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customer_img"
+
+
+        />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_id"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        tools:text="id: 175534"
+
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginBottom="8dp"
+
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:alpha="0.85"
+
+        app:layout_constraintTop_toBottomOf="@id/customer_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+
+        />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp"
+
+        android:layout_marginTop="16dp"
+
+
+        app:layout_constraintTop_toBottomOf="@id/customer_id"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginTop="32dp"
+
+        tools:text="Gender: Male"
+        android:textSize="28sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+
+
+        />
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_dob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginTop="16dp"
+
+        tools:text="DOB: 18-10-20"
+        android:textSize="28sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customer_gender"
+
+
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/customer_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+
+        tools:text="Mobile:7708883616"
+        android:textSize="28sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customer_dob"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -19,12 +19,12 @@ interface BaseAdminRepository {
 
     fun getAllStock():List<Stock>
     fun addStock(stock: Stock): Boolean
-    fun updateStock(stock:Stock): Boolean
+    fun updateStock(stock:Stock,oldId:String): Boolean
     fun buyStock(stock:Stock): Boolean
 
     fun removeOrderHistory(orders:List<OrderHistory>): Boolean
     fun removeCustomer(customers: List<Customer>): Boolean
     fun removeStock(stocks:List<Stock>): Boolean
 
-    fun updateCustomer(customer: Customer)
+    fun updateCustomer(customer: Customer,oldId: String)
 }

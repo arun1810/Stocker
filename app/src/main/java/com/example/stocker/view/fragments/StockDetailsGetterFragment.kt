@@ -14,6 +14,9 @@ import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.example.stocker.view.fragments.util.Mode
 import com.example.stocker.viewmodel.AdminViewModel
+import com.example.stocker.viewmodel.helper.Error
+import com.example.stocker.viewmodel.helper.otherError
+import com.example.stocker.viewmodel.helper.uniqueIdError
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -105,24 +108,28 @@ class StockDetailsGetterFragment : DialogFragment() {
         }
 
 
-        model.resultStatus.observe(this,{status->
+        model.stockDetailsGetterError.observe(this,{status->
             status?.let {
                 if(!status.isHandled) {
-                    Snackbar.make(view, status.msg, Snackbar.LENGTH_INDEFINITE).setAction("close") {
-                        status.isHandled = true
-                    }.show()
+                    val msg = when(status.msg){
+                        uniqueIdError->{
+                            "Given ID is not unique. Try another ID"
+                        }
+                        otherError->{
+                            "Something went wrong. Try again"
+                        }
+                        else->{
+                            ""
+                        }
+                    }
+                    Snackbar.make(view,msg, Snackbar.LENGTH_LONG).show()
+                    status.isHandled=true
                 }
             }
 
         })
 
         dialog!!.setCancelable(false)
-        /*val size = DisplayUtil.getDisplaySize(activity!!)
-        val height = size.x
-        val width = size.y
-        dialog!!.window!!.setLayout(width, (height/1.5).toInt())
-
-         */
 
         stockIdEtx.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -134,7 +141,9 @@ class StockDetailsGetterFragment : DialogFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                stockIdLayout.error=null
+                if(stockIdLayout.error!=null)stockIdLayout.error=null
+                if(s.toString().isNotEmpty() && s.toString().contains(' '))stockIdLayout.error="invalid ID"
+
             }
 
         })
@@ -166,16 +175,20 @@ class StockDetailsGetterFragment : DialogFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
+                numberValidator(stockPriceLayout,s!!)
+                /*
                 if (s!!.isEmpty()) {
                     if (stockPriceLayout.error != null) stockPriceLayout.error = null
                 } else {
                     try {
-                        s.toString().toInt()
+                        if(s.toString().toInt()<0)stockPriceLayout.error="invalid number"
                         stockPriceLayout.error = null
                     } catch (e: NumberFormatException) {
                         stockPriceLayout.error = invalidInput
                     }
                 }
+
+                 */
             }
 
         })
@@ -190,16 +203,7 @@ class StockDetailsGetterFragment : DialogFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s!!.isEmpty()) {
-                    if (stockCountLayout.error != null) stockCountLayout.error = null
-                } else {
-                    try {
-                        s.toString().toInt()
-                        stockCountLayout.error = null
-                    } catch (e: NumberFormatException) {
-                        stockCountLayout.error = invalidInput
-                    }
-                }
+               numberValidator(stockCountLayout,s!!)
             }
 
         })
@@ -214,16 +218,7 @@ class StockDetailsGetterFragment : DialogFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s!!.isEmpty()) {
-                    if (stockDiscountLayout.error != null) stockDiscountLayout.error = null
-                } else {
-                    try {
-                        s.toString().toInt()
-                        stockDiscountLayout.error = null
-                    } catch (e: NumberFormatException) {
-                        stockDiscountLayout.error = invalidInput
-                    }
-                }
+                discountValidator(stockDiscountLayout,s!!)
             }
 
         })
@@ -232,6 +227,26 @@ class StockDetailsGetterFragment : DialogFragment() {
 
 
 
+    }
+
+    private fun numberValidator(layout: TextInputLayout,s:Editable){
+        try {
+            if(layout.error!=null) layout.error=null
+            if(s.toString().toInt()<0) layout.error="invalid number"
+
+        } catch (e: NumberFormatException) {
+            if (s.isNotEmpty()) layout.error = "invalid number"
+        }
+    }
+    private fun discountValidator(layout: TextInputLayout,s:Editable){
+        try {
+            if(layout.error!=null) layout.error=null
+            if(s.toString().toInt()<0 ){ layout.error="invalid number"}
+            else if ( s.toString().toInt()>100){layout.error="discount shouldn't greater than hundred"}
+
+        } catch (e: NumberFormatException) {
+            if (s.isNotEmpty()) layout.error = "invalid number"
+        }
     }
 
     private fun add(){
@@ -282,7 +297,7 @@ class StockDetailsGetterFragment : DialogFragment() {
                 stockID = stockIdEtx.text.toString(),
                 stockName = stockNameEtx.text.toString(),
                 price = stockPriceEtx.text.toString().toInt(),
-                count = stockCountEtx.text.toString().toInt(),
+                count = stockCountEtx.text.toString( ).toInt(),
                 discount = stockDiscountEtx.text.toString().toInt()
             )
             when(mode){
@@ -300,12 +315,6 @@ class StockDetailsGetterFragment : DialogFragment() {
                         dialog?.cancel()
                     }
                 }
-            }
-
-
-            model.join {
-                Toast.makeText(context!!,"Stock added", Toast.LENGTH_LONG).show()
-                dialog?.cancel()
             }
         }
     }

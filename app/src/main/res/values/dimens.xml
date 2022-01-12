@@ -3,8 +3,18 @@
     <dimen name="recycler_primary_text_height">28dp</dimen>
     <dimen name="recycler_secondary_text_height">20dp</dimen>
     <dimen name="sort_layout_height">32dp</dimen>
-    <dimen name="bottom_nav_height">70dp</dimen>
-    <dimen name="stock_card_height">300dp</dimen>
+    <dimen name="bottom_nav_height">52dp</dimen>
+    <dimen name="stock_card_height">260dp</dimen>
     <dimen name="stock_card_width">250dp</dimen>
-    <dimen name="stroke_width">1.5dp</dimen>
+    <dimen name="stroke_width">2dp</dimen>
+    <dimen name="banner_height">112dp</dimen>
+
+    <dimen name="margin">16dp</dimen>
+    <dimen name="gutter">16dp</dimen>
+    <dimen name="column">4</dimen>
+
+    <dimen name="toolbar_elevation">8dp</dimen>
+    <dimen name="recycler_item_elevation">4dp</dimen>
+    <dimen name="banner_elevation">5dp</dimen>
+    <dimen name="sort_layout_elevation">4dp</dimen>
 </resources>

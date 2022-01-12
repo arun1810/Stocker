@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="darkPrimaryColor">#455a64</color>
-    <color name="darkPrimaryLightColor">#718792</color>
-    <color name="darkPrimaryDarkColor">#1c313a</color>
-    <color name="darkSecondaryColor">#644f54</color>
-    <color name="darkSecondaryLightColor">#927b80</color>
-    <color name="darkSecondaryDarkColor">#39272b</color>
-    <color name="darkPrimaryTextColor">#ffffff</color>
-    <color name="darkSecondaryTextColor">#ffffff</color>
-    <color name="success">#689F38</color>
-    <color name="error">#D32F2F</color>
-    <color name="darkAccent">#B98389</color>
-    <color name="darkBackgroundColor">#212121</color>
+    <color name="darkPrimaryColor">#ffc056</color>
+    <color name="darkPrimaryLightColor">#fff386</color>
+    <color name="darkPrimaryDarkColor">#c89025</color>
+    <color name="darkSecondaryColor">#5694ff</color>
+    <color name="darkSecondaryLightColor">#90c4ff</color>
+    <color name="darkSecondaryDarkColor">#0067cb</color>
+    <color name="darkPrimaryTextColor">#000000</color>
+    <color name="darkSecondaryTextColor">#000000</color>
+    <color name="darkOnBackgroundColor">#ffff</color>
+    <color name="lightOnBackgroundColor">#000000</color>
+    <color name="success">#9FCD69</color>
+    <color name="error">#DA6361</color>
+    <color name="darkAccent">#1976D2</color>
+    <color name="darkBackgroundColor">#202020</color>
+    <color name="lightBackGroundColor">#ffff</color>
 </resources>

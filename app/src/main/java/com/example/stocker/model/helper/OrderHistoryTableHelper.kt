@@ -4,11 +4,8 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.example.stocker.pojo.OrderHistory
-import java.lang.StringBuilder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.*
 import java.util.stream.Collectors
 
 class OrderHistoryTableHelper{
@@ -16,14 +13,14 @@ class OrderHistoryTableHelper{
         const val id="id"
         const val orderHistoryTableName= "OrderHistory"
         const val dateOfPurchase = "dataOfPurchase"
-        const val customerid="customerid"
-        const val stockids="stockids"
+        const val customerId="customerid"
+        const val stockIds="stockids"
         const val counts="counts"
         const val total="total"
     }
 
     fun createTable(db: SQLiteDatabase){
-        db.execSQL("CREATE TABLE $orderHistoryTableName($id TEXT PRIMARY KEY,$dateOfPurchase TEXT,$customerid TEXT,$stockids TEXT,$counts TEXT,$total INTEGER)")
+        db.execSQL("CREATE TABLE $orderHistoryTableName($id TEXT PRIMARY KEY,$dateOfPurchase TEXT,$customerId TEXT,$stockIds TEXT,$counts TEXT,$total INTEGER)")
     }
 
     fun getAllData(db:SQLiteDatabase):MutableList<OrderHistory>{
@@ -36,10 +33,10 @@ class OrderHistoryTableHelper{
       return orderHistories
     }
 
-    fun getSpecificData(db:SQLiteDatabase,customerId:String):MutableList<OrderHistory>{
+    fun getSpecificData(db:SQLiteDatabase,cusId:String):MutableList<OrderHistory>{
         val orderHistories = mutableListOf<OrderHistory>()
-        val cursor = db.rawQuery("SELECT * FROM $orderHistoryTableName WHERE $customerid=?",
-            arrayOf(customerId)
+        val cursor = db.rawQuery("SELECT * FROM $orderHistoryTableName WHERE ${customerId}=?",
+            arrayOf(cusId)
         )
         while(cursor.moveToNext()){
             orderHistories.add(cursorToOrderHistory(cursor))
@@ -83,8 +80,8 @@ class OrderHistoryTableHelper{
         dateOfPurchase = LocalDate.parse(cursor.getString(1), DateTimeFormatter.ofPattern("yyyy-MM-dd")),
         customerId =cursor.getString(2),
         stockIds = stringToStringArray(cursor.getString(3)).toTypedArray(),
-        counts=stringToIntArray(cursor.getString(4)).toTypedArray(),
-        total = cursor.getLong(5)
+        counts =stringToIntArray(cursor.getString(4)).toTypedArray(),
+        total = cursor.getInt(5)
     )
 
     private fun stringToStringArray(str:String):List<String>{
@@ -107,8 +104,8 @@ class OrderHistoryTableHelper{
     private fun orderHistoryToContentValues(orderHistory:OrderHistory) = ContentValues().apply {
         put(id,orderHistory.orderID)
         put(dateOfPurchase,orderHistory.dateOfPurchase.toString())
-        put(customerid,orderHistory.customerId)
-        put(stockids,arrayToString(orderHistory.stockIds.toList()))
+        put(customerId,orderHistory.customerId)
+        put(stockIds,arrayToString(orderHistory.stockIds.toList()))
         put(counts,arrayToString(orderHistory.counts.toList()))
         put(total,orderHistory.total)
     }

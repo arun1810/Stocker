@@ -1,6 +1,12 @@
 package com.example.stocker.pojo
 
-data class StockInCart(val stocksNames:Array<String>,val stockIds:Array<String>,val counts:Array<Int>,val price:Array<String>,val total:Long) {
+data class StockInCart(
+    val stocksNames:Array<String>,
+    val stockIds:Array<String>,
+    val counts:Array<Int>,
+    val price:Array<String>,
+    val total: Int
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

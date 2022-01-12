@@ -2,21 +2,33 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <include
         android:id="@+id/customer_stock_toolbar"
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/sort_layout"
         app:title="Stocks"
 
+        />
+    <include
+        android:layout_height="@dimen/banner_height"
+        android:layout_width="match_parent"
+        android:id="@+id/banner"
+        layout="@layout/banner"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/customer_stock_toolbar"
+        app:layout_constraintVertical_bias="1"
         />
 
     <include
@@ -35,11 +47,6 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
 
         app:layout_constraintTop_toBottomOf="@id/sort_layout"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,5 +70,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recycler"
-        android:contentDescription="Buy" />
+        android:contentDescription="Buy items in cart" />
 </androidx.constraintlayout.widget.ConstraintLayout>

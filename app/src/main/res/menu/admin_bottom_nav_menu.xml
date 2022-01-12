@@ -11,13 +11,11 @@
         android:id="@+id/adminCustomerFragment"
         android:title="customers"
         android:icon="@drawable/ic_customer"
-        app:showAsAction="never"
         />
     <item
         android:id="@+id/adminOrderHistoryFragment"
         android:title="orderHistory"
         android:icon="@drawable/ic_order_history"
-        app:showAsAction="never"
 
         />
 

@@ -4,6 +4,9 @@
     <dimen name="recycler_secondary_text_height">20dp</dimen>
     <dimen name="sort_layout_height">28dp</dimen>
     <dimen name="bottom_nav_height">52dp</dimen>
-    <dimen name="stock_card_height">250dp</dimen>
+    <dimen name="stock_card_height">160dp</dimen>
     <dimen name="stock_card_width">300dp</dimen>
+
+    <dimen name="margin">16dp</dimen>
+    <dimen name="gutter">16dp</dimen>
 </resources>

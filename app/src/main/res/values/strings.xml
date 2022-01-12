@@ -5,6 +5,10 @@
     <string name="buy">BUY</string>
     <string name="select_dob">select DOB</string>
     <string name="add_customer">add customer</string>
+    <string name="add_stock">Add Stock</string>
+    <string name="hey_nlogin_as">Hey,\nLogin as</string>
+    <string name="customer">Customer</string>
+    <string name="admin">admin</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

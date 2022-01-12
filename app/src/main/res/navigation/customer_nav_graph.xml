@@ -26,6 +26,9 @@
             app:popUpTo="@id/loginActivity2"
             app:popUpToInclusive="true"
             />
+        <action
+            android:id="@+id/action_stock_fragment_to_stockViewer2"
+            app:destination="@id/stockViewer2" />
     </fragment>
 
     <fragment
@@ -39,6 +42,9 @@
             app:popUpTo="@id/loginActivity2"
             app:popUpToInclusive="true"
             />
+        <action
+            android:id="@+id/action_order_History_fragment_to_orderHistroyViewer2"
+            app:destination="@id/orderHistroyViewer2" />
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
@@ -54,4 +60,13 @@
         android:name="com.example.stocker.view.activity.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
+    <dialog
+        android:id="@+id/orderHistroyViewer2"
+        android:name="com.example.stocker.view.fragments.OrderHistroyViewer"
+        android:label="OrderHistroyViewer" />
+    <dialog
+        android:id="@+id/stockViewer2"
+        android:name="com.example.stocker.view.fragments.StockViewer"
+        android:label="fragment_stock_viewer"
+        tools:layout="@layout/fragment_stock_viewer" />
 </navigation>

@@ -4,22 +4,30 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.example.stocker.pojo.Stocker
 import com.example.stocker.repository.AdminRepository
-import com.example.stocker.viewmodel.helper.Status
+import com.example.stocker.viewmodel.helper.Error
+import com.example.stocker.viewmodel.helper.validationError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+class LoginResult{
+    var state: LoginViewModel.State =LoginViewModel.State.Nothing
+    var isHandled:Boolean=true
+}
+
 class LoginViewModel(application: Application): AndroidViewModel(application) {
     enum class State{Pass,Fail,Nothing}
 
-    private val _customerLoginStatusLiveData = MutableLiveData(State.Nothing)
-    val customerLoginStatusLiveData: LiveData<State> = _customerLoginStatusLiveData
-    private val _adminLoginStatusLiveData = MutableLiveData(State.Nothing)
-    val adminLoginStatusLiveData:LiveData<State> = _adminLoginStatusLiveData
+    private val _customerLoginStatusLiveData = MutableLiveData(LoginResult())
+    val customerLoginStatusLiveData: LiveData<LoginResult> = _customerLoginStatusLiveData
+
+    private val _adminLoginStatusLiveData = MutableLiveData(LoginResult())
+    val adminLoginStatusLiveData:LiveData<LoginResult> = _adminLoginStatusLiveData
+
     private var adminRepository: AdminRepository = AdminRepository(application)
     private lateinit var job:Job
-    private val _result = MutableLiveData<Status>()
-    val resultStatus: LiveData<Status> = _result
+    private val _result = MutableLiveData(Error())
+    val resultStatus: LiveData<Error> = _result
 
     init {
         println("login viewModel created")
@@ -32,10 +40,16 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                val customer = adminRepository.validateCustomer(name, password)
 
                if (customer != null) {
-                   _customerLoginStatusLiveData.postValue(State.Pass)
+                   _customerLoginStatusLiveData.postValue(_customerLoginStatusLiveData.value?.apply {
+                       isHandled=false
+                       state=State.Pass
+                   })
                    Stocker.createInstance(customer)
                } else {
-                   _customerLoginStatusLiveData.postValue(State.Fail)
+                   _customerLoginStatusLiveData.postValue(_customerLoginStatusLiveData.value?.apply {
+                       isHandled=false
+                       state=State.Fail
+                   })
                }
            }
            catch (e:Exception){
@@ -43,7 +57,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                    job.cancel()
                    isHandled=false
                    job.cancel()
-                   msg="Something went wrong"
+                   msg= validationError
                })
            }
        }
@@ -53,16 +67,24 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
        job =  viewModelScope.launch(Dispatchers.IO) {
            try {
                if (adminRepository.validateAdmin(password)) {
-                   _adminLoginStatusLiveData.postValue(State.Pass)
+                   _adminLoginStatusLiveData.postValue(
+                       _adminLoginStatusLiveData.value?.apply {
+                           isHandled=false
+                           state=State.Pass
+                       }
+                   )
                } else {
-                   _adminLoginStatusLiveData.postValue(State.Fail)
+                   _adminLoginStatusLiveData.postValue(_adminLoginStatusLiveData.value?.apply {
+                       isHandled=false
+                       state=State.Fail
+                   })
                }
            }catch(e:Exception){
                _result.postValue(_result.value?.apply {
                    job.cancel()
                    isHandled=false
                    job.cancel()
-                   msg="Something went wrong"
+                   msg= validationError
                })
            }
         }

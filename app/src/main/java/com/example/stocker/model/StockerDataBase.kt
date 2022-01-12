@@ -10,7 +10,7 @@ import com.example.stocker.model.helper.StockTableHelper
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
-import java.time.LocalDate
+import java.lang.Exception
 
 class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, version), BaseDataBase {
 
@@ -56,14 +56,17 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
     }
 
     override fun deleteCustomer(customers:List<Customer>): Boolean {
+
         return customerTableHelper.delete(this.writableDatabase,customers)
     }
 
-    override fun updateCustomer(customer: Customer): Boolean {
-        return customerTableHelper.update(this.writableDatabase,customer)
+    override fun updateCustomer(customer: Customer,oldId:String): Boolean {
+
+        return customerTableHelper.update(this.writableDatabase,customer,oldId)
     }
 
     override fun getAllCustomer(): MutableList<Customer> {
+
         return customerTableHelper.getAllData(this.readableDatabase)
     }
 
@@ -83,23 +86,22 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
     }
 
     override fun deleteStock(stocks:List<Stock>): Boolean {
+
         return stockTableHeper.delete(this.writableDatabase,stocks)
     }
 
-    override fun updateStock(stock: Stock): Boolean {
-        return stockTableHeper.update(this.writableDatabase,stock)
+    override fun updateStock(stock: Stock,oldId:String): Boolean {
+        return stockTableHeper.update(this.writableDatabase,stock,oldId)
     }
 
-    override fun updateStocks(selectedStocks: HashMap<Stock,Int>): Boolean {
-        return stockTableHeper.updateMultiple(this.writableDatabase,selectedStocks)
+    override fun updateStocks(stocks: HashMap<Stock,Int>): Boolean {
+
+        return stockTableHeper.updateMultiple(this.writableDatabase,stocks)
     }
 
     override fun getAllStocks(): MutableList<Stock> {
-        return stockTableHeper.getAllData(this.readableDatabase)
-    }
 
-    override fun placeOrder(orderHistory: OrderHistory): Boolean {
-        TODO("Not yet implemented")
+        return stockTableHeper.getAllData(this.readableDatabase)
     }
 
 
@@ -112,10 +114,12 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
     }
 
     override fun updateOrderHistory(orderHistory: OrderHistory): Boolean {
+
         return orderHistoryTableHelper.update(this.writableDatabase,orderHistory)
     }
 
     override fun getAllOrderHistory(): MutableList<OrderHistory> {
+
         return orderHistoryTableHelper.getAllData(this.readableDatabase)
     }
 

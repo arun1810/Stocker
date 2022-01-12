@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/sort_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/sort_layout_height"
-    android:elevation="5dp"
-
+    android:elevation="@dimen/sort_layout_elevation"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@id/customer_stock_toolbar"
@@ -12,17 +11,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
+
+
     android:padding="2dp"
-    android:background="?android:colorPrimaryDark"
+
     >
 
     <com.example.stocker.view.customviews.SortImageButton
         android:id="@+id/count_sort"
-        android:layout_width="0dp"
-        android:src="@drawable/ic_count_ascending"
-        android:tint="?android:textColorPrimary"
+        android:layout_width="48dp"
+        android:src="@drawable/ic_count_neutral"
         android:scaleType="centerInside"
-        android:layout_height="18dp"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,9 +32,8 @@
     <com.example.stocker.view.customviews.SortImageButton
         android:id="@+id/price_sort"
         android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:src="@drawable/ic_price_ascending_24"
-        android:tint="?android:textColorPrimary"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_price_neutral"
         android:scaleType="centerInside"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -46,9 +45,8 @@
     <com.example.stocker.view.customviews.SortImageButton
         android:id="@+id/name_sort"
         android:layout_width="0dp"
-        android:layout_height="22dp"
-        android:src="@drawable/ic_sort_alphabetical_ascending"
-        android:tint="?android:textColorPrimary"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_sort_alphabet_neutral"
         android:scaleType="centerInside"
 
 
@@ -57,6 +55,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/price_sort"
 
+        />
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/count_sort"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
 

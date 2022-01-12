@@ -8,49 +8,51 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:layout_height="@dimen/stock_card_height"
-    android:layout_width="@dimen/stock_card_width"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:elevation="@dimen/recycler_item_elevation"
 
-    app:cardCornerRadius="2dp"
     app:strokeWidth="@dimen/stroke_width"
 
    >
 
 <androidx.constraintlayout.widget.ConstraintLayout
 
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-
-    android:elevation="5dp"
-
     >
+
     <include
-        android:layout_height="@dimen/stock_card_height"
-        android:layout_width="match_parent"
         android:id="@+id/stock_layout"
-
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"
-
         layout="@layout/admin_stock_recycler_layout"
+        android:layout_width="match_parent"
 
-        app:layout_constraintStart_toStartOf="parent"
+
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toTopOf="@id/btn_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/badge"
 
-        app:layout_constraintVertical_weight="10"
         app:layout_constraintVertical_chainStyle="spread_inside"
-         />
+        app:layout_constraintVertical_weight="10"
+        />
+
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/badge"
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
+        android:layout_height="wrap_content"
 
-        tools:text="10000"
-        android:textSize="14sp"
+        tools:text="100000000000000000000000000"
+        android:textSize="16sp"
         android:textStyle="bold"
+        android:textColor="?android:colorPrimary"
+
+        android:maxLines="1"
+        android:ellipsize="end"
 
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
@@ -63,8 +65,8 @@
         app:layout_constraintVertical_weight="0.9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/stock_layout"
 
         app:layout_constraintVertical_bias="0"
         app:layout_constraintHorizontal_bias="1"
@@ -75,24 +77,31 @@
 
         android:id="@+id/btn_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:weightSum="2"
         android:gravity="center"
+
+        android:visibility="gone"
+
         android:orientation="horizontal"
         android:background="?android:textColorPrimary"
 
         app:layout_constraintVertical_weight="1"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stock_layout"
         >
 
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageButton
             android:id="@+id/minus_btn"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="24dp"
+
+            android:layout_margin="4dp"
 
             android:src="@drawable/ic_minus__1_"
             android:layout_weight="1"
@@ -100,10 +109,12 @@
             android:clickable="true"
             android:background="@drawable/image_btn_ripple_effect"
             />
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageButton
             android:id="@+id/plus_btn"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="24dp"
+
+            android:layout_margin="4dp"
 
             android:src="@drawable/ic_plus"
             android:layout_weight="1"

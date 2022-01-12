@@ -25,18 +25,19 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_nav_height"
         android:elevation="8dp"
+
+        android:background="?attr/colorPrimary"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/admin_fragment_container"
-        android:background="?android:colorPrimary"
+
 
         app:menu="@menu/admin_bottom_nav_menu"
-        app:layout_constraintVertical_weight="0.1"
         app:labelVisibilityMode="unlabeled"
-
-        app:itemIconTint="?android:textColorPrimary"
-        app:itemRippleColor="?android:colorAccent"
+        app:itemIconTint="?attr/colorOnPrimary"
+        app:itemRippleColor="?attr/colorPrimaryVariant"
         />
 
 

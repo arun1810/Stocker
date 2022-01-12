@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.stocker.model.StockerDataBase
 import com.example.stocker.pojo.Stock
 import com.example.stocker.repository.AdminRepository
 import com.example.stocker.repository.CustomerRepository
@@ -36,13 +35,13 @@ class ExampleInstrumentedTest {
         val adminRepository = AdminRepository(appContext)
         val customerRepository = CustomerRepository(appContext,"100")
 
-        customerRepository.placeOrder("qwerty",listOf("001"), listOf(2))
+        //customerRepository.placeOrder("qwerty",listOf("001"), listOf(2))
 
-        adminRepository.addStock(Stock(count = 100, stockName = "stock1", stockID = "001", price = 2000, discount = 10))
+        //adminRepository.addStock(Stock(count = 100, stockName = "stock1", stockID = "001", price = 2000, discount = 10))
 
-        print(adminRepository.getAllStock())
+        //print(adminRepository.getAllStock())
 
-        customerRepository.getAllOrderHistory()
+        //customerRepository.getAllOrderHistory()
     }
 
 

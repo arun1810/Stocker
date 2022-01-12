@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -18,39 +20,52 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
 import kotlin.random.Random
 
-class StockAdapter( private val context:Context,private val selectedArray:HashMap<Stock,Int>,private val width:Int,private val viewHeight:Int,private val stockViewHeight:Int,private val btnLayoutHeight:Int,private val parent:RecyclerView):RecyclerView.Adapter<StockAdapter.ViewHolder>() {
+class StockAdapter( private val context:Context,private val selectedArray:HashMap<Stock,Int>,private val width:Int,val navController: NavController):RecyclerView.Adapter<StockAdapter.ViewHolder>() {
 
     private val diff = AsyncListDiffer(this, DiffCalc())
     private val images = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
+    private lateinit var recyclerView: RecyclerView
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView=recyclerView
+    }
 
 
     fun setNewList(newData:List<Stock>){
-        diff.submitList(newData)
+        diff.submitList(newData){
+            recyclerView.scrollToPosition(0)
+        }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layout= LayoutInflater.from(context).inflate(R.layout.stock_recycler_layout,parent,false)
-        val viewHolder = ViewHolder(layout,viewHeight,stockViewHeight ,width,images[Random.nextInt(images.size)])
+        val viewHolder = ViewHolder(layout,width,images[Random.nextInt(images.size)])
 
         viewHolder.itemView.setOnClickListener {
+            navController.navigate(R.id.action_stock_fragment_to_stockViewer2, bundleOf("data" to (viewHolder.imgResource to diff.currentList[viewHolder.adapterPosition])))
+        }
+
+        viewHolder.itemView.setOnLongClickListener {
 
 
             val position = viewHolder.adapterPosition
             val currentStock = diff.currentList[position]
             var count = selectedArray[currentStock] ?: 0
             //var count=10
-            if(viewHolder.badge.visibility==View.INVISIBLE && currentStock.count>0){
+            if(viewHolder.badge.visibility==View.GONE && currentStock.count>0){
 
-                TransitionManager.beginDelayedTransition(this@StockAdapter.parent)
+                TransitionManager.beginDelayedTransition(this@StockAdapter.recyclerView)
                 selectedArray[currentStock] = ++count
                 showBtnLayout(viewHolder,count)
 
             }
             else if(currentStock.count==0){
-                Toast.makeText(context,"Out of Stock!",Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Out of Stock!",Toast.LENGTH_SHORT).show()
             }
+
+            true
         }
 
         viewHolder.plusBtn.setOnClickListener {
@@ -72,7 +87,7 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
 
             when {
                 count==1 -> {
-                    TransitionManager.beginDelayedTransition(this@StockAdapter.parent)
+                    TransitionManager.beginDelayedTransition(this@StockAdapter.recyclerView)
                     hideBtnLayout(viewHolder)
 
                     selectedArray[currentStock] = --count
@@ -125,14 +140,15 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
     }
 
     private fun showBtnLayout(viewHolder: ViewHolder,count:Int){
-        if(viewHolder.canShowBtnLayout){
+       /* if(viewHolder.canShowBtnLayout){
 
             viewHolder.itemView.layoutParams = viewHolder.itemView.layoutParams.apply {
                 this.width=this@StockAdapter.width
-                this.height=(this@StockAdapter.viewHeight+btnLayoutHeight)
             }
 
         }
+
+        */
         viewHolder.badge.visibility=View.VISIBLE
         viewHolder.badge.text = count.toString()
         viewHolder.btnLayout.visibility=View.VISIBLE
@@ -140,20 +156,22 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
     }
 
     private fun hideBtnLayout(viewHolder:ViewHolder){
-        if(! viewHolder.canShowBtnLayout){
+        /*if(! viewHolder.canShowBtnLayout){
             viewHolder.itemView.layoutParams = viewHolder.itemView.layoutParams.apply {
                 this.width=this@StockAdapter.width
-                this.height=(this@StockAdapter.viewHeight)
+
             }
 
         }
+
+         */
+        viewHolder.badge.visibility=View.GONE
         viewHolder.btnLayout.visibility=View.GONE
-        viewHolder.badge.visibility=View.INVISIBLE
         viewHolder.canShowBtnLayout=true
     }
 
 
-    class ViewHolder(view: View, viewHeight: Int,stockHeight:Int,  width: Int, imgResource:Int):RecyclerView.ViewHolder(view){
+    class ViewHolder(view: View,width: Int, val imgResource:Int):RecyclerView.ViewHolder(view){
          var canShowBtnLayout=true
         val parent:MaterialCardView = view.findViewById(R.id.parent)
         val stockName: TextView = view.findViewById(R.id.stock_name)
@@ -161,22 +179,15 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
         val stockPrice: TextView = view.findViewById(R.id.stock_price)
         val badge:TextView = view.findViewById(R.id.badge)
         val btnLayout:LinearLayoutCompat = view.findViewById(R.id.btn_layout)
-        private val img :ShapeableImageView = view.findViewById(R.id.stock_img)
+        val img :ShapeableImageView = view.findViewById(R.id.stock_img)
         val plusBtn:ImageView = view.findViewById(R.id.plus_btn)
         val minusBtn:ImageView = view.findViewById(R.id.minus_btn)
-        private val stockLayout = view.findViewById<View>(R.id.stock_layout)
 
         init{
             img.setImageResource(imgResource)
 
             view.layoutParams = view.layoutParams.apply {
                 this.width=width
-                this.height=viewHeight
-            }
-
-            stockLayout.layoutParams = stockLayout.layoutParams.apply {
-                this.height=stockHeight
-
             }
 
         }

@@ -10,6 +10,7 @@ import com.example.stocker.repository.baseinterface.BaseAdminRepository
 import com.example.stocker.repository.baseinterface.BaseStockAndOrderHistoryProcessor
 import com.example.stocker.repository.helper.SortUtil
 import java.lang.Exception
+import java.util.regex.Pattern
 
 class AdminRepository(context: Context): BaseAdminRepository, BaseStockAndOrderHistoryProcessor by StockAndOrderHistoryProcessor {
 
@@ -29,8 +30,8 @@ class AdminRepository(context: Context): BaseAdminRepository, BaseStockAndOrderH
       dataBase.addCustomer(customer)
     }
 
-    override fun updateCustomer(customer:Customer){
-        dataBase.updateCustomer(customer)
+    override fun updateCustomer(customer:Customer,oldId: String){
+        dataBase.updateCustomer(customer,oldId)
     }
 
     override fun getAllCustomerData(): List<Customer> {
@@ -55,7 +56,8 @@ class AdminRepository(context: Context): BaseAdminRepository, BaseStockAndOrderH
     }
 
     override fun filterCustomerByName(customers:MutableList<Customer>,filter: String): List<Customer> {
-        return customers.filter { customer -> customer.name.matches(Regex.fromLiteral( "(.*)$filter(.*)" )) }
+        val pattern = Pattern.compile("(.*?)$filter(.*?)")
+        return customers.filter { customer -> pattern.matcher(customer.name).matches() }
     }
 
     override fun getAllOrderHistory():List<OrderHistory> {
@@ -70,8 +72,8 @@ class AdminRepository(context: Context): BaseAdminRepository, BaseStockAndOrderH
         return dataBase.addStock(stock)
     }
 
-    override fun updateStock(stock:Stock): Boolean {
-        return dataBase.updateStock(stock)
+    override fun updateStock(stock:Stock,oldId:String): Boolean {
+        return dataBase.updateStock(stock,oldId)
     }
 
     override fun buyStock(stock:Stock): Boolean {

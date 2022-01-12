@@ -1,12 +1,15 @@
 package com.example.stocker.view.fragments
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,11 +19,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
+import com.example.stocker.pojo.StockInCart
 import com.example.stocker.view.adapter.CartAdapter
 import com.example.stocker.viewmodel.CustomerViewModel
 import com.example.stocker.viewmodel.helper.NetworkConnectivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
@@ -38,6 +43,7 @@ class CartFragment : Fragment() {
     private lateinit var buyLayout:ConstraintLayout
     private  var snackBar:Snackbar?=null
     private lateinit var navController:NavController
+    private lateinit var stockInCart: StockInCart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +72,7 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        model.resultStatus.observe(this,{status->
+        model.cartErrorStatus.observe(this,{status->
             status?.let {
                 if(!status.isHandled) {
                     Snackbar.make(view, status.msg, Snackbar.LENGTH_LONG).setAction("close") {
@@ -96,15 +102,21 @@ class CartFragment : Fragment() {
 
 
         lifecycleScope.launch {
-            val data = model.calcCart()
-            recycler.adapter = CartAdapter(context!!,data)
-            totalPriceText.text = "TOTAL:${data.total}"
+            stockInCart = model.calcCart()
+            recycler.adapter = CartAdapter(context!!,stockInCart)
+            totalPriceText.text = "TOTAL: ₹ ${stockInCart.total}"
             isLoaded=true
         }
 
 
         recycler.layoutManager = LinearLayoutManager(context)
-        recycler.addItemDecoration(DividerItemDecoration(context!!,DividerItemDecoration.VERTICAL))
+        val decor  =DividerItemDecoration(context!!,DividerItemDecoration.VERTICAL)
+        //decor.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.divider)!!)
+        decor.setDrawable(
+            ColorDrawable(
+            MaterialColors.getColor(context!!,R.attr.colorOnBackground,context!!.getColor(R.color.darkOnBackgroundColor)))
+        )
+        recycler.addItemDecoration(decor)
 
         buyBtn.setOnClickListener {
             buy(view)
@@ -121,38 +133,31 @@ class CartFragment : Fragment() {
 
 
                 lifecycleScope.launch {
-                    if(model.placeOrder()){
+                    if(model.placeOrder(stockInCart.total)){
                         progress.hide()
                         // buyLayout.visibility=View.INVISIBLE
-                        snackBar = Snackbar.make(view,"Order Placed",Snackbar.LENGTH_INDEFINITE).setAction(
-                            "Hurray"
-                        ) {
-                            activity?.onBackPressed()
-                        }.setAnchorView(buyLayout)
+                        Toast.makeText(context!!,"Order Placed",Toast.LENGTH_LONG).show()
+                        navController.popBackStack()
 
-                        snackBar!!.show()
+
+
                     }
                     else{
                         progress.hide()
-                        snackBar = Snackbar.make(view,"Something went wrong",Snackbar.LENGTH_INDEFINITE).setAction(
-                            "Close"
-                        ) {
-                            activity?.onBackPressed()
-                        }.setAnchorView(buyLayout)
-
-                        snackBar!!.show()
+                        snackBar = Snackbar.make(view,"Something went wrong",Snackbar.LENGTH_LONG).apply {
+                            anchorView = buyLayout
+                            show()
+                        }
                     }
                 }
             }
         }
         else{
-            snackBar = Snackbar.make(view,"No internet Connection",Snackbar.LENGTH_INDEFINITE).setAction(
-                "retry"
-            ) {
-                buy(view)
-            }.setAnchorView(buyLayout)
-
-            snackBar!!.show()
+            snackBar = Snackbar.make(view,"No internet Connection",Snackbar.LENGTH_LONG).apply {
+                setAction("retry") { buy(view) }
+                anchorView = buyLayout
+                show()
+            }
         }
     }
 

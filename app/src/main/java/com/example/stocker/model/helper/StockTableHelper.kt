@@ -3,7 +3,6 @@ package com.example.stocker.model.helper
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.Stock
 
 class StockTableHelper {
@@ -26,7 +25,7 @@ class StockTableHelper {
     fun getAllData(db:SQLiteDatabase):MutableList<Stock>{
         val stocks:MutableList<Stock> = mutableListOf()
 
-        val cursor = db.rawQuery("SELECT * FROM $stockTableName",null)
+        val cursor = db.rawQuery("SELECT * FROM $stockTableName ",null)
 
         while(cursor.moveToNext()){
             stocks.add(cursorToStock(cursor))
@@ -57,9 +56,11 @@ class StockTableHelper {
         return result
     }
 
-    fun update(db:SQLiteDatabase,stock:Stock):Boolean{
+    fun update(db:SQLiteDatabase,stock:Stock,oldId:String):Boolean{
+        return db.updateWithOnConflict(stockTableName,stockToContentValues(stock),"$id=?",
+            arrayOf(oldId),SQLiteDatabase.CONFLICT_FAIL) >0
 
-        return db.replaceOrThrow(stockTableName,null,stockToContentValues(stock)) >0
+        //return db.replaceOrThrow(stockTableName,null,stockToContentValues(stock)) >0
     }
 
     fun updateMultiple(db:SQLiteDatabase,stocks:HashMap<Stock,Int>):Boolean{
@@ -67,7 +68,7 @@ class StockTableHelper {
         db.beginTransaction()
         for((stock,count)in stocks ){
             stock.count-=count
-           if(update(db,stock)){
+           if(update(db,stock,stock.stockID)){
               result=true
            }
             else{
@@ -84,10 +85,10 @@ class StockTableHelper {
 
     private fun cursorToStock(cursor: Cursor) = Stock(
         stockID = cursor.getString(0),
-        stockName=cursor.getString(1),
-        price=cursor.getInt(2),
+        stockName =cursor.getString(1),
+        price =cursor.getInt(2),
         discount = cursor.getInt(3),
-        count=cursor.getInt(4)
+        count =cursor.getInt(4)
 
     )
 

@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.StockInCart
-import com.example.stocker.view.customviews.ScrollableTextView
+import com.example.stocker.view.customviews.CustomTextView
+import com.google.android.material.textview.MaterialTextView
 
 class CartAdapter(private val context:Context,private val data:StockInCart):RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
@@ -17,10 +18,16 @@ class CartAdapter(private val context:Context,private val data:StockInCart):Recy
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.stockName.setText( data.stocksNames[position])
-        holder.stockCount.setText("x${data.counts[position]}")
-        holder.stockId.setText("id: ${data.stockIds[position]}")
-        holder.stockTotalPrice.setText("₹${data.price[position]}")
+        holder.stockName.text = data.stocksNames[position]
+        holder.stockCount.text = "x${data.counts[position]}"
+        holder.stockId.text = "id: ${data.stockIds[position]}"
+
+        if(data.price[position]==""){
+            holder.stockTotalPrice.visibility = View.GONE
+        }
+        else{
+            holder.stockTotalPrice.text = "₹ ${data.price[position]}"
+        }
 
     }
 
@@ -30,10 +37,10 @@ class CartAdapter(private val context:Context,private val data:StockInCart):Recy
 
     class ViewHolder(view: View):RecyclerView.ViewHolder(view){
 
-        val stockName:ScrollableTextView = view.findViewById(R.id.cart_stock_name)
-        val stockCount:ScrollableTextView = view.findViewById(R.id.cart_stock_count)
-        val stockTotalPrice:ScrollableTextView = view.findViewById(R.id.cart_stock_total_price)
-        val stockId:ScrollableTextView = view.findViewById(R.id.cart_stock_id)
+        val stockName:MaterialTextView = view.findViewById(R.id.cart_stock_name)
+        val stockCount:MaterialTextView = view.findViewById(R.id.cart_stock_count)
+        val stockTotalPrice:MaterialTextView = view.findViewById(R.id.cart_stock_total_price)
+        val stockId:MaterialTextView = view.findViewById(R.id.cart_stock_id)
         }
 
 
