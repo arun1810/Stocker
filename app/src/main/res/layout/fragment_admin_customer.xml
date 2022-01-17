@@ -59,7 +59,11 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_account_plus"
         android:background="?android:colorSecondary"
-        android:tint="?android:textColorSecondary"
+
+        app:tint="?attr/colorOnPrimary"
+        app:backgroundTint="?attr/colorPrimary"
+
+
 
 
         app:layout_constraintEnd_toEndOf="parent"

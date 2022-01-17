@@ -1,9 +1,12 @@
 package com.example.stocker.view.customviews
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import androidx.core.content.ContextCompat
+import com.example.stocker.R
 import com.example.stocker.repository.helper.SortUtil
 
 private const val sortImgKey="sortOrder"
@@ -26,7 +29,12 @@ class SortImageButton@JvmOverloads constructor(context: Context, attr: Attribute
         field = value
     }
 
+init {
+    background = ContextCompat.getDrawable(context,R.drawable.image_btn_ripple_effect)
+}
+
     fun changeSortOrder(){
+        //this.setColorFilter(Color.argb(50,0,0,0))
         _sortOrder = when(_sortOrder) {
             SortUtil.SortOrder.ASC->{
                 setImageResource(decIcon)
@@ -40,6 +48,7 @@ class SortImageButton@JvmOverloads constructor(context: Context, attr: Attribute
             }
 
         }
+        this.setColorFilter(Color.argb(50,0,0,0))
     }
 
     fun changeToDefaultSortOrder(){

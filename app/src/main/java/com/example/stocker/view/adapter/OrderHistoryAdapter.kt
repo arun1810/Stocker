@@ -4,24 +4,35 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
+import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.view.customviews.CustomTextView
 import com.google.android.material.textview.MaterialTextView
+import java.util.regex.Pattern
 
 const val AdminMode=1
 const val CustomerMode=2
 
-class OrderHistoryAdapter(val context: Context, val navController: NavController, private val mode:Int): RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder>() {
+class OrderHistoryAdapter(val context: Context, val navController: NavController, private val mode:Int): RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder>(){
+
 
        private val diff = AsyncListDiffer(this, DiffCalc())
         private lateinit var recyclerView: RecyclerView
+    private var smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+        override fun getVerticalSnapPreference(): Int {
+            return SNAP_TO_START
+        }
+    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -29,8 +40,13 @@ class OrderHistoryAdapter(val context: Context, val navController: NavController
     }
 
     fun setNewList(newData:List<OrderHistory>){
+
         diff.submitList(newData){
-            recyclerView.scrollToPosition(0)
+
+                recyclerView.post {
+                    smoothScroller.targetPosition=0
+                    recyclerView.layoutManager!!.startSmoothScroll(smoothScroller)
+                }
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,14 +54,15 @@ class OrderHistoryAdapter(val context: Context, val navController: NavController
 
         val holder = ViewHolder(layout)
         holder.itemView.setOnClickListener {
+            val data = diff.currentList
             when(mode){
                 AdminMode->{
                     navController.navigate(R.id.action_adminOrderHistoryFragment_to_orderHistroyViewer,
-                        bundleOf("data" to ("data" to diff.currentList[holder.adapterPosition])))
+                        bundleOf("data" to ("data" to data[holder.adapterPosition])))
                 }
                 CustomerMode->{
                     navController.navigate(R.id.action_order_History_fragment_to_orderHistroyViewer2,
-                        bundleOf("data" to ("data" to diff.currentList[holder.adapterPosition])))
+                        bundleOf("data" to ("data" to data[holder.adapterPosition])))
                 }
             }
         }
@@ -53,7 +70,7 @@ class OrderHistoryAdapter(val context: Context, val navController: NavController
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = diff.currentList
+        val data =diff.currentList
 
         holder.orderId.text="O id: ${data[position].orderID}"
         holder.customerId.text = "C id: ${data[position].customerId}"
@@ -82,4 +99,6 @@ class OrderHistoryAdapter(val context: Context, val navController: NavController
 
 
     }
+
+
 }

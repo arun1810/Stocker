@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2638888888888889" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/badge_shape.xml" value="0.2703125" />
+        <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/botton_nav_selector.xml" value="0.2703125" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/dicider.xml" value="0.2703125" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/divider.xml" value="0.2703125" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/ic_account_plus.xml" value="0.1" />
@@ -45,6 +46,8 @@
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/ic_sort_numeric_descending__3_.xml" value="0.1" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/ic_stock.xml" value="0.2638888888888889" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/image_btn_ripple_effect.xml" value="0.21574074074074073" />
+        <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/ripple.xml" value="0.15885416666666666" />
+        <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/drawable/sort_btn_background.xml" value="0.15885416666666666" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/activity_admin.xml" value="0.2" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/activity_cart.xml" value="0.176" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/activity_customer.xml" value="0.2" />
@@ -76,7 +79,7 @@
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/fragment_stock_fragment.xml" value="0.22614840989399293" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/fragment_stock_viewer.xml" value="0.2" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/order_history_adapter_view.xml" value="0.4" />
-        <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/order_history_sort_layout.xml" value="0.536" />
+        <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/order_history_sort_layout.xml" value="0.264" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/stock_activity_drawer.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/stock_recycler_layout.xml" value="0.2" />
         <entry key="..\:/Users/arun-12206/AndroidStudioProjects/Stocker/app/src/main/res/layout/stock_sort_layout.xml" value="0.264" />

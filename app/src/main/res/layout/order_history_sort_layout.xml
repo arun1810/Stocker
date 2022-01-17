@@ -6,42 +6,80 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/sort_layout_height"
     android:elevation="@dimen/sort_layout_elevation"
+
+    android:background="@android:color/transparent"
+
     >
 
-    <com.example.stocker.view.customviews.SortImageButton
-        android:id="@+id/date_sort"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/date_sort_parent"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_sort_clock_neutral_outline"
-        android:scaleType="centerInside"
+
+        android:layout_marginStart="@dimen/margin"
+
+        android:background="@android:color/transparent"
+        app:cardBackgroundColor="@android:color/transparent"
+        android:elevation="0dp"
+        app:strokeWidth="0dp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/price_sort"
+        app:layout_constraintEnd_toStartOf="@id/price_sort_parent"
 
-        />
+        >
     <com.example.stocker.view.customviews.SortImageButton
-        android:id="@+id/price_sort"
+        android:id="@+id/date_sort"
+        android:layout_width="@dimen/sort_icon_width"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_sort_clock_neutral_outline"
+        android:scaleType="centerInside"
+
+        android:layout_gravity="center"
+        />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/price_sort_parent"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_price_neutral"
-        android:scaleType="centerInside"
+
+        android:layout_marginEnd="@dimen/margin"
+
+        android:background="@android:color/transparent"
+        app:cardBackgroundColor="@android:color/transparent"
+        android:elevation="0dp"
+        app:strokeWidth="0dp"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/date_sort"
+        app:layout_constraintStart_toEndOf="@id/date_sort_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
 
 
+        >
+    <com.example.stocker.view.customviews.SortImageButton
+        android:id="@+id/price_sort"
+        android:layout_width="@dimen/sort_icon_width"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_price_neutral"
+        android:scaleType="centerInside"
+
+        android:layout_gravity="center"
+
+
 
         />
+    </com.google.android.material.card.MaterialCardView>
+
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="1dp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date_sort"
+        app:layout_constraintTop_toBottomOf="@id/date_sort_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

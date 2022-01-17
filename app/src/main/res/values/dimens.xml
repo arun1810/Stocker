@@ -17,4 +17,6 @@
     <dimen name="recycler_item_elevation">4dp</dimen>
     <dimen name="banner_elevation">5dp</dimen>
     <dimen name="sort_layout_elevation">4dp</dimen>
+
+    <dimen name="sort_icon_width">48dp</dimen>
 </resources>

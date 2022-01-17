@@ -10,11 +10,11 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.example.stocker.view.fragments.util.Type
@@ -22,16 +22,21 @@ import com.google.android.material.color.MaterialColors
 import com.google.android.material.imageview.ShapeableImageView
 import java.util.regex.Pattern
 import kotlin.random.Random
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 
-class AdminStockAdapter(private val context: Context,private val selectedStocks:MutableList<Stock>,private val width:Int,val navController:NavController,private val selectionListener: SelectionListener): RecyclerView.Adapter<AdminStockAdapter.ViewHolder>(),Filterable {
 
-
-    private val originalData = mutableListOf<Stock>()
-    private val tempData = mutableListOf<Stock>()
+class AdminStockAdapter(private val context: Context,private val selectedStocks:MutableList<Stock>,private val width:Int,val navController:NavController,private val selectionListener: SelectionListener): RecyclerView.Adapter<AdminStockAdapter.ViewHolder>(){
 
     private var oneSelectionActive = false
     private var multipleSelectionActive = false
     private val diff = AsyncListDiffer(this, DiffCalc())
+
+    private var smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
+        override fun getVerticalSnapPreference(): Int {
+            return SNAP_TO_START
+        }
+    }
     private val images = arrayOf(
         R.mipmap.bike1_foreground,
         R.mipmap.bike2_foreground,
@@ -54,15 +59,17 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
 
     fun setNewList(newData: List<Stock>) {
 
-        originalData.clear()
-        originalData.addAll(newData)
-
         diff.submitList(newData) {
 
             if ((changeType != Type.Delete)) {
-                recyclerView.scrollToPosition(0)
-            }
+                //recyclerView.scrollToPosition(0)
+                    recyclerView.post {
+                        smoothScroller.targetPosition=0
+                        recyclerView.layoutManager!!.startSmoothScroll(smoothScroller)
+                    }
 
+                //recyclerView.layoutManager!!.smoothScrollToPosition(recyclerView,RecyclerView.State)
+            }
             changeType = Type.Nothing
 
         }
@@ -78,6 +85,8 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        //val data = diff.currentList
+
         val layout = LayoutInflater.from(context)
             .inflate(R.layout.admin_stock_recycler_card_layout, parent, false)
 
@@ -93,8 +102,11 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
         }
 
         holder.itemView.setOnClickListener {
+            //val data = filteredList
+            val data = diff.currentList
             if (oneSelectionActive || multipleSelectionActive) {
-                if (selectedStocks.contains(diff.currentList[holder.adapterPosition])) {
+                //if (selectedStocks.contains(diff.currentList[holder.adapterPosition])) {
+                if (selectedStocks.contains(data[holder.adapterPosition])) {
                     unSelectStock(holder)
                 } else {
                     selectStock(holder)
@@ -102,7 +114,9 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
             } else {
                 navController.navigate(
                     R.id.action_adminStockFragment_to_stockViewer,
-                    bundleOf("data" to (holder.imgResource to diff.currentList[holder.adapterPosition])),
+                    //bundleOf("data" to (holder.imgResource to diff.currentList[holder.adapterPosition])),
+                    bundleOf("data" to (holder.imgResource to data[holder.adapterPosition])),
+
                     null,
                     FragmentNavigatorExtras(holder.itemView to "stock_viewer_img")
                 )
@@ -114,6 +128,7 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = diff.currentList
+            //val data = filteredList
 
 
 
@@ -123,7 +138,8 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
 
 
 
-        if (selectedStocks.contains(diff.currentList[position])) {
+       // if (selectedStocks.contains(diff.currentList[position])) {
+        if (selectedStocks.contains(data[position])) {
             changeToSelectedState(holder)
         } else {
             changeToUnselectedState(holder)
@@ -134,19 +150,24 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
 
     override fun getItemCount(): Int {
         return diff.currentList.size
+        //return filteredList.size
     }
 
     private fun selectStock(holder: ViewHolder) {
+        val data = diff.currentList
+        //val data = filteredList
 
         changeToSelectedState(holder)
-        selectedStocks.add(diff.currentList[holder.adapterPosition])
+        selectedStocks.add(data[holder.adapterPosition])
         changeSelectionState()
     }
 
     private fun unSelectStock(holder: ViewHolder) {
-        if (selectedStocks.contains(diff.currentList[holder.adapterPosition])) {
+        val data = diff.currentList
+        //val data = filteredList
+        if (selectedStocks.contains(data[holder.adapterPosition])) {
             changeToUnselectedState(holder)
-            selectedStocks.remove(diff.currentList[holder.adapterPosition])
+            selectedStocks.remove(data[holder.adapterPosition])
             changeSelectionState()
         }
     }
@@ -213,11 +234,12 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
         val stockId: TextView = view.findViewById(R.id.stock_id)
         val stockPrice: TextView = view.findViewById(R.id.stock_price)
         val layout: ConstraintLayout = view.findViewById(R.id.parent_layout)
-        val img: ShapeableImageView = view.findViewById(R.id.stock_img)
+        private val img: ShapeableImageView = view.findViewById(R.id.stock_img)
         val parent: ConstraintLayout = view.findViewById(R.id.parent_layout)
 
         init {
-            img.setImageResource(imgResource)
+            Glide.with(view).load(imgResource).into(img)
+            //img.setImageResource(imgResource)
 
             view.layoutParams = view.layoutParams.apply {
                 this.width = width
@@ -236,39 +258,6 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
         override fun areContentsTheSame(oldItem: Stock, newItem: Stock): Boolean {
 
             return oldItem == newItem
-        }
-
-    }
-
-    override fun getFilter(): Filter {
-        return filter
-    }
-
-    private val filter: Filter = object : Filter() {
-        override fun performFiltering(constraint: CharSequence?): FilterResults {
-
-            val filteredData = mutableListOf<Stock>()
-            if (constraint == null || constraint.isEmpty()) {
-                filteredData.addAll(originalData)
-            } else {
-                val pattern = Pattern.compile("(.*?)$constraint(.*?)")
-                filteredData.addAll(originalData.filter { stock ->
-                    pattern.matcher(stock.stockName).matches()
-                }.toMutableList())
-            }
-
-            val filterResults = FilterResults().apply {
-                values = filteredData
-            }
-
-            return filterResults
-        }
-
-        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            diff.submitList((results?.values as MutableList<Stock>)) {
-                recyclerView.scrollToPosition(0)
-            }
-
         }
 
     }

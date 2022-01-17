@@ -22,6 +22,11 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
 
 
 
+    private var originalStocks = mutableListOf<Stock>()
+    var lastStockQuery = ""
+    private var originalOrderHistories = mutableListOf<OrderHistory>()
+    var lastOrderHistoryQuery=""
+
     private val _stocksLiveData = MutableLiveData<List<Stock>>(listOf())
     val stocksLiveData:LiveData<List<Stock>> = _stocksLiveData
     private val _orderHistoryLiveData = MutableLiveData<List<OrderHistory>>(listOf())
@@ -55,7 +60,9 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
      fun getAllStocks(){
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
-                _stocksLiveData.postValue(customerRepository.getAllStocks())
+                val data  = customerRepository.getAllStocks()
+                originalStocks=data.toMutableList()
+                _stocksLiveData.postValue(data)
             }
             catch (e:Exception){
                 _stockErrorStatus.postValue(_stockErrorStatus.value?.apply {
@@ -70,7 +77,9 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
     fun getAllOrderHistory(){
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
-                _orderHistoryLiveData.postValue(customerRepository.getAllOrderHistory())
+                val data = customerRepository.getAllOrderHistory()
+                originalOrderHistories = data.toMutableList()
+                _orderHistoryLiveData.postValue(data)
             }catch(e:Exception){
                 e.printStackTrace()
                 _orderHistoryErrorStatus.postValue(_orderHistoryErrorStatus.value?.apply {
@@ -147,10 +156,16 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
     fun filterOrderHistoryByStockId(filter:String){
 
         job = viewModelScope.launch(Dispatchers.IO) {
-            _orderHistoryLiveData.value?.let{
-                _orderHistoryLiveData.postValue( customerRepository.filterOrderHistoryByStockId(it.toMutableList(),filter))
-                filterOnOrders=true
+            if(filter.isEmpty()){
+                _orderHistoryLiveData.postValue(originalOrderHistories)
             }
+            else{
+                _orderHistoryLiveData.value?.let{
+                    _orderHistoryLiveData.postValue( customerRepository.filterOrderHistoryByStockId(originalOrderHistories,filter))
+
+                }
+            }
+            filterOnOrders=true
         }
     }
 
@@ -183,10 +198,18 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
 
     fun filterStockByName(filter:String){
         job = viewModelScope.launch(Dispatchers.IO) {
-            _stocksLiveData.value?.let{
-                filterOnStocks=true
-                _stocksLiveData.postValue( customerRepository.filterStockByName(it.toMutableList(),filter))
+            filterOnStocks=true
+
+            if(filter.isEmpty()){
+                _stocksLiveData.postValue(originalStocks)
             }
+            else{
+                _stocksLiveData.value?.let{
+
+                    _stocksLiveData.postValue( customerRepository.filterStockByName(originalStocks,filter))
+                }
+            }
+
         }
     }
 
@@ -230,8 +253,10 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
     }
 
     private fun updatePurchase(newOrder:OrderHistory){
+
             _orderHistoryLiveData.value?.let{
                 try {
+                    originalOrderHistories.add(0,newOrder)
                     val newData =
                         _orderHistoryLiveData.value!!.toMutableList().apply { add(newOrder) }
                     _orderHistoryLiveData.postValue(newData)

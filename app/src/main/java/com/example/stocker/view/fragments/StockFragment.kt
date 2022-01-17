@@ -261,15 +261,20 @@ class StockFragment : Fragment() {
         searchMenu.setOnQueryTextListener(
             object: SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    query?.let {
+                   /* query?.let {
                         model.filterStockByName(it)
                         if(!buyFab.isShown) buyFab.show()
                     }
+
+                    */
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    //newText?.let { model.filterStockByName(it) }
+                    newText?.let {
+                        model.filterStockByName(it)
+                        if(!buyFab.isShown) buyFab.show()
+                    }
                     return false
                 }
 

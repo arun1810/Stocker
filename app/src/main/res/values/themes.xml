@@ -11,9 +11,9 @@
         <item name="android:colorControlNormal">?attr/colorOnPrimary</item>
 
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/darkPrimaryColor</item>
-        <item name="colorPrimaryVariant">@color/darkPrimaryDarkColor</item>
-        <item name="colorOnPrimary">@color/darkPrimaryTextColor</item>
+        <item name="colorPrimary">@color/lightPrimaryColor</item>
+        <item name="colorPrimaryVariant">@color/lightPrimaryDarkColor</item>
+        <item name="colorOnPrimary">@color/lightPrimaryTextColor</item>
 
         <!-- Secondary brand color. -->
 
@@ -22,7 +22,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
         <!-- Customize your theme here. -->
-        <item name="colorAccent">@color/darkAccent</item>
+        <item name="colorAccent">@color/lightPrimaryColor</item>
         <item name="colorError">@color/error</item>
 
 

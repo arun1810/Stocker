@@ -5,26 +5,33 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
+import java.util.regex.Pattern
 import kotlin.random.Random
 
 class StockAdapter( private val context:Context,private val selectedArray:HashMap<Stock,Int>,private val width:Int,val navController: NavController):RecyclerView.Adapter<StockAdapter.ViewHolder>() {
 
+
+
     private val diff = AsyncListDiffer(this, DiffCalc())
     private val images = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
     private lateinit var recyclerView: RecyclerView
+    private var smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+        override fun getVerticalSnapPreference(): Int {
+            return SNAP_TO_START
+        }
+    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -33,8 +40,12 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
 
 
     fun setNewList(newData:List<Stock>){
+
         diff.submitList(newData){
-            recyclerView.scrollToPosition(0)
+            recyclerView.post {
+                smoothScroller.targetPosition=0
+                recyclerView.layoutManager!!.startSmoothScroll(smoothScroller)
+            }
         }
     }
 
@@ -44,14 +55,16 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
         val viewHolder = ViewHolder(layout,width,images[Random.nextInt(images.size)])
 
         viewHolder.itemView.setOnClickListener {
-            navController.navigate(R.id.action_stock_fragment_to_stockViewer2, bundleOf("data" to (viewHolder.imgResource to diff.currentList[viewHolder.adapterPosition])))
+            val data = diff.currentList
+            navController.navigate(R.id.action_stock_fragment_to_stockViewer2, bundleOf("data" to (viewHolder.imgResource to data[viewHolder.adapterPosition])))
         }
 
         viewHolder.itemView.setOnLongClickListener {
 
+            val data = diff.currentList
 
             val position = viewHolder.adapterPosition
-            val currentStock = diff.currentList[position]
+            val currentStock = data[position]
             var count = selectedArray[currentStock] ?: 0
             //var count=10
             if(viewHolder.badge.visibility==View.GONE && currentStock.count>0){
@@ -69,11 +82,12 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
         }
 
         viewHolder.plusBtn.setOnClickListener {
+            val data = diff.currentList
             val position = viewHolder.adapterPosition
-            val currentStock = diff.currentList[position]
+            val currentStock = data[position]
             var count = selectedArray[currentStock] ?: 0
 
-            if(count< diff.currentList[position].count) {
+            if(count< data[position].count) {
                 selectedArray[currentStock] = ++count
                 viewHolder.badge.text = count.toString()
             }
@@ -81,8 +95,9 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
         }
 
         viewHolder.minusBtn.setOnClickListener {
+            val data = diff.currentList
             val position = viewHolder.adapterPosition
-            val currentStock = diff.currentList[position]
+            val currentStock = data[position]
             var count = selectedArray[currentStock] ?: 0
 
             when {
@@ -110,7 +125,7 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = diff.currentList
+        val data =diff.currentList
         holder.stockName.text= data[position].stockName
         holder.stockPrice.text = "₹ ${data[position].price}"
         holder.stockId.text="id: ${data[position].stockID}"
@@ -205,5 +220,6 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
          }
 
      }
+
 
 }

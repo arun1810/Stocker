@@ -66,14 +66,20 @@
         android:id="@+id/admin_add_stock_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        app:tint="?attr/colorOnPrimary"
+        app:backgroundTint="?attr/colorPrimary"
         android:src="@drawable/ic_plus"
 
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintVertical_bias="0.95"
         app:fabSize="normal"
 
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
+
+
+
+
+
 
 
         app:layout_constraintBottom_toBottomOf="parent"

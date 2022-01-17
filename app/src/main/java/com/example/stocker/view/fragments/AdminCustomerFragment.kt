@@ -197,14 +197,20 @@ class AdminCustomerFragment : Fragment() {
             object: SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     query?.let {
-                        model.filterCustomerByName(it)
+                        /*model.filterCustomerByName(it)
                         if(!addCustomerFab.isShown)addCustomerFab.show()
+
+                         */
                     }
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    //newText?.let { model.filterStockByName(it) }
+                    newText?.let{
+                        //adapter.filter.filter(newText)
+                        model.filterCustomerByName(newText)
+                    if(!addCustomerFab.isShown)addCustomerFab.show()
+                    }
                     return false
                 }
 

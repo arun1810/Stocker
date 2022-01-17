@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="darkPrimaryColor">#ffc056</color>
-    <color name="darkPrimaryLightColor">#fff386</color>
-    <color name="darkPrimaryDarkColor">#c89025</color>
+
+    <!--<color name="darkPrimaryColor">#ffc056</color> -->
+    <color name="darkPrimaryColor">#616161</color>
+    <color name="darkPrimaryDarkColor">#373737</color>
+    <color name="darkBackgroundColor">#212121</color>
+    <color name="darkOnBackgroundColor">#ffff</color>
+    <color name="darkPrimaryTextColor">#ffff</color>
+    <color name="darkSecondaryTextColor">#ffff</color>
+
+    <color name="lightPrimaryColor">#ffc056</color>
+    <color name="lightPrimaryLightColor">#fff386</color>
+    <color name="lightPrimaryDarkColor">#c89025</color>
+    <color name="lightOnBackgroundColor">#000000</color>
+    <color name="lightPrimaryTextColor">#000000</color>
+    <color name="lightSecondaryTextColor">#000000</color>
+
+    <!--
     <color name="darkSecondaryColor">#5694ff</color>
     <color name="darkSecondaryLightColor">#90c4ff</color>
     <color name="darkSecondaryDarkColor">#0067cb</color>
-    <color name="darkPrimaryTextColor">#000000</color>
-    <color name="darkSecondaryTextColor">#000000</color>
-    <color name="darkOnBackgroundColor">#ffff</color>
-    <color name="lightOnBackgroundColor">#000000</color>
+    -->
+
+
+
+
     <color name="success">#9FCD69</color>
     <color name="error">#DA6361</color>
     <color name="darkAccent">#1976D2</color>
-    <color name="darkBackgroundColor">#202020</color>
+
+
     <color name="lightBackGroundColor">#ffff</color>
 </resources>

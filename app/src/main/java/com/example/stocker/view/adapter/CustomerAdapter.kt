@@ -4,26 +4,37 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Customer
+import com.example.stocker.pojo.Stock
 import com.example.stocker.view.customviews.CustomTextView
 import com.example.stocker.view.fragments.util.Type
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.textview.MaterialTextView
+import java.util.regex.Pattern
 
-class CustomerAdapter(val context: Context,private val selectedCustomer:MutableList<Customer>,val navController: NavController ,private val selectionListener: SelectionListener): RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
+class CustomerAdapter(val context: Context,private val selectedCustomer:MutableList<Customer>,val navController: NavController ,private val selectionListener: SelectionListener): RecyclerView.Adapter<CustomerAdapter.ViewHolder>(){
 
     private var oneSelectionActive=false
     private var multipleSelectionActive=false
     private val diff = AsyncListDiffer(this, DiffCalc())
     private var changeType = Type.Nothing
     lateinit var recyclerView: RecyclerView
+
+    private var smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+        override fun getVerticalSnapPreference(): Int {
+            return SNAP_TO_START
+        }
+    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -32,11 +43,15 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
 
     fun setNewList(newData:List<Customer>){
         diff.submitList(newData){
-            if(changeType!=Type.Delete){
-                recyclerView.scrollToPosition(0)
-                changeType=Type.Nothing
+            if ((changeType != Type.Delete)) {
+                recyclerView.post {
+                    smoothScroller.targetPosition=0
+                    recyclerView.layoutManager!!.startSmoothScroll(smoothScroller)
+                }
             }
+            changeType = Type.Nothing
         }
+
     }
     fun selectionListChanged(type: Type){
         if(type== Type.Update) notifyDataSetChanged()
@@ -58,7 +73,7 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
         }
 
         holder.itemView.setOnClickListener {
-            val data = diff.currentList
+            val data =diff.currentList
             if(oneSelectionActive || multipleSelectionActive){
                 if(selectedCustomer.contains(data[holder.adapterPosition])){
                     unSelectCustomer(holder)
@@ -76,10 +91,6 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-
-
-
 
         val data = diff.currentList
         if(selectedCustomer.contains(data[position])){
@@ -102,11 +113,13 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
 
     private fun selectCustomer(holder:ViewHolder){
 
+        val data = diff.currentList
             changeToSelectedState(holder)
-            selectedCustomer.add(diff.currentList[holder.adapterPosition])
+            selectedCustomer.add(data[holder.adapterPosition])
             changeSelectionState()
     }
     private fun unSelectCustomer(holder:ViewHolder) {
+
         val data = diff.currentList
         if (selectedCustomer.contains(data[holder.adapterPosition])) {
             changeToUnselectedState(holder)

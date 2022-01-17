@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.stocker.R
@@ -38,6 +39,8 @@ class AdminStockFragment : Fragment() {
     val model: AdminViewModel by activityViewModels()
     private lateinit var adapter: AdminStockAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
+    lateinit var searchMenu: SearchView
+    lateinit var recycler: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +54,8 @@ class AdminStockFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recycler = view.findViewById<RecyclerView>(R.id.admin_stock_recycler)
+        recycler = view.findViewById<RecyclerView>(R.id.admin_stock_recycler)
+
         val toolbar = view.findViewById<MaterialToolbar>(R.id.admin_stock_toolbar)
         val addStockFab = view.findViewById<FloatingActionButton>(R.id.admin_add_stock_fab)
         val navHost =
@@ -191,7 +195,7 @@ class AdminStockFragment : Fragment() {
         toolbar.title = "Stocks"
         toolbar.inflateMenu(R.menu.customer_order_history_menu)
 
-        val searchMenu: SearchView =
+        searchMenu =
             toolbar.menu.findItem(R.id.order_search).actionView as SearchView
         searchMenu.queryHint = "Stock Name"
         searchMenu.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -202,9 +206,12 @@ class AdminStockFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let{
-                    adapter.filter.filter(newText)
 
-                    if(!addStockFab.isShown) addStockFab.show()
+                    model.filterStockByName(newText)
+                       // adapter.filter.filter(newText)
+
+                        if (!addStockFab.isShown) addStockFab.show()
+
                 }
 
                 return false
@@ -295,12 +302,17 @@ class AdminStockFragment : Fragment() {
                 }
 
             recycler.adapter = adapter
+            recycler.isNestedScrollingEnabled=false
+            //layoutManager = GridLayoutManager(context!!,spanCount)
             layoutManager = StaggeredGridLayoutManager(
                 spanCount,
                 StaggeredGridLayoutManager.VERTICAL
             )
             layoutManager.gapStrategy =
                 StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+
+
+
 
             recycler.layoutManager = layoutManager
 
@@ -329,6 +341,9 @@ class AdminStockFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         model.stockLiveData.observe(this, { stocks ->
+            if(stocks.isEmpty()){
+               // if()
+            }
             adapter.setNewList(stocks)
 
         })
@@ -337,5 +352,15 @@ class AdminStockFragment : Fragment() {
             adapter.selectionListChanged(type)
         })
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
 
 }

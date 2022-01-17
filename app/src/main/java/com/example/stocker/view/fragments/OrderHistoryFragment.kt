@@ -160,12 +160,16 @@ class OrderHistoryFragment : Fragment() {
         searchMenu.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    model.filterOrderHistoryByStockId(query)
+                    //model.filterOrderHistoryByStockId(query)
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let{
+                    //adapter.filter.filter(newText)
+                    model.filterOrderHistoryByStockId(newText)
+                }
                 return false
             }
 

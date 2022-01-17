@@ -5,13 +5,22 @@
         <item name="colorSurface">@color/darkBackgroundColor</item>
         <item name="colorOnSurface">@color/darkOnBackgroundColor</item>
 
+
+
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/darkPrimaryColor</item>
+        <item name="colorPrimaryVariant">@color/darkPrimaryDarkColor</item>
+        <item name="colorOnPrimary">@color/darkPrimaryTextColor</item>
+
         <item name="actionMenuTextColor">?attr/colorOnPrimary</item>
         <item name="android:actionMenuTextColor">?attr/colorOnPrimary</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
 
         <item name="android:colorControlNormal">?attr/colorOnPrimary</item>
 
-        <item name="colorOnPrimary">@color/darkPrimaryTextColor</item>
+        <item name="colorAccent">@color/lightPrimaryColor</item>
+
+
 
         <!-- Primary brand color.
         <item name="android:colorPrimary">@color/darkPrimaryColor</item>

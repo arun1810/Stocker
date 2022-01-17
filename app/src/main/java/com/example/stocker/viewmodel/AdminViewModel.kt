@@ -14,13 +14,18 @@ import com.example.stocker.repository.helper.SortUtil
 import com.example.stocker.view.fragments.util.Type
 import com.example.stocker.viewmodel.helper.*
 import kotlinx.coroutines.*
+import java.util.regex.Pattern
 
 class AdminViewModel(application: Application) : AndroidViewModel(application) {
 
     private val adminRepository = AdminRepository(getApplication())
-    private val originalStocks = mutableListOf<Stock>()
-    private val originalCustomers = mutableListOf<Customer>()
-    private val originalOrderHistories = mutableListOf<OrderHistory>()
+
+    private var originalStocks = mutableListOf<Stock>()
+    private var lastStockQuery=""
+    private var originalCustomers = mutableListOf<Customer>()
+    private var lastCustomerQuery=""
+    private var originalOrderHistories = mutableListOf<OrderHistory>()
+    private var lastOrderHistoryQuery=""
 
 
     private val _customersLiveData = MutableLiveData<List<Customer>>(listOf())
@@ -77,7 +82,7 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
                 val data = adminRepository.getAllCustomerData()
-
+                originalCustomers=data.toMutableList()
                 _customersLiveData.postValue(data)
             } catch (e: Exception) {
                 _customerError.postValue(_customerError.value?.apply {
@@ -92,7 +97,9 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllStocks() {
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
-                _stocksLiveData.postValue(adminRepository.getAllStock())
+                val data = adminRepository.getAllStock()
+                originalStocks = data.toMutableList()
+                _stocksLiveData.postValue(data)
             } catch (e: Exception) {
                 job.cancel()
                 _stockError.postValue(_stockError.value?.apply {
@@ -107,7 +114,9 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllOrderHistory() {
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
-                _orderHistoriesLiveData.postValue(adminRepository.getAllOrderHistory())
+                val data = adminRepository.getAllOrderHistory()
+                originalOrderHistories = data.toMutableList()
+                _orderHistoriesLiveData.postValue(data)
             } catch (e: Exception) {
                 _orderError.postValue(_orderError.value?.apply {
                     isHandled = false
@@ -183,11 +192,17 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     fun filterOrderHistoryByStockId(filter: String) {
         job = viewModelScope.launch(Dispatchers.IO) {
             filterOnOrders = true
-            _orderHistoriesLiveData.postValue(
-                _orderHistoriesLiveData.value?.let {
-                    adminRepository.filterOrderHistoryByStockId(it.toMutableList(), filter)
-                }
-            )
+            lastOrderHistoryQuery=filter
+
+            if(filter.isEmpty()){
+                _orderHistoriesLiveData.postValue(
+                    originalOrderHistories
+                )
+            }
+            else{
+                _orderHistoriesLiveData.postValue(adminRepository.filterOrderHistoryByStockId(originalOrderHistories, filter))
+            }
+
 
         }
     }
@@ -230,12 +245,20 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
 
     fun filterStockByName(filter: String) {
         job = viewModelScope.launch(Dispatchers.IO) {
+            lastStockQuery=filter
             filterOnStocks = true
-            _stocksLiveData.postValue(
-                _stocksLiveData.value?.let {
-                    adminRepository.filterStockByName(it.toMutableList(), filter)
-                }
-            )
+            if(filter.isEmpty()){
+                _stocksLiveData.postValue(
+                    originalStocks
+                )
+            }
+            else{
+                val data = adminRepository.filterStockByName(originalStocks, filter)
+                _stocksLiveData.postValue(
+                    data
+                )
+            }
+
 
         }
     }
@@ -251,11 +274,16 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
                 adminRepository.createNewCustomer(customer)
-                _customersLiveData.value?.let {
-                    _customersLiveData.postValue(_customersLiveData.value!!.toMutableList().apply {
-                        add(0, customer)
-                    })
+                originalCustomers.add(0,customer)
+                val pattern = Pattern.compile("(.*?)$lastStockQuery(.*?)")
+                if (pattern.matcher(customer.name).matches()){
+                    _customersLiveData.value?.let {
+                        _customersLiveData.postValue(_customersLiveData.value!!.toMutableList().apply {
+                            add(0, customer)
+                        })
+                    }
                 }
+
             } catch (e: Exception) {
                 _customerDetailsGetterError.postValue(_customerDetailsGetterError.value?.apply {
                     isHandled = false
@@ -318,12 +346,17 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
 
     fun filterCustomerByName(filter: String) {
         job = viewModelScope.launch(Dispatchers.IO) {
+            lastCustomerQuery=filter
             filterOnCustomer = true
-            _customersLiveData.postValue(
-                _customersLiveData.value?.let {
-                    adminRepository.filterCustomerByName(it.toMutableList(), filter)
-                }
-            )
+            if(filter.isEmpty()){
+                _customersLiveData.postValue(originalCustomers)
+            }
+            else{
+                _customersLiveData.postValue(
+                        adminRepository.filterCustomerByName(originalCustomers, filter)
+                )
+            }
+
         }
     }
 
@@ -332,9 +365,14 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 adminRepository.addStock(stock)
                 _stocksLiveData.value?.let {
-                    _stocksLiveData.postValue(_stocksLiveData.value!!.toMutableList().apply {
-                        add(0, stock)
-                    })
+                    originalStocks.add(0,stock)
+                    val pattern = Pattern.compile("(.*?)$lastStockQuery(.*?)")
+
+                    if(pattern.matcher(stock.stockName).matches()) {
+                        _stocksLiveData.postValue(_stocksLiveData.value!!.toMutableList().apply {
+                            add(0, stock)
+                        })
+                    }
                 }
             } catch (e: Exception) {
                 _stockDetailGetterError.postValue(_stockDetailGetterError.value?.apply {
