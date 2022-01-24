@@ -3,33 +3,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:title="search"
+        android:title="@string/search"
         android:id="@+id/search_menu"
         android:icon="@drawable/ic_baseline_search_24"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"
         />
 
-    <group>
 
-    <item
-        android:id="@+id/clear_filter_menu"
-        android:title="clear filter"
-        android:icon="@drawable/ic_autorenew"
-        app:showAsAction="ifRoom"
-        />
+    <group>
     <item
         android:id="@+id/order_history_menu"
-        android:title="order history"
+        android:title="@string/your_orders"
         android:icon="@drawable/ic_shopping"
         app:showAsAction="collapseActionView"
         />
-    </group>
 
-    <group>
         <item
             android:id="@+id/logutmenu"
-            android:title="logout"
+            android:title="@string/logout"
             android:icon="@drawable/ic_logout"
             />
     </group>

@@ -10,8 +10,10 @@ interface BaseCustomerRepository {
             orderId:String,
             stocks:HashMap<Stock,Int>,
             stockIds:Array<String>,
+            stockNames:Array<String>,
             counts:Array<Int>,
-            total: Int
+            stockPrices:Array<Long>,
+            total: Long
         ): Pair<Boolean, OrderHistory>
         fun getAllOrderHistory():List<OrderHistory>
 

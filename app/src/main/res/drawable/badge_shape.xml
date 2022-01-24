@@ -8,9 +8,7 @@
     <corners android:radius="5dp" />
     <solid android:color="?attr/colorOnPrimary"/>
 
-    <size
-        android:height="10dp"
-        />
+
 
 
 

@@ -27,6 +27,8 @@
         android:layout_height="@dimen/bottom_nav_height"
         android:elevation="8dp"
 
+        app:itemActiveIndicatorStyle="@style/Theme.Stocker.custom_bottom_nav_active_style"
+
 
         android:background="?attr/colorPrimary"
 

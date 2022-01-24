@@ -15,12 +15,12 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/title"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         tools:text="Hello\n login to continue"
-        android:textSize="24sp"
-        android:lineSpacingExtra="1dp"
         android:textAlignment="center"
 
         app:layout_constraintTop_toTopOf="parent"
@@ -33,6 +33,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/admin_login_password_layout"
+        style="?attr/textInputOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -46,12 +47,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/admin_login_btn"
 
-        android:hint="Password"
+        android:hint="@string/password"
         app:errorEnabled="true"
 
         >
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/admin_login_password_Etx"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24sp"
@@ -64,13 +66,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/admin_login_btn"
+        android:textAppearance="?attr/textAppearanceButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
 
 
-        android:text="Login"
-        android:textSize="28sp"
+        android:text="@string/login"
+        android:textSize="20sp"
         app:cornerRadius="16dp"
 
 

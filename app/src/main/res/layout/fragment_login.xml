@@ -8,67 +8,66 @@
     android:layout_marginStart="@dimen/margin"
     android:layout_marginEnd="@dimen/margin"
 
+
     >
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-
+        android:textAppearance="?attr/textAppearanceHeadline3"
         android:text="@string/hey_nlogin_as"
-
-        android:lineSpacingExtra="2dp"
-        style="@style/TextAppearance.Stocker.Headline3"
-
-
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/customer_login"
-        app:layout_constraintVertical_bias="0.55"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/customer_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/customer"
-        android:textSize="24sp"
-
-
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
+
         android:padding="16dp"
+        android:text="@string/customer"
+        android:textAppearance="?attr/textAppearanceButton"
+        android:textSize="20sp"
 
         app:cornerRadius="8dp"
 
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/admin_login"
-        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
 
-        />
+        app:layout_constraintTop_toBottomOf="@id/title"
+
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintVertical_chainStyle="packed" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/admin_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/admin"
-        android:textSize="24sp"
-
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
         android:padding="16dp"
+
+        android:textAppearance="?attr/textAppearanceButton"
+        android:textSize="20sp"
+
+        android:text="@string/admin"
 
 
         app:cornerRadius="8dp"
 
 
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/customer_login"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+
+        app:layout_constraintTop_toBottomOf="@id/customer_login" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

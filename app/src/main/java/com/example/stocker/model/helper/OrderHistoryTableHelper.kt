@@ -15,12 +15,23 @@ class OrderHistoryTableHelper{
         const val dateOfPurchase = "dataOfPurchase"
         const val customerId="customerid"
         const val stockIds="stockids"
+        const val stockPrices="stockprices"
+        const val stockNames="stocknames"
         const val counts="counts"
         const val total="total"
     }
 
     fun createTable(db: SQLiteDatabase){
-        db.execSQL("CREATE TABLE $orderHistoryTableName($id TEXT PRIMARY KEY,$dateOfPurchase TEXT,$customerId TEXT,$stockIds TEXT,$counts TEXT,$total INTEGER)")
+        db.execSQL("CREATE TABLE $orderHistoryTableName(" +
+                "$id TEXT PRIMARY KEY," +
+                "$dateOfPurchase TEXT," +
+                "$customerId TEXT," +
+                "$stockIds TEXT," +
+                "$stockNames TEXT," +
+                "$counts TEXT," +
+                "$stockPrices TEXT," +
+                "$total INTEGER)"
+        )
     }
 
     fun getAllData(db:SQLiteDatabase):MutableList<OrderHistory>{
@@ -80,15 +91,17 @@ class OrderHistoryTableHelper{
         dateOfPurchase = LocalDate.parse(cursor.getString(1), DateTimeFormatter.ofPattern("yyyy-MM-dd")),
         customerId =cursor.getString(2),
         stockIds = stringToStringArray(cursor.getString(3)).toTypedArray(),
-        counts =stringToIntArray(cursor.getString(4)).toTypedArray(),
-        total = cursor.getInt(5)
+        stockNames = stringToStringArray(cursor.getString(4)).toTypedArray(),
+        counts =stringToIntArray(cursor.getString(5)).toTypedArray(),
+        stockPrices = stringToLongArray(cursor.getString(6)).toTypedArray(),
+        total = cursor.getLong(7)
     )
 
     private fun stringToStringArray(str:String):List<String>{
         return str.split("-")
     }
 
-    private fun arrayToString(strs:List<Any>):String{
+    private fun arrayToString(strs:Array<*>):String{
         return StringBuilder().apply {
             for(i in strs.indices){
                 append(strs[i])
@@ -100,13 +113,18 @@ class OrderHistoryTableHelper{
     private fun stringToIntArray(str:String):List<Int>{
        return stringToStringArray(str).stream().map { data->data.toInt() }.collect(Collectors.toList())
     }
+    private fun stringToLongArray(str:String):List<Long>{
+        return stringToStringArray(str).stream().map { data->data.toLong() }.collect(Collectors.toList())
+    }
 
     private fun orderHistoryToContentValues(orderHistory:OrderHistory) = ContentValues().apply {
         put(id,orderHistory.orderID)
         put(dateOfPurchase,orderHistory.dateOfPurchase.toString())
         put(customerId,orderHistory.customerId)
-        put(stockIds,arrayToString(orderHistory.stockIds.toList()))
-        put(counts,arrayToString(orderHistory.counts.toList()))
+        put(stockIds,arrayToString(orderHistory.stockIds))
+        put(stockNames,arrayToString(orderHistory.stockNames))
+        put(counts,arrayToString(orderHistory.counts))
+        put(stockPrices,arrayToString(orderHistory.stockPrices))
         put(total,orderHistory.total)
     }
 

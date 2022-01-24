@@ -44,6 +44,9 @@ class CartFragment : Fragment() {
     private  var snackBar:Snackbar?=null
     private lateinit var navController:NavController
     private lateinit var stockInCart: StockInCart
+    private lateinit var adapter:CartAdapter
+    private lateinit var stockLoaderProgeress:CircularProgressIndicator
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +86,8 @@ class CartFragment : Fragment() {
 
         })
 
+        stockLoaderProgeress = view.findViewById(R.id.stockLoaderProgress)
+        stockLoaderProgeress.show()
         toolBar = view.findViewById(R.id.cart_toolbar)
         recycler  = view.findViewById(R.id.cart_recycler)
         buyBtn = view.findViewById(R.id.cart_buy_btn)
@@ -100,11 +105,14 @@ class CartFragment : Fragment() {
         val orderCountTextView = view.findViewById<TextView>(R.id.cart_order_count_textview)
         orderCountTextView.text = "${model.selectedArray.size} item(s) in your cart"
 
+        adapter = CartAdapter(context!!)
+        recycler.adapter = adapter
 
         lifecycleScope.launch {
             stockInCart = model.calcCart()
-            recycler.adapter = CartAdapter(context!!,stockInCart)
-            totalPriceText.text = "TOTAL: ₹ ${stockInCart.total}"
+            adapter.setNewData(stockInCart)
+            stockLoaderProgeress.hide()
+            totalPriceText.text = "TOTAL: ₹${stockInCart.total}"
             isLoaded=true
         }
 
@@ -114,7 +122,7 @@ class CartFragment : Fragment() {
         //decor.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.divider)!!)
         decor.setDrawable(
             ColorDrawable(
-            MaterialColors.getColor(context!!,R.attr.colorOnBackground,context!!.getColor(R.color.darkOnBackgroundColor)))
+            MaterialColors.getColor(context!!,R.attr.colorOnSurface,context!!.getColor(R.color.darkAccent)))
         )
         recycler.addItemDecoration(decor)
 
@@ -144,7 +152,8 @@ class CartFragment : Fragment() {
                     }
                     else{
                         progress.hide()
-                        snackBar = Snackbar.make(view,"Something went wrong",Snackbar.LENGTH_LONG).apply {
+                        buyBtn.visibility=View.VISIBLE
+                        snackBar = Snackbar.make(view,"Something went wrong. Try again later",Snackbar.LENGTH_LONG).apply {
                             anchorView = buyLayout
                             show()
                         }

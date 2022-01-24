@@ -129,7 +129,7 @@ class StockDetailsGetterFragment : DialogFragment() {
 
         })
 
-        dialog!!.setCancelable(false)
+        //dialog!!.setCancelable(false)
 
         stockIdEtx.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

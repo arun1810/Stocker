@@ -25,7 +25,7 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
 
     companion object{
         const val name="StockerDB"
-        const val version=1
+        const val version=2
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -47,8 +47,11 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
 
     }
 
-    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-
+    override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
+        db?.execSQL("DROP TABLE IF EXISTS ${CustomerTableHelper.customerTableName}")
+        db?.execSQL("DROP TABLE IF EXISTS ${StockTableHelper.stockTableName}")
+        db?.execSQL("DROP TABLE IF EXISTS ${OrderHistoryTableHelper.orderHistoryTableName}")
+        onCreate(db)
     }
 
     override fun addCustomer(customer: Customer): Boolean {
@@ -124,6 +127,7 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
     }
 
     override fun getOrderHistoryOfCustomer(customerId: String): MutableList<OrderHistory> {
+
         return orderHistoryTableHelper.getSpecificData(this.readableDatabase,customerId)
     }
 }

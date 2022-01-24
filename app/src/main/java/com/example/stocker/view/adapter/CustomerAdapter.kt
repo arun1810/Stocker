@@ -29,10 +29,14 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
     private val diff = AsyncListDiffer(this, DiffCalc())
     private var changeType = Type.Nothing
     lateinit var recyclerView: RecyclerView
+    private var smoothScroller: LinearSmoothScroller
 
-    private var smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-        override fun getVerticalSnapPreference(): Int {
-            return SNAP_TO_START
+
+    init {
+        smoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
         }
     }
 
@@ -103,7 +107,7 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
 
         holder.customerId.text = data[position].customerId
         holder.customerDob.text = data[position].dob.toString()
-        holder.customerPh.text = "ph:${data[position].mobile_number}"
+        holder.customerPh.text = "Ph: ${data[position].mobile_number}"
         holder.customerName.text = data[position].name
     }
 
@@ -135,7 +139,7 @@ class CustomerAdapter(val context: Context,private val selectedCustomer:MutableL
            {
                multipleSelectionActive=true
                oneSelectionActive=false
-               selectionListener.onMultipleSelect()
+               selectionListener.onMultipleSelect(selectedCustomer.size)
 
            }
         }

@@ -11,32 +11,31 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/title"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.2"
-
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-
-        tools:text="Hello\n login to continue"
-        android:textSize="24sp"
-        android:lineSpacingExtra="1dp"
         android:textAlignment="center"
-        />
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2"
+        tools:text="Hello\n login to continue" />
 
    <com.google.android.material.textfield.TextInputLayout
        android:id="@+id/customer_login_username_layout"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:hint="Username"
+       android:hint="@string/username"
        app:errorEnabled="true"
+       style="?attr/textInputOutlinedStyle"
 
-      android:layout_marginBottom="8dp"
+       android:layout_marginBottom="8dp"
        android:layout_marginTop="16dp"
 
        app:layout_constraintVertical_chainStyle="packed"
@@ -47,16 +46,19 @@
        >
        <com.google.android.material.textfield.TextInputEditText
            android:id="@+id/customer_login_username_Etx"
+            style="?attr/editTextStyle"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:maxLines="1"
            android:inputType="text"
            android:textSize="24sp"
+
            />
    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/customer_login_password_layout"
+        style="?attr/textInputOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -69,7 +71,7 @@
         app:layout_constraintBottom_toTopOf="@id/customer_login_btn"
         app:layout_constraintVertical_chainStyle="packed"
         app:errorEnabled="true"
-        android:hint="password"
+        android:hint="@string/password"
         >
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/customer_login_password_Etx"
@@ -84,6 +86,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/customer_login_btn"
+        android:textAppearance="?attr/textAppearanceButton"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="8dp"
@@ -92,8 +96,9 @@
         android:layout_marginTop="32dp"
         android:padding="16dp"
 
-        android:text="Login"
-        android:textSize="28sp"
+        android:text="@string/login"
+        android:textSize="20sp"
+
         app:cornerRadius="16dp"
 
 

@@ -29,6 +29,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/admin_enter_customer_name_layout"
+        style="?attr/textInputOutlinedStyle"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,6 +60,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/admin_enter_customer_password_layout"
+        style="?attr/textInputOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="customer password"
@@ -87,6 +89,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/admin_enter_customer_id_layout"
+        style="?attr/textInputOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="customer id"
@@ -151,8 +154,11 @@
         android:id="@+id/admin_customer_gender_toggle_grp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:gravity="center"
+
+
+        app:singleSelection="true"
+        app:selectionRequired="true"
 
         android:layout_marginEnd="@dimen/margin"
         android:layout_marginStart="@dimen/margin"
@@ -169,7 +175,9 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/admin_customer_male"
-        style="?attr/materialButtonOutlinedStyle"
+        android:backgroundTint="@color/toggle_button_color"
+
+        style="@style/ToggleOutlinedButton"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -184,7 +192,9 @@
         />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/admin_customer_female"
-        style="?attr/materialButtonOutlinedStyle"
+        android:backgroundTint="@color/toggle_button_color"
+
+        style="@style/ToggleOutlinedButton"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -210,35 +220,60 @@
         app:layout_constraintTop_toBottomOf="@id/admin_customer_gender_toggle_grp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/admin_customer_dob_btn"
+        app:layout_constraintBottom_toTopOf="@id/admin_customer_dob_btn_layout"
         />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/admin_customer_dob_btn"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/admin_customer_dob_btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:strokeWidth="@dimen/stroke_width"
-        android:text="@string/select_dob"
-        android:textSize="26sp"
-        app:cornerRadius="8dp"
-
-
-        app:strokeColor="?android:textColorPrimary"
-
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="@dimen/margin"
-        android:layout_marginRight="@dimen/margin"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/div2"
         app:layout_constraintBottom_toTopOf="@id/admin_enter_customer_mobile_number_layout"
 
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginBottom="8dp"
+        >
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/admin_customer_dob_btn"
+        style="?attr/materialButtonOutlinedStyle"
+        android:textSize="20sp"
+
+        android:layout_marginTop="2dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeWidth="@dimen/stroke_width"
+        android:text="@string/select_dob"
+        app:cornerRadius="8dp"
+        android:padding="8dp"
+
+
         />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/admin_customer_dob_btn_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:textSize="12sp"
+            android:textColor="@color/error"
+            tools:text="Please select a DOB"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+
+
+            />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/admin_enter_customer_mobile_number_layout"
+        style="?attr/textInputOutlinedStyle"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="mobile number"
@@ -252,7 +287,7 @@
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/admin_customer_dob_btn"
+        app:layout_constraintTop_toBottomOf="@id/admin_customer_dob_btn_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         >
 
@@ -261,7 +296,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-             android:textSize="24sp"
+            android:textSize="24sp"
             android:maxLines="1"
             android:maxLength="10"
             android:inputType="number"

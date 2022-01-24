@@ -6,6 +6,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragments.AdminCustomerFragment">
 
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/data_status_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/admin_customer_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/couldnt_find_anything"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        />
     <include
         android:id="@+id/admin_customer_toolbar"
         layout="@layout/toolbar"
@@ -58,10 +72,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_account_plus"
-        android:background="?android:colorSecondary"
 
-        app:tint="?attr/colorOnPrimary"
-        app:backgroundTint="?attr/colorPrimary"
+
+        android:layout_margin="16dp"
 
 
 
@@ -72,8 +85,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
 
 
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintVertical_bias="0.95"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintVertical_bias="1"
         app:fabSize="normal"
 
         android:contentDescription="@string/add_customer" />

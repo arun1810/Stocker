@@ -18,74 +18,80 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
-class CustomerViewModel(application: Application):AndroidViewModel(application) {
-
+class CustomerViewModel(application: Application) : AndroidViewModel(application) {
 
 
     private var originalStocks = mutableListOf<Stock>()
-    var lastStockQuery = ""
     private var originalOrderHistories = mutableListOf<OrderHistory>()
-    var lastOrderHistoryQuery=""
+
 
     private val _stocksLiveData = MutableLiveData<List<Stock>>(listOf())
-    val stocksLiveData:LiveData<List<Stock>> = _stocksLiveData
+    val stocksLiveData: LiveData<List<Stock>> = _stocksLiveData
+
     private val _orderHistoryLiveData = MutableLiveData<List<OrderHistory>>(listOf())
-    val orderHistoryLiveData:LiveData<List<OrderHistory>> = _orderHistoryLiveData
+    val orderHistoryLiveData: LiveData<List<OrderHistory>> = _orderHistoryLiveData
 
     private val _stockErrorStatus = MutableLiveData(Error())
-    val stockErrorStatus:LiveData<Error> = _stockErrorStatus
+    val stockErrorStatus: LiveData<Error> = _stockErrorStatus
 
     private val _orderHistoryErrorStatus = MutableLiveData(Error())
-    val orderHistoryErrorStatus:LiveData<Error> = _orderHistoryErrorStatus
+    val orderHistoryErrorStatus: LiveData<Error> = _orderHistoryErrorStatus
 
-    private val _cartErrorStatus=MutableLiveData(Error())
-    val cartErrorStatus:LiveData<Error> =_cartErrorStatus
+    private val _cartErrorStatus = MutableLiveData(Error())
+    val cartErrorStatus: LiveData<Error> = _cartErrorStatus
 
-    val selectedArray:HashMap<Stock,Int> =HashMap()
-    private val customerRepository = CustomerRepository(application,Stocker.getInstance()!!.customer!!.customerId)
+    val selectedArray: HashMap<Stock, Int> = HashMap()
+
+    private val customerRepository =
+        CustomerRepository(application, Stocker.getInstance()!!.customer!!.customerId)
     private var filterOnStocks = false
     private var filterOnOrders = false
-    private lateinit var job :Job
-    private lateinit var selectedStockIds:Array<String>
+
+    private lateinit var job: Job
+
+    private lateinit var selectedStockIds: Array<String>
+    private lateinit var selectedStockNames: Array<String>
+    private lateinit var selectedStockPrices: Array<Long>
 
     init {
 
         getAllStocks()
         getAllOrderHistory()
-
-       println("customer viewModel created")
-
     }
 
-     fun getAllStocks(){
+    fun getAllStocks() {
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
-                val data  = customerRepository.getAllStocks()
-                originalStocks=data.toMutableList()
-                _stocksLiveData.postValue(data)
-            }
-            catch (e:Exception){
+                val data = customerRepository.getAllStocks()
+                originalStocks = data.toMutableList()
+                _stocksLiveData.postValue(mutableListOf<Stock>().apply {
+                    addAll(data)
+
+                })
+            } catch (e: Exception) {
                 _stockErrorStatus.postValue(_stockErrorStatus.value?.apply {
                     job.cancel()
-                    isHandled=false
-                    msg= cantRetrieveData
+                    isHandled = false
+                    msg = cantRetrieveData
                 })
             }
         }
     }
 
-    fun getAllOrderHistory(){
+    fun getAllOrderHistory() {
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
                 val data = customerRepository.getAllOrderHistory()
                 originalOrderHistories = data.toMutableList()
-                _orderHistoryLiveData.postValue(data)
-            }catch(e:Exception){
+                _orderHistoryLiveData.postValue(mutableListOf<OrderHistory>().apply {
+                    addAll(data)
+                })
+            } catch (e: Exception) {
                 e.printStackTrace()
                 _orderHistoryErrorStatus.postValue(_orderHistoryErrorStatus.value?.apply {
                     job.cancel()
-                    isHandled=false
-                    msg= cantRetrieveData
+                    isHandled = false
+                    msg = cantRetrieveData
                 })
             }
         }
@@ -95,38 +101,46 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
         return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             val selectedStocks = selectedArray.keys.toTypedArray()
             val selectedStockCount = selectedArray.values.toTypedArray()
-            val prices = Array(selectedStocks.size) { "" }
-            val stockNames = Array(selectedStocks.size) { "" }
-            var total=0
+            var total = 0L
             selectedStockIds = Array(selectedStocks.size) { "" }
+            selectedStockNames = Array(selectedStocks.size) { "" }
+            selectedStockPrices = Array(selectedStocks.size) { 0 }
 
 
             for (i in selectedStocks.indices) {
                 val stock = selectedStocks[i]
-                stockNames[i] = stock.stockName
                 selectedStockIds[i] = stock.stockID
-                val price = calcPrice(stock.price, stock.discount,selectedStockCount[i])
-                prices[i] = price.toString()
+                selectedStockNames[i] = stock.stockName
+                val price = calcPrice(stock.price, stock.discount, selectedStockCount[i])
+                selectedStockPrices[i] = price
                 total += price
             }
-            StockInCart(stockNames, selectedStockIds, selectedStockCount, prices, total)
+            StockInCart(
+                selectedStockNames,
+                selectedStockIds,
+                selectedStockCount,
+                selectedStockPrices,
+                total
+            )
 
 
         }
 
     }
 
-    suspend fun placeOrder(total: Int): Boolean {
+    suspend fun placeOrder(total: Long): Boolean {
 
-        return withContext(viewModelScope.coroutineContext + Dispatchers.IO ) {
-            val id = IdGenerator.generateId() ?: return@withContext  false
+        return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+            val id = IdGenerator.generateId() ?: return@withContext false
 
             val result = customerRepository.placeOrder(
-                id ,
-                selectedArray,
-                selectedStockIds,
-                selectedArray.values.toTypedArray(),
-                total
+                orderId = id,
+                stocks = selectedArray,
+                stockIds = selectedStockIds,
+                stockNames = selectedStockNames,
+                stockPrices = selectedStockPrices,
+                counts = selectedArray.values.toTypedArray(),
+                total = total
             )
             if (result.first) {
                 updatePurchase(result.second)
@@ -138,135 +152,180 @@ class CustomerViewModel(application: Application):AndroidViewModel(application) 
         }
     }
 
-    fun sortOrderHistoryByTotalPrice(order: SortUtil.SortOrder){
+    fun sortOrderHistoryByTotalPrice(order: SortUtil.SortOrder) {
         job = viewModelScope.launch(Dispatchers.IO) {
-            _orderHistoryLiveData.value?.let{
-                _orderHistoryLiveData.postValue(  customerRepository.sortOrderHistoryByTotalPrice(it.toMutableList(),order))
+            _orderHistoryLiveData.value?.let {
+                _orderHistoryLiveData.postValue(
+                    customerRepository.sortOrderHistoryByTotalPrice(
+                        it.toMutableList(),
+                        order
+                    )
+                )
             }
+            originalOrderHistories =
+                customerRepository.sortOrderHistoryByTotalPrice(originalOrderHistories, order)
+                    .toMutableList()
         }
 
     }
-    fun sortOrderHistoryByDate(order: SortUtil.SortOrder){
+
+    fun sortOrderHistoryByDate(order: SortUtil.SortOrder) {
         job = viewModelScope.launch(Dispatchers.IO) {
-            _orderHistoryLiveData.value?.let{
-                _orderHistoryLiveData.postValue(  customerRepository.sortOrderHistoryByDate(it.toMutableList(),order))
+            _orderHistoryLiveData.value?.let {
+                _orderHistoryLiveData.postValue(
+                    customerRepository.sortOrderHistoryByDate(
+                        it.toMutableList(),
+                        order
+                    )
+                )
             }
+            originalOrderHistories =
+                customerRepository.sortOrderHistoryByDate(originalOrderHistories, order)
+                    .toMutableList()
         }
     }
-    fun filterOrderHistoryByStockId(filter:String){
+
+    fun filterOrderHistoryByStockId(filter: String) {
 
         job = viewModelScope.launch(Dispatchers.IO) {
-            if(filter.isEmpty()){
+            if (filter.isEmpty()) {
                 _orderHistoryLiveData.postValue(originalOrderHistories)
-            }
-            else{
-                _orderHistoryLiveData.value?.let{
-                    _orderHistoryLiveData.postValue( customerRepository.filterOrderHistoryByStockId(originalOrderHistories,filter))
+            } else {
+                _orderHistoryLiveData.value?.let {
+                    _orderHistoryLiveData.postValue(
+                        customerRepository.filterOrderHistoryByStockId(
+                            originalOrderHistories,
+                            filter
+                        )
+                    )
 
                 }
             }
-            filterOnOrders=true
+            filterOnOrders = true
         }
     }
 
-    fun sortStockByPrice(order: SortUtil.SortOrder){
+    fun sortStockByPrice(order: SortUtil.SortOrder) {
 
         job = viewModelScope.launch(Dispatchers.IO) {
-            _stocksLiveData.value?.let{
-                _stocksLiveData.postValue( customerRepository.sortStockByPrice(it.toMutableList(),order))
+            _stocksLiveData.value?.let {
+                _stocksLiveData.postValue(
+                    customerRepository.sortStockByPrice(
+                        it.toMutableList(),
+                        order
+                    )
+                )
 
             }
+            originalStocks = customerRepository.sortStockByPrice(originalStocks, order)
         }
 
     }
 
-    fun sortStockByCount(order: SortUtil.SortOrder){
+    fun sortStockByCount(order: SortUtil.SortOrder) {
         job = viewModelScope.launch(Dispatchers.IO) {
-            _stocksLiveData.value?.let{
-                _stocksLiveData.postValue( customerRepository.sortStockByCount(it.toMutableList(),order))
+
+            _stocksLiveData.value?.let {
+                _stocksLiveData.postValue(
+                    customerRepository.sortStockByCount(
+                        it.toMutableList(),
+                        order
+                    )
+                )
             }
+            originalStocks = customerRepository.sortStockByCount(originalStocks, order)
         }
     }
 
-    fun sortStockByName(order: SortUtil.SortOrder){
+    fun sortStockByName(order: SortUtil.SortOrder) {
         job = viewModelScope.launch(Dispatchers.IO) {
-            _stocksLiveData.value?.let{
-                _stocksLiveData.postValue(customerRepository.sortStockByName(it.toMutableList(),order))
+            _stocksLiveData.value?.let {
+                _stocksLiveData.postValue(
+                    customerRepository.sortStockByName(
+                        it.toMutableList(),
+                        order
+                    )
+                )
             }
+            originalStocks = customerRepository.sortStockByName(originalStocks, order)
         }
     }
 
-    fun filterStockByName(filter:String){
+    fun filterStockByName(filter: String) {
         job = viewModelScope.launch(Dispatchers.IO) {
-            filterOnStocks=true
+            filterOnStocks = true
 
-            if(filter.isEmpty()){
+            if (filter.isEmpty()) {
                 _stocksLiveData.postValue(originalStocks)
-            }
-            else{
-                _stocksLiveData.value?.let{
+            } else {
+                _stocksLiveData.value?.let {
 
-                    _stocksLiveData.postValue( customerRepository.filterStockByName(originalStocks,filter))
+                    _stocksLiveData.postValue(
+                        customerRepository.filterStockByName(
+                            originalStocks,
+                            filter
+                        )
+                    )
                 }
             }
 
         }
     }
 
-    fun clearStockFilter():Boolean{
-        if(filterOnStocks) {
+    fun clearStockFilter(): Boolean {
+        if (filterOnStocks) {
             getAllStocks()
-            filterOnStocks=false
-            return filterOnStocks}
+            filterOnStocks = false
+            return filterOnStocks
+        }
 
         return false
     }
 
-    fun clearOrderFilter():Boolean{
-        if(filterOnOrders) {
+    fun clearOrderFilter(): Boolean {
+        if (filterOnOrders) {
             getAllOrderHistory()
-            filterOnOrders=false
+            filterOnOrders = false
             return filterOnOrders
         }
         return false
     }
 
-    fun join(lam:()->Unit){
+    fun join(lam: () -> Unit) {
         viewModelScope.launch(Dispatchers.Main) {
             job.join()
-            if(!job.isCancelled){
+            if (!job.isCancelled) {
                 lam()
             }
 
         }
     }
 
-    private fun calcPrice(price: Int, discount: Int, count: Int): Int {
-        val total = price * count
+    private fun calcPrice(price: Int, discount: Int, count: Int): Long {
+        val total = price.toLong() * count
         return (total - (total * (discount / 100f)).roundToInt())
     }
 
-    private fun clearSelection(){
+    private fun clearSelection() {
         selectedArray.clear()
-        selectedStockIds= arrayOf("")
+        selectedStockIds = arrayOf("")
 
     }
 
-    private fun updatePurchase(newOrder:OrderHistory){
+    private fun updatePurchase(newOrder: OrderHistory) {
 
-            _orderHistoryLiveData.value?.let{
-                try {
-                    originalOrderHistories.add(0,newOrder)
-                    val newData =
-                        _orderHistoryLiveData.value!!.toMutableList().apply { add(newOrder) }
-                    _orderHistoryLiveData.postValue(newData)
-                }
-                catch(e:Exception){
-                    _cartErrorStatus.postValue(_cartErrorStatus.value?.apply {
-                        isHandled=false
-                        msg= otherError
-                    })
-                }
+        _orderHistoryLiveData.value?.let {
+            try {
+                originalOrderHistories.add(0, newOrder)
+                val newData =
+                    _orderHistoryLiveData.value!!.toMutableList().apply { add(newOrder) }
+                _orderHistoryLiveData.postValue(newData)
+            } catch (e: Exception) {
+                _cartErrorStatus.postValue(_cartErrorStatus.value?.apply {
+                    isHandled = false
+                    msg = otherError
+                })
             }
+        }
     }
 }

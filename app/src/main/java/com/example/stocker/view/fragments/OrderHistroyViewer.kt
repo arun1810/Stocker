@@ -3,36 +3,29 @@ package com.example.stocker.view.fragments
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.OrderHistory
-import com.example.stocker.pojo.Stock
 import com.example.stocker.pojo.StockInCart
 import com.example.stocker.view.adapter.CartAdapter
 import com.example.stocker.viewmodel.AdminViewModel
-import com.example.stocker.viewmodel.CustomerViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 class OrderHistroyViewer : DialogFragment() {
     lateinit var orderHistory:OrderHistory
@@ -44,6 +37,8 @@ class OrderHistroyViewer : DialogFragment() {
     private val model:AdminViewModel by activityViewModels()
     private val stockNames= mutableListOf<String>()
     private lateinit var progress:CircularProgressIndicator
+    private lateinit var stockLoaderProgeress:CircularProgressIndicator
+    private lateinit var adapter:CartAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,12 +69,20 @@ class OrderHistroyViewer : DialogFragment() {
         val orderCountTextView = view.findViewById<TextView>(R.id.cart_order_count_textview)
         orderCountTextView.text = "${orderHistory.stockIds.size} item(s) in your cart"
 
+        adapter = CartAdapter(context!!)
+        // progress for buy which is not used in this fragment
         progress = view.findViewById(R.id.cart_progress)
         progress.hide()
         progress.visibility=View.GONE
 
+        stockLoaderProgeress = view.findViewById(R.id.stockLoaderProgress)
+        stockLoaderProgeress.bringToFront()
+        stockLoaderProgeress.show()
+
+
+
         toolBar = view.findViewById(R.id.cart_toolbar)
-        toolBar.title = "Order History"
+        toolBar.title  = "Cart"
         toolBar.setNavigationIcon(R.drawable.ic_baseline_close_24)
 
         toolBar.setNavigationOnClickListener {
@@ -87,11 +90,12 @@ class OrderHistroyViewer : DialogFragment() {
         }
 
         recycler = view.findViewById(R.id.cart_recycler)
+        recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(context)
         val decor  =DividerItemDecoration(context!!,DividerItemDecoration.VERTICAL)
         //decor.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.divider)!!)
         decor.setDrawable(ColorDrawable(
-            MaterialColors.getColor(context!!,R.attr.colorOnBackground,context!!.getColor(R.color.darkOnBackgroundColor))))
+            MaterialColors.getColor(context!!,R.attr.colorOnSurface,context!!.getColor(R.color.darkAccent))))
         recycler.addItemDecoration(decor)
         //recycler.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
 
@@ -109,22 +113,17 @@ class OrderHistroyViewer : DialogFragment() {
     }
 
     private fun prepareAdapter(orderHistory: OrderHistory):Array<String>{
-        lifecycleScope.launch(Dispatchers.IO){
-         for(id in orderHistory.stockIds){
 
+            val stockInCart = StockInCart(
+                counts = orderHistory.counts, stockIds = orderHistory.stockIds, total = orderHistory.total,
+                price =orderHistory.stockPrices, stocksNames = orderHistory.stockNames)
+            lifecycleScope.launch(Dispatchers.Main){
 
-                val stock=model.getStock(id).await()
-                if(stock!=null){
-                    stockNames.add(stock.stockName)
-                }
-                else{
-                    stockNames.add("This item doesn't exist now")
-                }
+                stockLoaderProgeress.hide()
+                adapter.setNewData(stockInCart)
 
             }
-            val stockInCart = StockInCart(counts = orderHistory.counts, stockIds = orderHistory.stockIds, total = orderHistory.total,price=Array(orderHistory.stockIds.size){""}, stocksNames = stockNames.toTypedArray())
-            lifecycleScope.launch(Dispatchers.Main){recycler.adapter=CartAdapter(context!!,stockInCart)}
-        }
+
 
         return stockNames.toTypedArray()
     }

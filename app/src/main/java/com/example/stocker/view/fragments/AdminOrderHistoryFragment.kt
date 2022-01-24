@@ -19,13 +19,12 @@ import com.example.stocker.view.adapter.OrderHistoryAdapter
 import com.example.stocker.view.adapter.decorator.SimpleDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
+import com.example.stocker.view.fragments.util.Type
 import com.example.stocker.view.util.DisplayUtil
 import com.example.stocker.viewmodel.AdminViewModel
 import com.example.stocker.viewmodel.helper.cantRetrieveData
-import com.example.stocker.viewmodel.helper.deleteError
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 
 
@@ -33,11 +32,17 @@ class AdminOrderHistoryFragment : Fragment() {
     val model : AdminViewModel by activityViewModels()
     private lateinit var adapter: OrderHistoryAdapter
 
+    private lateinit var dataStatusTextView:MaterialTextView
+    private var dataChangedBy = delete
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        if(model.selectedCustomer.isNotEmpty()) model.clearCustomerSelection(Type.Nothing)
+        if(model.selectedStocks.isNotEmpty()) model.clearStockSelection(Type.Nothing)
         return inflater.inflate(R.layout.fragment_admin_order_history, container, false)
     }
 
@@ -55,6 +60,7 @@ class AdminOrderHistoryFragment : Fragment() {
         val errorDismissBtn: MaterialButton = view.findViewById(R.id.banner_negative_btn)
         val errorTitle: MaterialTextView = view.findViewById(R.id.error_title)
         val banner = view.findViewById<ConstraintLayout>(R.id.banner)
+        dataStatusTextView = view.findViewById(R.id.data_status_textview)
 
         model.orderErrorStatus.observe(this,{status->
             status?.let {
@@ -105,6 +111,7 @@ class AdminOrderHistoryFragment : Fragment() {
                 }
 
                 if (!status.isHandled) {
+                    println("admin order history error not handled")
 
                     errorTitle.text = when (status.msg) {
 
@@ -126,7 +133,7 @@ class AdminOrderHistoryFragment : Fragment() {
                         duration = 1000
                         start()
                     }
-                }
+                } else{println("admin order history error  handled")}
             }
 
         })
@@ -168,7 +175,7 @@ class AdminOrderHistoryFragment : Fragment() {
 
         toolbar.title = "Order History"
 
-        toolbar.inflateMenu(R.menu.customer_order_history_menu)
+        toolbar.inflateMenu(R.menu.admin_menu)
 
 
         val searchMenu:SearchView = toolbar.menu.findItem(R.id.order_search).actionView as SearchView
@@ -184,6 +191,11 @@ class AdminOrderHistoryFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let{
                     //adapter.filter.filter(newText)
+                    dataChangedBy = if(newText==""){
+                        delete
+                    } else{
+                        search
+                    }
                     model.filterOrderHistoryByStockId(newText)
                 }
                 return false
@@ -192,15 +204,7 @@ class AdminOrderHistoryFragment : Fragment() {
         })
         toolbar.setOnMenuItemClickListener { item->
             when(item.itemId){
-                R.id.order_clear->{
 
-                    if(model.clearOrderFilter()){
-                        model.join {
-                            recycler.smoothScrollToPosition(0)
-                        }
-                    }
-                    true
-                }
                 R.id.logout->{
                     SharedPreferenceHelper.writeAdminPreference(activity!!,false)
                     navController.navigate(R.id.action_adminOrderHistoryFragment_to_loginActivity)
@@ -220,7 +224,21 @@ class AdminOrderHistoryFragment : Fragment() {
         super.onStart()
 
         model.orderHistoriesLiveData.observe(this,{orderHistory->
+
+            if(orderHistory.isEmpty()){
+                dataStatusTextView.visibility=View.VISIBLE
+                when(dataChangedBy){
+                    delete->dataStatusTextView.text=getString(R.string.empty)
+                    search-> dataStatusTextView.text=getString(R.string.couldnt_find_anything)
+                }
+            }
+            else{
+                dataStatusTextView.visibility=View.INVISIBLE
+            }
+
             adapter.setNewList(orderHistory)
+
+
 
         })
     }

@@ -7,20 +7,24 @@
     <color name="darkBackgroundColor">#212121</color>
     <color name="darkOnBackgroundColor">#ffff</color>
     <color name="darkPrimaryTextColor">#ffff</color>
-    <color name="darkSecondaryTextColor">#ffff</color>
 
     <color name="lightPrimaryColor">#ffc056</color>
     <color name="lightPrimaryLightColor">#fff386</color>
     <color name="lightPrimaryDarkColor">#c89025</color>
     <color name="lightOnBackgroundColor">#000000</color>
     <color name="lightPrimaryTextColor">#000000</color>
+
+    <color name="lightSecondaryColor">#2196f3</color>
+    <color name="lightSecondaryLightColor">#6ec6ff</color>
+    <color name="lightSecondaryDarkColor">#0069c0</color>
     <color name="lightSecondaryTextColor">#000000</color>
 
-    <!--
-    <color name="darkSecondaryColor">#5694ff</color>
-    <color name="darkSecondaryLightColor">#90c4ff</color>
-    <color name="darkSecondaryDarkColor">#0067cb</color>
-    -->
+
+    <color name="darkSecondaryColor">#795548</color>
+    <color name="darkSecondaryLightColor">#a98274</color>
+    <color name="darkSecondaryDarkColor">#4b2c20</color>
+    <color name="darkSecondaryTextColor">#ffffff</color>
+
 
 
 

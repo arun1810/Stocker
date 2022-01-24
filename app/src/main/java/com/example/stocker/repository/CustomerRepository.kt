@@ -19,10 +19,21 @@ class CustomerRepository(context: Context, private val customerId:String): BaseC
     override fun placeOrder(
         orderId:String,
         stocks:HashMap<Stock,Int>,
-        stockIds: Array<String>, counts: Array<Int>,
-        total: Int
+        stockIds: Array<String>,
+        stockNames:Array<String>,
+        counts: Array<Int>,
+        stockPrices:Array<Long>,
+        total: Long
     ):Pair<Boolean,OrderHistory>{
-        val orderHistory = OrderHistory(orderID = orderId, dateOfPurchase = LocalDate.now(), customerId = this.customerId, stockIds = stockIds, counts = counts, total = total)
+        val orderHistory = OrderHistory(
+            orderID = orderId,
+            dateOfPurchase = LocalDate.now(),
+            customerId = this.customerId,
+            stockIds = stockIds,
+            stockNames=stockNames,
+            counts = counts,
+            stockPrices = stockPrices,
+            total = total)
         val result = (database.addOrderHistory(orderHistory) && database.updateStocks(stocks))
         return  result to orderHistory
     }

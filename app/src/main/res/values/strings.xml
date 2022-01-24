@@ -3,12 +3,26 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="buy">BUY</string>
-    <string name="select_dob">select DOB</string>
-    <string name="add_customer">add customer</string>
+    <string name="select_dob">Select DOB</string>
+    <string name="add_customer">Add customer</string>
     <string name="add_stock">Add Stock</string>
     <string name="hey_nlogin_as">Hey,\nLogin as</string>
     <string name="customer">Customer</string>
-    <string name="admin">admin</string>
+    <string name="admin">Admin</string>
+    <string name="count">count</string>
+    <string name="price">Price</string>
+    <string name="couldnt_find_anything">Couldn\'t find anything</string>
+    <string name="empty">Empty</string>
+    <string name="stocks">Stocks</string>
+    <string name="customers">Customers</string>
+    <string name="orderhistory">OrderHistory</string>
+    <string name="search">Search</string>
+    <string name="logout">Logout</string>
+    <string name="your_orders">Your Orders</string>
+    <string name="add">Add</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

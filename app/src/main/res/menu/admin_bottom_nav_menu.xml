@@ -4,17 +4,17 @@
 
     <item
         android:id="@+id/adminStockFragment"
-        android:title="stocks"
+        android:title="@string/stocks"
         android:icon="@drawable/ic_stock"
         />
     <item
         android:id="@+id/adminCustomerFragment"
-        android:title="customers"
+        android:title="@string/customers"
         android:icon="@drawable/ic_customer"
         />
     <item
         android:id="@+id/adminOrderHistoryFragment"
-        android:title="orderHistory"
+        android:title="@string/orderhistory"
         android:icon="@drawable/ic_order_history"
 
         />

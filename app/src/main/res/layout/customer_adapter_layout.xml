@@ -29,10 +29,12 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_name"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+
+
         android:layout_height="wrap_content"
         android:layout_width="0dp"
 
-        android:textSize="20sp"
         tool:text="customer name"
         android:gravity="center_vertical"
         android:maxLines="1"
@@ -51,10 +53,11 @@
         />
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_id"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
+
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:alpha="0.7"
         tool:text="#customer_id"
 
         android:maxLines="1"
@@ -75,13 +78,13 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_dob"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
-        android:textSize="16sp"
         tool:text="18-10-2000"
         android:gravity="end"
-        android:alpha="0.8"
 
         android:maxLines="1"
         android:ellipsize="end"
@@ -96,14 +99,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/customer_ph"
+        app:layout_constraintVertical_chainStyle="spread_inside"
 
         />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_ph"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+
         tool:text="ph:1234567890"
         android:gravity="end"
 

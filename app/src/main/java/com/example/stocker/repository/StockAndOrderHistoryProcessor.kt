@@ -6,7 +6,7 @@ import com.example.stocker.repository.baseinterface.BaseStockAndOrderHistoryProc
 import com.example.stocker.repository.helper.SortUtil
 import java.util.regex.Pattern
 
-object StockAndOrderHistoryProcessor: BaseStockAndOrderHistoryProcessor {
+object StockAndOrderHistoryProcessor : BaseStockAndOrderHistoryProcessor {
 
     init {
         println("viewer created")
@@ -17,17 +17,21 @@ object StockAndOrderHistoryProcessor: BaseStockAndOrderHistoryProcessor {
         order: SortUtil.SortOrder
     ): List<OrderHistory> {
 
-         when(order){
+        val temp = mutableListOf<OrderHistory>().apply {
+            addAll(orderHistories)
+        }
 
-            SortUtil.SortOrder.ASC->{
-                orderHistories.sortBy { orderHistory -> orderHistory.total }
+        when (order) {
+
+            SortUtil.SortOrder.ASC -> {
+                temp.sortBy { orderHistory -> orderHistory.total }
             }
-            SortUtil.SortOrder.DEC->{
-                orderHistories.sortByDescending { orderHistory -> orderHistory.total }
+            SortUtil.SortOrder.DEC -> {
+                temp.sortByDescending { orderHistory -> orderHistory.total }
             }
         }
 
-        return orderHistories
+        return temp
 
     }
 
@@ -36,17 +40,21 @@ object StockAndOrderHistoryProcessor: BaseStockAndOrderHistoryProcessor {
         order: SortUtil.SortOrder
     ): List<OrderHistory> {
 
-        when(order){
+        val temp = mutableListOf<OrderHistory>().apply {
+            addAll(orderHistories)
+        }
 
-            SortUtil.SortOrder.ASC->{
-                orderHistories.sortBy { orderHistory -> orderHistory.dateOfPurchase }
+        when (order) {
+
+            SortUtil.SortOrder.ASC -> {
+                temp.sortBy { orderHistory -> orderHistory.dateOfPurchase }
             }
-            SortUtil.SortOrder.DEC->{
-                orderHistories.sortByDescending { orderHistory -> orderHistory.dateOfPurchase }
+            SortUtil.SortOrder.DEC -> {
+                temp.sortByDescending { orderHistory -> orderHistory.dateOfPurchase }
             }
         }
 
-        return orderHistories
+        return temp
 
     }
 
@@ -55,56 +63,75 @@ object StockAndOrderHistoryProcessor: BaseStockAndOrderHistoryProcessor {
         filter: String
     ): List<OrderHistory> {
 
-       return orderHistories.filter { orderHistory->orderHistory.stockIds.contains(filter) }
+        return orderHistories.filter { orderHistory -> orderHistory.stockIds.contains(filter) }
     }
 
-    override fun sortStockByPrice(stocks: MutableList<Stock>, order: SortUtil.SortOrder): MutableList<Stock> {
-         when(order){
+    override fun sortStockByPrice(
+        stocks: MutableList<Stock>,
+        order: SortUtil.SortOrder
+    ): MutableList<Stock> {
+        val temp = mutableListOf<Stock>().apply {
+            addAll(stocks)
+        }
 
-            SortUtil.SortOrder.ASC->{
-                stocks.sortBy { stock->stock.price }
+        when (order) {
+            SortUtil.SortOrder.ASC -> {
+                temp.sortBy { stock -> stock.price }
             }
-            SortUtil.SortOrder.DEC->{
-                stocks.sortByDescending { stock->stock.price }
+            SortUtil.SortOrder.DEC -> {
+                temp.sortByDescending { stock -> stock.price }
             }
         }
 
-        return stocks
+        return temp
     }
 
-    override fun sortStockByCount(stocks: MutableList<Stock>, order: SortUtil.SortOrder): MutableList<Stock> {
-         when(order){
+    override fun sortStockByCount(
+        stocks: MutableList<Stock>,
+        order: SortUtil.SortOrder
+    ): MutableList<Stock> {
 
-            SortUtil.SortOrder.ASC->{
-                stocks.sortBy { stock->stock.count }
+        val temp = mutableListOf<Stock>().apply {
+            addAll(stocks)
+        }
+
+        when (order) {
+
+            SortUtil.SortOrder.ASC -> {
+                temp.sortBy { stock -> stock.count }
             }
-            SortUtil.SortOrder.DEC->{
-                stocks.sortByDescending { stock->stock.count }
+            SortUtil.SortOrder.DEC -> {
+                temp.sortByDescending { stock -> stock.count }
             }
         }
 
-        return stocks
+        return temp
     }
 
     override fun sortStockByName(
         stocks: MutableList<Stock>,
         order: SortUtil.SortOrder
     ): MutableList<Stock> {
-       when(order){
+        val temp = mutableListOf<Stock>().apply {
+            addAll(stocks)
+        }
 
-            SortUtil.SortOrder.ASC->{
-                stocks.sortBy { stock->stock.stockName }
+        when (order) {
+
+            SortUtil.SortOrder.ASC -> {
+                temp.sortBy { stock -> stock.stockName }
             }
-            SortUtil.SortOrder.DEC->{
-                stocks.sortByDescending { stock->stock.stockName }
+            SortUtil.SortOrder.DEC -> {
+                temp.sortByDescending { stock -> stock.stockName }
             }
         }
-        return stocks
+        return temp
     }
 
     override fun filterStockByName(stocks: MutableList<Stock>, filter: String): MutableList<Stock> {
-        val pattern = Pattern.compile("(.*?)$filter(.*?)")
-        return stocks.filter { stock->pattern.matcher(stock.stockName).matches() }.toMutableList()
+        val pattern = Pattern.compile("(.*?)${filter.lowercase()}(.*?)")
+        return stocks.filter { stock -> pattern.matcher(stock.stockName.lowercase()).matches() }
+            .toMutableList()
     }
 
 }

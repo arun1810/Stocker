@@ -15,7 +15,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.stocker.R
 import com.example.stocker.pojo.Stocker
@@ -35,18 +37,20 @@ import com.google.android.material.textview.MaterialTextView
 
 
 class StockFragment : Fragment() {
-    private lateinit var adapter:StockAdapter
-    private lateinit var recycler:RecyclerView
-    private val model:CustomerViewModel by activityViewModels()
-    private lateinit var buyFab:FloatingActionButton
-    private lateinit var toolBar:MaterialToolbar
-    private lateinit var searchMenu:SearchView
+    private lateinit var adapter: StockAdapter
+    private lateinit var recycler: RecyclerView
+    private val model: CustomerViewModel by activityViewModels()
+    private lateinit var buyFab: FloatingActionButton
+    private lateinit var toolBar: MaterialToolbar
+    private lateinit var searchMenu: SearchView
 
-    private lateinit var countSort:SortImageButton
-    private lateinit var priceSort:SortImageButton
-    private lateinit var nameSort:SortImageButton
+    private lateinit var countSort: SortImageButton
+    private lateinit var priceSort: SortImageButton
+    private lateinit var nameSort: SortImageButton
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
+    private lateinit var dataStatusTextView: MaterialTextView
+    private var dataChangedBy = delete
 
 
     override fun onCreateView(
@@ -62,19 +66,20 @@ class StockFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
-        val navController  = navHost.navController
+        val navHost =
+            activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navController = navHost.navController
 
         val errorRetryBtn: MaterialButton = view.findViewById(R.id.banner_positive_btn)
         val errorDismissBtn: MaterialButton = view.findViewById(R.id.banner_negative_btn)
         val errorTitle: MaterialTextView = view.findViewById(R.id.error_title)
         val banner = view.findViewById<ConstraintLayout>(R.id.banner)
 
+        dataStatusTextView = view.findViewById(R.id.data_status_textview)
 
 
 
-
-        model.stockErrorStatus.observe(this,{status->
+        model.stockErrorStatus.observe(this, { status ->
             status?.let {
                 errorDismissBtn.setOnClickListener {
                     val x = banner.translationY
@@ -128,11 +133,11 @@ class StockFragment : Fragment() {
                     errorTitle.text = when (status.msg) {
 
                         deleteError -> {
-                            "can't delete customer right now. try again"
+                            "can't delete stock(s) right now. try again"
                         }
                         cantRetrieveData -> {
-                            errorDismissBtn.visibility=View.GONE
-                            "can't get customers right now. try again"
+                            errorDismissBtn.visibility = View.GONE
+                            "can't get stocks right now. try again"
                         }
                         else -> {
                             ""
@@ -156,17 +161,18 @@ class StockFragment : Fragment() {
 
 
         recycler = view.findViewById(R.id.recycler)
+        //( recycler.itemAnimator as SimpleItemAnimator).supportsChangeAnimations=true
         toolBar = view.findViewById(R.id.customer_stock_toolbar)
         buyFab = view.findViewById(R.id.buy_button)
         countSort = view.findViewById(R.id.count_sort)
         nameSort = view.findViewById(R.id.name_sort)
         priceSort = view.findViewById(R.id.price_sort)
 
-        nameSort.ascIcon=R.drawable.ic_sort_alphabetical_ascending
-        nameSort.decIcon=R.drawable.ic_sort_alphabetical_descending
-        nameSort.neutralIcon=R.drawable.ic_sort_alphabet_neutral
+        nameSort.ascIcon = R.drawable.ic_sort_alphabetical_ascending
+        nameSort.decIcon = R.drawable.ic_sort_alphabetical_descending
+        nameSort.neutralIcon = R.drawable.ic_sort_alphabet_neutral
 
-        toolBar.title="Stocks"
+        toolBar.title = "Stocks"
 
         nameSort.setOnClickListener {
             nameSort.changeSortOrder()
@@ -179,9 +185,9 @@ class StockFragment : Fragment() {
         }
 
 
-        countSort.ascIcon=R.drawable.ic_count_ascending
-        countSort.decIcon=R.drawable.ic_count_descending
-        countSort.neutralIcon=R.drawable.ic_count_neutral
+        countSort.ascIcon = R.drawable.ic_count_ascending
+        countSort.decIcon = R.drawable.ic_count_descending
+        countSort.neutralIcon = R.drawable.ic_count_neutral
 
         countSort.setOnClickListener {
             countSort.changeSortOrder()
@@ -193,9 +199,9 @@ class StockFragment : Fragment() {
 
         }
 
-        priceSort.ascIcon=R.drawable.ic_price_ascending
-        priceSort.decIcon=R.drawable.ic_price_descending
-        priceSort.neutralIcon=R.drawable.ic_price_neutral
+        priceSort.ascIcon = R.drawable.ic_price_ascending
+        priceSort.decIcon = R.drawable.ic_price_descending
+        priceSort.neutralIcon = R.drawable.ic_price_neutral
 
         priceSort.setOnClickListener {
             priceSort.changeSortOrder()
@@ -203,38 +209,42 @@ class StockFragment : Fragment() {
             model.join {
                 nameSort.changeToDefaultSortOrder()
                 countSort.changeToDefaultSortOrder()
-                 }
+            }
 
         }
 
         context?.let {
             val bodyParams = DisplayUtil.getBodyParams(activity!!)
-            val spanCount:Int = if(DisplayUtil.getOrientation(activity!!)==ORIENTATION_PORTRAIT){
-                adapter = StockAdapter(
-                    context = it,
-                    selectedArray = model.selectedArray,
-                    width =DisplayUtil.dpToPixel(activity!!,bodyParams.columnSize*2),
-                    navController
-                )
-                bodyParams.numberOfColumns/2 //span count
-            } else{
-                adapter = StockAdapter(
-                    it,
-                    model.selectedArray,
-                    width =DisplayUtil.dpToPixel(activity!!,bodyParams.columnSize*2),
-                    navController
-                )
+            val spanCount: Int =
+                if (DisplayUtil.getOrientation(activity!!) == ORIENTATION_PORTRAIT) {
+                    adapter = StockAdapter(
+                        context = it,
+                        selectedArray = model.selectedArray,
+                        width = DisplayUtil.dpToPixel(activity!!, bodyParams.columnSize * 2),
+                        navController = navController
+                    )
+                    bodyParams.numberOfColumns / 2 //span count
+                } else {
+                    adapter = StockAdapter(
+                        context = it,
+                        selectedArray = model.selectedArray,
+                        width = DisplayUtil.dpToPixel(activity!!, bodyParams.columnSize * 2),
+                        navController = navController
+                    )
 
-                bodyParams.numberOfColumns/2 //span count
-            }
+                    bodyParams.numberOfColumns / 2 //span count
+                }
             recycler.addItemDecoration(StockDecorator(activity!!.resources.getDimensionPixelSize(R.dimen.gutter)))
-            recycler.adapter =adapter
-            layoutManager=StaggeredGridLayoutManager(spanCount,StaggeredGridLayoutManager.VERTICAL)
-            layoutManager.gapStrategy=StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+            recycler.adapter = adapter
+            recycler.itemAnimator = DefaultItemAnimator()
+            layoutManager =
+                StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager.gapStrategy =
+                StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
             recycler.layoutManager = layoutManager
         }
 
-        recycler.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+        recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > DisplayUtil.dpToPixel(activity!!, 8) && buyFab.isShown) {
                     buyFab.hide()
@@ -246,34 +256,38 @@ class StockFragment : Fragment() {
         })
 
         buyFab.setOnClickListener {
-            if(model.selectedArray.isNotEmpty()){
+            if (model.selectedArray.isNotEmpty()) {
                 navController.navigate(R.id.action_stock_fragment_to_cartFragment)
-            }
-            else{
-                Toast.makeText(context,"Cart Empty",Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Cart Empty", Toast.LENGTH_SHORT).show()
             }
 
         }
 
         toolBar.inflateMenu(R.menu.customer_activity_menus)
         searchMenu = toolBar.menu.findItem(R.id.search_menu).actionView as SearchView
-        searchMenu.queryHint="Stock Name"
+        searchMenu.queryHint = "Stock Name"
         searchMenu.setOnQueryTextListener(
-            object: SearchView.OnQueryTextListener{
+            object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                   /* query?.let {
-                        model.filterStockByName(it)
-                        if(!buyFab.isShown) buyFab.show()
-                    }
+                    /* query?.let {
+                         model.filterStockByName(it)
+                         if(!buyFab.isShown) buyFab.show()
+                     }
 
-                    */
+                     */
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     newText?.let {
+                        dataChangedBy = if (newText == "") {
+                            delete
+                        } else {
+                            search
+                        }
                         model.filterStockByName(it)
-                        if(!buyFab.isShown) buyFab.show()
+                        if (!buyFab.isShown) buyFab.show()
                     }
                     return false
                 }
@@ -281,23 +295,16 @@ class StockFragment : Fragment() {
             }
         )
 
-        toolBar.setOnMenuItemClickListener {item->
-            when(item.itemId){
-                R.id.clear_filter_menu->{
-                    if(model.clearStockFilter()) {
-                            model.join {
-                                recycler.smoothScrollToPosition(0)
-                            }
-                        }
-                    true
-                }
-                R.id.order_history_menu->{
+        toolBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+
+                R.id.order_history_menu -> {
                     navController.navigate(R.id.action_stock_fragment_to_order_History_fragment)
                     true
                 }
-                R.id.logutmenu->{
+                R.id.logutmenu -> {
                     Stocker.logout()
-                    SharedPreferenceHelper.writeCustomerPreference(activity!!,null)
+                    SharedPreferenceHelper.writeCustomerPreference(activity!!, null)
                     navController.navigate(R.id.action_stock_fragment_to_loginActivity)
 
                     //navController.popBackStack(R.id.stock_fragment,false)
@@ -306,7 +313,9 @@ class StockFragment : Fragment() {
                     activity!!.finish()
                     true
                 }
-                else -> {super.onOptionsItemSelected(item)}
+                else -> {
+                    super.onOptionsItemSelected(item)
+                }
             }
         }
 
@@ -317,9 +326,24 @@ class StockFragment : Fragment() {
 
 
 
-        model.stocksLiveData.observe(this,{
+        model.stocksLiveData.observe(this, {
+            if (it.isEmpty()) {
+                dataStatusTextView.visibility = View.VISIBLE
+                when (dataChangedBy) {
+                    search -> dataStatusTextView.text = getString(R.string.couldnt_find_anything)
+                    delete -> dataStatusTextView.text = getString(R.string.empty)
+                }
+            } else {
+                dataStatusTextView.visibility = View.INVISIBLE
+            }
             adapter.setNewList(it)
         })
+
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
 
 
     }

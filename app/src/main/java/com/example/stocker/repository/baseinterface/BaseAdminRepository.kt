@@ -13,6 +13,7 @@ interface BaseAdminRepository {
     fun getAllCustomerData():List<Customer>
     fun getCustomer(customers:MutableList<Customer>,customerId:String):Customer
     fun sortCustomerByName(customers:MutableList<Customer>,order: SortUtil.SortOrder):List<Customer>
+    fun sortCustomerByDOB(customers:MutableList<Customer>,order: SortUtil.SortOrder):List<Customer>
     fun filterCustomerByName(customers:MutableList<Customer>,filter:String):List<Customer>
 
     fun getAllOrderHistory(): List<OrderHistory>

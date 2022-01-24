@@ -1,12 +1,14 @@
 package com.example.stocker.pojo
 
+import java.io.Serializable
+
 data class StockInCart(
     val stocksNames:Array<String>,
     val stockIds:Array<String>,
     val counts:Array<Int>,
-    val price:Array<String>,
-    val total: Int
-) {
+    val price:Array<Long>,
+    val total: Long
+):Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

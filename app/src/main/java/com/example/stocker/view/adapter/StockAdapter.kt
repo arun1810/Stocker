@@ -1,6 +1,7 @@
 package com.example.stocker.view.adapter
 
 import android.content.Context
+import android.graphics.PointF
 import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.google.android.material.card.MaterialCardView
@@ -20,30 +22,55 @@ import com.google.android.material.imageview.ShapeableImageView
 import java.util.regex.Pattern
 import kotlin.random.Random
 
-class StockAdapter( private val context:Context,private val selectedArray:HashMap<Stock,Int>,private val width:Int,val navController: NavController):RecyclerView.Adapter<StockAdapter.ViewHolder>() {
+class StockAdapter(
+    private val context: Context,
+    private val selectedArray: HashMap<Stock, Int>,
+    private val width: Int,
+    val navController: NavController
+) : RecyclerView.Adapter<StockAdapter.ViewHolder>() {
+
+    private var smoothScroller: LinearSmoothScroller
 
 
+    init {
+        println("stockAdapter initiated")
+        smoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
 
-    private val diff = AsyncListDiffer(this, DiffCalc())
-    private val images = arrayOf(R.mipmap.bike1_foreground,R.mipmap.bike2_foreground,R.mipmap.bike3_foreground,R.mipmap.bike4_foreground,R.mipmap.car1_foreground,R.mipmap.car2_foreground,R.mipmap.car3_foreground,R.mipmap.car4_foreground,R.mipmap.car5_foreground)
-    private lateinit var recyclerView: RecyclerView
-    private var smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-        override fun getVerticalSnapPreference(): Int {
-            return SNAP_TO_START
+            override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
+                return super.computeScrollVectorForPosition(targetPosition)
+            }
         }
     }
 
+    private val diff = AsyncListDiffer(this, DiffCalc())
+    private val images = arrayOf(
+        R.mipmap.bike1_foreground,
+        R.mipmap.bike2_foreground,
+        R.mipmap.bike3_foreground,
+        R.mipmap.bike4_foreground,
+        R.mipmap.car1_foreground,
+        R.mipmap.car2_foreground,
+        R.mipmap.car3_foreground,
+        R.mipmap.car4_foreground,
+        R.mipmap.car5_foreground
+    )
+    private lateinit var recyclerView: RecyclerView
+
+
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView=recyclerView
+        this.recyclerView = recyclerView
     }
 
 
-    fun setNewList(newData:List<Stock>){
+    fun setNewList(newData: List<Stock>) {
 
-        diff.submitList(newData){
+        diff.submitList(newData) {
             recyclerView.post {
-                smoothScroller.targetPosition=0
+                smoothScroller.targetPosition = 0
                 recyclerView.layoutManager!!.startSmoothScroll(smoothScroller)
             }
         }
@@ -51,12 +78,16 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layout= LayoutInflater.from(context).inflate(R.layout.stock_recycler_layout,parent,false)
-        val viewHolder = ViewHolder(layout,width,images[Random.nextInt(images.size)])
+        val layout =
+            LayoutInflater.from(context).inflate(R.layout.stock_recycler_layout, parent, false)
+        val viewHolder = ViewHolder(layout, width, images[Random.nextInt(images.size)])
 
         viewHolder.itemView.setOnClickListener {
             val data = diff.currentList
-            navController.navigate(R.id.action_stock_fragment_to_stockViewer2, bundleOf("data" to (viewHolder.imgResource to data[viewHolder.adapterPosition])))
+            navController.navigate(
+                R.id.action_stock_fragment_to_stockViewer2,
+                bundleOf("data" to (viewHolder.imgResource to data[viewHolder.adapterPosition]))
+            )
         }
 
         viewHolder.itemView.setOnLongClickListener {
@@ -67,15 +98,14 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
             val currentStock = data[position]
             var count = selectedArray[currentStock] ?: 0
             //var count=10
-            if(viewHolder.badge.visibility==View.GONE && currentStock.count>0){
+            if (viewHolder.badge.visibility == View.GONE && currentStock.count > 0) {
 
                 TransitionManager.beginDelayedTransition(this@StockAdapter.recyclerView)
                 selectedArray[currentStock] = ++count
-                showBtnLayout(viewHolder,count)
+                showBtnLayout(viewHolder, count)
 
-            }
-            else if(currentStock.count==0){
-                Toast.makeText(context,"Out of Stock!",Toast.LENGTH_SHORT).show()
+            } else if (currentStock.count == 0) {
+                Toast.makeText(context, "Out of Stock!", Toast.LENGTH_SHORT).show()
             }
 
             true
@@ -87,7 +117,7 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
             val currentStock = data[position]
             var count = selectedArray[currentStock] ?: 0
 
-            if(count< data[position].count) {
+            if (count < data[position].count) {
                 selectedArray[currentStock] = ++count
                 viewHolder.badge.text = count.toString()
             }
@@ -101,16 +131,16 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
             var count = selectedArray[currentStock] ?: 0
 
             when {
-                count==1 -> {
+                count == 1 -> {
                     TransitionManager.beginDelayedTransition(this@StockAdapter.recyclerView)
                     hideBtnLayout(viewHolder)
 
                     selectedArray[currentStock] = --count
                     selectedArray.remove(currentStock)
                 }
-                count>1-> {
+                count > 1 -> {
                     selectedArray[currentStock] = --count
-                    viewHolder.badge.text=count.toString()
+                    viewHolder.badge.text = count.toString()
                 }
             }
         }
@@ -125,26 +155,25 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data =diff.currentList
-        holder.stockName.text= data[position].stockName
-        holder.stockPrice.text = "₹ ${data[position].price}"
-        holder.stockId.text="id: ${data[position].stockID}"
+        val data = diff.currentList
+        holder.stockName.text = data[position].stockName
+        holder.stockPrice.text = "₹${data[position].price}"
+        holder.stockId.text = "Id: ${data[position].stockID}"
 
         val currentStock = data[position]
 
         val count = selectedArray[currentStock] ?: 0
-        if(count!=0){
+        if (count != 0) {
             /*holder.badge.visibility=View.VISIBLE
             holder.badge.text=selectedArray[currentStock].toString()
             holder.btnLayout.visibility=View.VISIBLE
 
              */
-            showBtnLayout(viewHolder = holder,count)
-        }
-        else{
-           /* holder.badge.visibility=View.INVISIBLE
-            holder.btnLayout.visibility=View.GONE
-            */
+            showBtnLayout(viewHolder = holder, count)
+        } else {
+            /* holder.badge.visibility=View.INVISIBLE
+             holder.btnLayout.visibility=View.GONE
+             */
             hideBtnLayout(viewHolder = holder)
         }
 
@@ -154,23 +183,23 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
         return diff.currentList.size
     }
 
-    private fun showBtnLayout(viewHolder: ViewHolder,count:Int){
-       /* if(viewHolder.canShowBtnLayout){
+    private fun showBtnLayout(viewHolder: ViewHolder, count: Int) {
+        /* if(viewHolder.canShowBtnLayout){
 
-            viewHolder.itemView.layoutParams = viewHolder.itemView.layoutParams.apply {
-                this.width=this@StockAdapter.width
-            }
+             viewHolder.itemView.layoutParams = viewHolder.itemView.layoutParams.apply {
+                 this.width=this@StockAdapter.width
+             }
 
-        }
+         }
 
-        */
-        viewHolder.badge.visibility=View.VISIBLE
+         */
+        viewHolder.badge.visibility = View.VISIBLE
         viewHolder.badge.text = count.toString()
-        viewHolder.btnLayout.visibility=View.VISIBLE
-        viewHolder.canShowBtnLayout=false
+        viewHolder.btnLayout.visibility = View.VISIBLE
+        viewHolder.canShowBtnLayout = false
     }
 
-    private fun hideBtnLayout(viewHolder:ViewHolder){
+    private fun hideBtnLayout(viewHolder: ViewHolder) {
         /*if(! viewHolder.canShowBtnLayout){
             viewHolder.itemView.layoutParams = viewHolder.itemView.layoutParams.apply {
                 this.width=this@StockAdapter.width
@@ -180,29 +209,30 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
         }
 
          */
-        viewHolder.badge.visibility=View.GONE
-        viewHolder.btnLayout.visibility=View.GONE
-        viewHolder.canShowBtnLayout=true
+        viewHolder.badge.visibility = View.GONE
+        viewHolder.btnLayout.visibility = View.GONE
+        viewHolder.canShowBtnLayout = true
     }
 
 
-    class ViewHolder(view: View,width: Int, val imgResource:Int):RecyclerView.ViewHolder(view){
-         var canShowBtnLayout=true
-        val parent:MaterialCardView = view.findViewById(R.id.parent)
+    class ViewHolder(view: View, width: Int, val imgResource: Int) : RecyclerView.ViewHolder(view) {
+        var canShowBtnLayout = true
+        val parent: MaterialCardView = view.findViewById(R.id.parent)
         val stockName: TextView = view.findViewById(R.id.stock_name)
         val stockId: TextView = view.findViewById(R.id.stock_id)
         val stockPrice: TextView = view.findViewById(R.id.stock_price)
-        val badge:TextView = view.findViewById(R.id.badge)
-        val btnLayout:LinearLayoutCompat = view.findViewById(R.id.btn_layout)
-        val img :ShapeableImageView = view.findViewById(R.id.stock_img)
-        val plusBtn:ImageView = view.findViewById(R.id.plus_btn)
-        val minusBtn:ImageView = view.findViewById(R.id.minus_btn)
+        val badge: TextView = view.findViewById(R.id.badge)
+        val btnLayout: LinearLayoutCompat = view.findViewById(R.id.btn_layout)
+        private val img: ShapeableImageView = view.findViewById(R.id.stock_img)
+        val plusBtn: ImageView = view.findViewById(R.id.plus_btn)
+        val minusBtn: ImageView = view.findViewById(R.id.minus_btn)
 
-        init{
-            img.setImageResource(imgResource)
+        init {
+            //img.setImageResource(imgResource)
+            Glide.with(view).load(imgResource).into(img)
 
             view.layoutParams = view.layoutParams.apply {
-                this.width=width
+                this.width = width
             }
 
         }
@@ -210,16 +240,16 @@ class StockAdapter( private val context:Context,private val selectedArray:HashMa
     }
 
 
-     class DiffCalc:DiffUtil.ItemCallback<Stock>(){
-         override fun areItemsTheSame(oldItem: Stock, newItem: Stock): Boolean {
-             return oldItem.stockID==newItem.stockID
-         }
+    class DiffCalc : DiffUtil.ItemCallback<Stock>() {
+        override fun areItemsTheSame(oldItem: Stock, newItem: Stock): Boolean {
+            return oldItem.stockID == newItem.stockID
+        }
 
-         override fun areContentsTheSame(oldItem: Stock, newItem: Stock): Boolean {
-             return oldItem==newItem
-         }
+        override fun areContentsTheSame(oldItem: Stock, newItem: Stock): Boolean {
+            return oldItem == newItem
+        }
 
-     }
+    }
 
 
 }

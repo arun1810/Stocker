@@ -12,13 +12,14 @@ import com.example.stocker.repository.helper.SortUtil
 import java.lang.Exception
 import java.util.regex.Pattern
 
-class AdminRepository(context: Context): BaseAdminRepository, BaseStockAndOrderHistoryProcessor by StockAndOrderHistoryProcessor {
+class AdminRepository(context: Context) : BaseAdminRepository,
+    BaseStockAndOrderHistoryProcessor by StockAndOrderHistoryProcessor {
 
-    private val dataBase:BaseDataBase = StockerDataBase(context)
+    private val dataBase: BaseDataBase = StockerDataBase(context)
 
 
-    override fun validateCustomer(name: String, password: String):Customer? {
-        return dataBase.validateCustomer(name,password)
+    override fun validateCustomer(name: String, password: String): Customer? {
+        return dataBase.validateCustomer(name, password)
     }
 
     override fun validateAdmin(password: String): Boolean {
@@ -27,40 +28,63 @@ class AdminRepository(context: Context): BaseAdminRepository, BaseStockAndOrderH
 
 
     override fun createNewCustomer(customer: Customer) {
-      dataBase.addCustomer(customer)
+        dataBase.addCustomer(customer)
     }
 
-    override fun updateCustomer(customer:Customer,oldId: String){
-        dataBase.updateCustomer(customer,oldId)
+    override fun updateCustomer(customer: Customer, oldId: String) {
+        dataBase.updateCustomer(customer, oldId)
     }
 
     override fun getAllCustomerData(): List<Customer> {
         return dataBase.getAllCustomer()
     }
 
-    override fun getCustomer(customers:MutableList<Customer>,customerId: String): Customer
-    {
-        return customers.find { customer-> customer.customerId == customerId } ?: throw Exception()
+    override fun getCustomer(customers: MutableList<Customer>, customerId: String): Customer {
+        return customers.find { customer -> customer.customerId == customerId } ?: throw Exception()
     }
 
-    override fun sortCustomerByName(customers:MutableList<Customer>,order: SortUtil.SortOrder): List<Customer> {
-         when(order){
-            SortUtil.SortOrder.ASC->{
-                 customers.sortBy { customer->customer.name }
+    override fun sortCustomerByName(
+        customers: MutableList<Customer>,
+        order: SortUtil.SortOrder
+    ): List<Customer> {
+        val temp = mutableListOf<Customer>().apply { addAll(customers) }
+        when (order) {
+            SortUtil.SortOrder.ASC -> {
+                temp.sortBy { customer -> customer.name }
             }
-            SortUtil.SortOrder.DEC->{
-                customers.sortByDescending { customer->customer.name }
+            SortUtil.SortOrder.DEC -> {
+                temp.sortByDescending { customer -> customer.name }
             }
         }
-        return customers
+        return temp
     }
 
-    override fun filterCustomerByName(customers:MutableList<Customer>,filter: String): List<Customer> {
-        val pattern = Pattern.compile("(.*?)$filter(.*?)")
-        return customers.filter { customer -> pattern.matcher(customer.name).matches() }
+    override fun sortCustomerByDOB(
+        customers: MutableList<Customer>,
+        order: SortUtil.SortOrder
+    ): List<Customer> {
+
+        val temp = mutableListOf<Customer>().apply { addAll(customers) }
+        when (order) {
+            SortUtil.SortOrder.ASC -> {
+                temp.sortBy { customer -> customer.dob }
+            }
+            SortUtil.SortOrder.DEC -> {
+                temp.sortByDescending { customer -> customer.dob }
+            }
+        }
+        return temp
     }
 
-    override fun getAllOrderHistory():List<OrderHistory> {
+    override fun filterCustomerByName(
+        customers: MutableList<Customer>,
+        filter: String
+    ): List<Customer> {
+        val pattern = Pattern.compile("(.*?)${filter.lowercase()}(.*?)")
+        return customers.filter { customer -> pattern.matcher(customer.name.lowercase()).matches() }
+    }
+
+    override fun getAllOrderHistory(): List<OrderHistory> {
         return dataBase.getAllOrderHistory()
     }
 
@@ -72,23 +96,23 @@ class AdminRepository(context: Context): BaseAdminRepository, BaseStockAndOrderH
         return dataBase.addStock(stock)
     }
 
-    override fun updateStock(stock:Stock,oldId:String): Boolean {
-        return dataBase.updateStock(stock,oldId)
+    override fun updateStock(stock: Stock, oldId: String): Boolean {
+        return dataBase.updateStock(stock, oldId)
     }
 
-    override fun buyStock(stock:Stock): Boolean {
+    override fun buyStock(stock: Stock): Boolean {
         return dataBase.addStock(stock)
     }
 
-    override fun removeOrderHistory(orders:List<OrderHistory>): Boolean {
+    override fun removeOrderHistory(orders: List<OrderHistory>): Boolean {
         return dataBase.deleteOrderHistory(orders)
     }
 
-    override fun removeCustomer(customers:List<Customer>):Boolean {
+    override fun removeCustomer(customers: List<Customer>): Boolean {
         return dataBase.deleteCustomer(customers)
     }
 
-    override fun removeStock(stocks:List<Stock>): Boolean {
+    override fun removeStock(stocks: List<Stock>): Boolean {
         return dataBase.deleteStock(stocks)
     }
 }

@@ -41,7 +41,7 @@ class CustomerViewer : DialogFragment() {
         val dob:MaterialTextView = view.findViewById(R.id.customer_dob)
         val mobile:MaterialTextView = view.findViewById(R.id.customer_mobile)
 
-        dialog?.setCancelable(false)
+        //dialog?.setCancelable(false)
 
         toolBar.setNavigationIcon(R.drawable.ic_baseline_close_24)
         toolBar.title="Customer"
@@ -50,7 +50,7 @@ class CustomerViewer : DialogFragment() {
         }
 
         customerName.text=customer.name
-        customerId.text=customer.customerId
+        customerId.text="id: ${customer.customerId}"
         dob.text="DOB: ${customer.dob}"
         mobile.text="Mobile: ${customer.mobile_number}"
 

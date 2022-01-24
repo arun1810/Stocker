@@ -1,12 +1,16 @@
 package com.example.stocker.view.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -17,6 +21,7 @@ import com.example.stocker.R
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.view.customviews.CustomTextView
+import com.example.stocker.view.util.DisplayUtil
 import com.google.android.material.textview.MaterialTextView
 import java.util.regex.Pattern
 
@@ -28,9 +33,14 @@ class OrderHistoryAdapter(val context: Context, val navController: NavController
 
        private val diff = AsyncListDiffer(this, DiffCalc())
         private lateinit var recyclerView: RecyclerView
-    private var smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-        override fun getVerticalSnapPreference(): Int {
-            return SNAP_TO_START
+    private var smoothScroller: RecyclerView.SmoothScroller
+
+
+    init {
+        smoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
         }
     }
 
@@ -76,6 +86,7 @@ class OrderHistoryAdapter(val context: Context, val navController: NavController
         holder.customerId.text = "C id: ${data[position].customerId}"
         holder.orderDate.text=data[position].dateOfPurchase.toString()
         holder.orderTotal.text = "₹${data[position].total}"
+        
     }
 
     override fun getItemCount(): Int {

@@ -2,26 +2,23 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group
-        android:id="@+id/search_group"
-        >
+    <group android:id="@+id/search_group">
+
     <item
         android:id="@+id/order_search"
-        android:title="search"
+        android:title="@string/search"
         android:icon="@drawable/ic_baseline_search_24"
-        app:showAsAction="ifRoom"
-        app:actionViewClass="androidx.appcompat.widget.SearchView" />
-    <item
-        android:id="@+id/order_clear"
-        android:title="clear"
-        android:icon="@drawable/ic_autorenew"
+
         app:showAsAction="always"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         />
 
         <item
             android:id="@+id/logout"
-            android:title="logout"
+            android:title="@string/logout"
             app:showAsAction="never"
+            android:tooltipText="logout"
+            android:icon="@drawable/ic_logout"
             />
     </group>
 

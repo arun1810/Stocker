@@ -42,7 +42,7 @@
 
         android:adjustViewBounds="true"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.CircularBorder"
-
+        android:background="?attr/colorPrimaryVariant"
         android:src="@drawable/ic_male_avatar_vector"
 
         app:layout_constraintTop_toBottomOf="@id/toolbar"
@@ -52,6 +52,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_name"
+        android:textAppearance="?attr/textAppearanceHeadline4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -60,10 +61,8 @@
         android:layout_marginStart="@dimen/margin"
         android:layout_marginEnd="@dimen/margin"
         android:layout_marginTop="28dp"
-        android:layout_marginBottom="4dp"
         android:textAlignment="center"
 
-        android:textSize="32sp"
 
 
 
@@ -75,19 +74,19 @@
         />
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_id"
+        android:textAppearance="?attr/textAppearanceHeadline6"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        tools:text="id: 175534"
+        tools:text="#175534"
 
         android:layout_marginStart="@dimen/margin"
         android:layout_marginEnd="@dimen/margin"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="2dp"
 
         android:textAlignment="center"
-        android:textSize="24sp"
-        android:alpha="0.85"
 
         app:layout_constraintTop_toBottomOf="@id/customer_name"
         app:layout_constraintStart_toStartOf="parent"
@@ -112,6 +111,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_gender"
+        android:textAppearance="?attr/textAppearanceHeadline5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -120,7 +120,6 @@
         android:layout_marginTop="32dp"
 
         tools:text="Gender: Male"
-        android:textSize="28sp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -132,6 +131,8 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_dob"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -140,7 +141,6 @@
         android:layout_marginTop="16dp"
 
         tools:text="DOB: 18-10-20"
-        android:textSize="28sp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -151,6 +151,8 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/customer_mobile"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -160,13 +162,12 @@
         android:layout_marginBottom="16dp"
 
         tools:text="Mobile:7708883616"
-        android:textSize="28sp"
+
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/customer_dob"
         app:layout_constraintBottom_toBottomOf="parent"
-
 
         />
 

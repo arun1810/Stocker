@@ -24,6 +24,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textview.MaterialTextView
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -32,18 +33,30 @@ class CustomerDetailsGetterFragment : DialogFragment() {
 
    private lateinit var customerNameEtx:TextInputEditText
    private lateinit var customerNameLayout:TextInputLayout
-    private lateinit var customerIdEtx:TextInputEditText
+
+   private lateinit var customerIdEtx:TextInputEditText
     private lateinit var customerIdLayout:TextInputLayout
+
     private lateinit var customerPasswordEtx:TextInputEditText
     private lateinit var customerPasswordLayout:TextInputLayout
+
     private lateinit var customerMobileNumberEtx:TextInputEditText
     private lateinit var customerMobileNumberLayout:TextInputLayout
+
     private lateinit var customerGenderToggleGrp:MaterialButtonToggleGroup
+
     private lateinit var dobBtn:MaterialButton
+
+    private lateinit var dobErrorLabel:MaterialTextView
+
     private var dob = LocalDate.now()
+
     private var gender:Char='M'
+
     private val model:AdminViewModel by activityViewModels()
+
     private lateinit var toolbar:MaterialToolbar
+
     private var mode = Mode.Create
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +89,7 @@ class CustomerDetailsGetterFragment : DialogFragment() {
             dialog!!.window!!.setLayout(width, height)
         }
 
-        dialog!!.setCancelable(false)
+        //dialog!!.setCancelable(false)
         //val size = DisplayUtil.getDisplaySize(activity!!)
         //val height = size.x
         //val width = size.y
@@ -92,6 +105,7 @@ class CustomerDetailsGetterFragment : DialogFragment() {
         customerNameLayout = view.findViewById(R.id.admin_enter_customer_name_layout)
         customerMobileNumberEtx = view.findViewById(R.id.admin_enter_customer_mobile_number)
         customerMobileNumberLayout = view.findViewById(R.id.admin_enter_customer_mobile_number_layout)
+        dobErrorLabel = view.findViewById(R.id.admin_customer_dob_btn_label)
 
         dobBtn = view.findViewById(R.id.admin_customer_dob_btn)
         toolbar = view.findViewById(R.id.admin_enter_customer_toolbar)
@@ -140,9 +154,11 @@ class CustomerDetailsGetterFragment : DialogFragment() {
 
         })
 
-        customerGenderToggleGrp.isSingleSelection=true
+
         customerGenderToggleGrp.check(R.id.admin_customer_male)
+
         customerGenderToggleGrp.addOnButtonCheckedListener { _, checkedId, _ ->
+
 
             when(checkedId){
                 R.id.admin_customer_male->{
@@ -232,6 +248,7 @@ class CustomerDetailsGetterFragment : DialogFragment() {
             val constraints = CalendarConstraints.Builder().setValidator(DateValidatorPointBackward.now())
 
             val picker = MaterialDatePicker.Builder.datePicker().also {
+                //it.setTheme(R.style.MaterialCalendarTheme)
                 it.setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 it.setTitleText("select date")
                 it.setCalendarConstraints(constraints.build())
@@ -243,7 +260,9 @@ class CustomerDetailsGetterFragment : DialogFragment() {
             builder.addOnPositiveButtonClickListener {
 
                 dob = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                dobBtn.setStrokeColorResource(R.color.success)
                dobBtn.text=dob.toString()
+                dobErrorLabel.text=""
 
             }
             builder.show(parentFragmentManager,"date picker")
@@ -255,36 +274,37 @@ class CustomerDetailsGetterFragment : DialogFragment() {
         var canAdd=true
         if(dobBtn.text==context?.getString(R.string.select_dob)){
             dobBtn.setStrokeColorResource(R.color.error)
+            dobErrorLabel.text = "Please a DOB"
             canAdd=false
         }
         customerNameEtx.text?.isEmpty().apply {
             if(this!!) {
-                customerNameLayout.error = "name cannot be empty"
+                customerNameLayout.error = "Name cannot be empty"
                 canAdd = false
             }
         }
         customerPasswordEtx.text?.isEmpty().apply{
             if(this!!) {
-                customerPasswordLayout.error = "password cannot be empty"
+                customerPasswordLayout.error = "Password cannot be empty"
                 canAdd = false
             }
         }
         customerIdEtx.text?.isEmpty().apply{
             if(this!!) {
-                customerIdLayout.error = "Id cannot be empty"
+                customerIdLayout.error = "ID cannot be empty"
                 canAdd = false
             }
         }
         customerMobileNumberEtx.text?.let{
             it.isEmpty().apply {
                 if (this) {
-                    customerMobileNumberLayout.error = "mobile number cannot be empty"
+                    customerMobileNumberLayout.error = "Mobile number cannot be empty"
                     canAdd = false
                 }
                 else{
                     val numberLen = it.toString().length
                     if(numberLen<10 ||numberLen>10){
-                        customerMobileNumberLayout.error = "mobile number invalid"
+                        customerMobileNumberLayout.error = "Mobile number invalid"
                         canAdd = false
                     }
                 }
@@ -354,8 +374,8 @@ class CustomerDetailsGetterFragment : DialogFragment() {
 
 
 
-                toolbar.title="update customer"
-                toolbar.menu.findItem(R.id.add).title="update"
+                toolbar.title="Update customer"
+                toolbar.menu.findItem(R.id.add).title="Update"
 
             }
         }

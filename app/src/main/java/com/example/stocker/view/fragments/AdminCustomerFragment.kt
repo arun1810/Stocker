@@ -2,6 +2,7 @@ package com.example.stocker.view.fragments
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,9 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +23,7 @@ import com.example.stocker.view.adapter.decorator.SimpleDecorator
 import com.example.stocker.view.customviews.SortImageButton
 import com.example.stocker.view.fragments.util.Mode
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
+import com.example.stocker.view.fragments.util.Type
 import com.example.stocker.view.util.DisplayUtil
 import com.example.stocker.viewmodel.AdminViewModel
 import com.example.stocker.viewmodel.helper.cantRetrieveData
@@ -30,12 +31,19 @@ import com.example.stocker.viewmodel.helper.deleteError
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 
+const val search=-1
+const val delete=-2
 class AdminCustomerFragment : Fragment() {
+
     val model :AdminViewModel by activityViewModels()
     lateinit var adapter: CustomerAdapter
+    private lateinit var toolbar:MaterialToolbar
+
+    private lateinit var dataStatusTextView:MaterialTextView
+    private var dataChangedBy = delete
+
 
 
     override fun onCreateView(
@@ -43,6 +51,8 @@ class AdminCustomerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        if(model.selectedStocks.isNotEmpty()) model.clearStockSelection(Type.Nothing)
+
         return inflater.inflate(R.layout.fragment_admin_customer, container, false)
     }
 
@@ -51,7 +61,7 @@ class AdminCustomerFragment : Fragment() {
 
 
         val recycler = view.findViewById<RecyclerView>(R.id.admin_customer_recycler)
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.admin_customer_toolbar)
+        toolbar = view.findViewById(R.id.admin_customer_toolbar)
         val addCustomerFab=view.findViewById<FloatingActionButton>(R.id.admin_add_customer_floating_btn)
         val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
         val navController  = navHost.navController
@@ -62,6 +72,8 @@ class AdminCustomerFragment : Fragment() {
         val errorDismissBtn: MaterialButton = view.findViewById(R.id.banner_negative_btn)
         val errorTitle: MaterialTextView = view.findViewById(R.id.error_title)
         val banner = view.findViewById<ConstraintLayout>(R.id.banner)
+
+        dataStatusTextView = view.findViewById(R.id.data_status_textview)
 
         nameSort.ascIcon=R.drawable.ic_sort_alphabetical_ascending
         nameSort.decIcon=R.drawable.ic_sort_alphabetical_descending
@@ -82,7 +94,7 @@ class AdminCustomerFragment : Fragment() {
         dateSortBtn.neutralIcon=R.drawable.ic_sort_clock_neutral_outline
         dateSortBtn.setOnClickListener {
             dateSortBtn.changeSortOrder()
-            model.sortCustomerByName(dateSortBtn.sortOrder)
+            model.sortCustomerByDOB(dateSortBtn.sortOrder)
             model.join {
                 //recycler.smoothScrollBy(0,0)
                 nameSort.changeToDefaultSortOrder()
@@ -97,15 +109,18 @@ class AdminCustomerFragment : Fragment() {
             override fun onOneSelect() {
                 toolbar.menu.setGroupVisible(R.id.search_group,false)
                 toolbar.menu.setGroupVisible(R.id.edit_group,true)
+                setUpSelectionMenuSelectionOption(1)
             }
-            override fun onMultipleSelect() {
+            override fun onMultipleSelect(count:Int) {
                 toolbar.menu.setGroupVisible(R.id.search_group,false)
                 toolbar.menu.setGroupVisible(R.id.edit_group,true)
                 toolbar.menu.findItem(R.id.edit).isVisible=false
+                setUpSelectionMenuSelectionOption(count)
             }
             override fun selectionDisabled() {
                 toolbar.menu.setGroupVisible(R.id.search_group,true)
                 toolbar.menu.setGroupVisible(R.id.edit_group,false)
+                clearSelectionMenu()
             }
         })
 
@@ -120,6 +135,7 @@ class AdminCustomerFragment : Fragment() {
                         start()
                     }
                 }
+
 
                 errorRetryBtn.setOnClickListener {
                     val x = banner.translationY
@@ -161,7 +177,7 @@ class AdminCustomerFragment : Fragment() {
                 }
 
                 if (!status.isHandled) {
-
+                    println("admin customer error  handled")
                     errorTitle.text = when (status.msg) {
 
                         deleteError -> {
@@ -184,15 +200,16 @@ class AdminCustomerFragment : Fragment() {
                         duration = 1000
                         start()
                     }
-                }
+                }else{println("admin customer error  handled")}
             }
 
         }
 
         toolbar.title="Customers"
-        toolbar.inflateMenu(R.menu.customer_order_history_menu)
+        toolbar.inflateMenu(R.menu.admin_menu)
         val searchMenu = toolbar.menu.findItem(R.id.order_search).actionView as SearchView
         searchMenu.queryHint="Customer Name"
+        searchMenu.background=null
         searchMenu.setOnQueryTextListener(
             object: SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -208,6 +225,11 @@ class AdminCustomerFragment : Fragment() {
                 override fun onQueryTextChange(newText: String?): Boolean {
                     newText?.let{
                         //adapter.filter.filter(newText)
+                        dataChangedBy = if(newText==""){
+                            delete
+                        } else{
+                            search
+                        }
                         model.filterCustomerByName(newText)
                     if(!addCustomerFab.isShown)addCustomerFab.show()
                     }
@@ -218,15 +240,7 @@ class AdminCustomerFragment : Fragment() {
         )
         toolbar.setOnMenuItemClickListener {
             when(it.itemId){
-                R.id.order_clear->{
-                    if(model.clearCustomerFilter()){
-                        model.join {
-                            recycler.scrollToPosition(0)
-                        }
-                    }
 
-                    true
-                }
                 R.id.edit->{
                     println("edit")
                     navController.navigate(R.id.action_adminCustomerFragment_to_customerDetailsGetterFragment2, bundleOf("mode" to Mode.Update))
@@ -235,6 +249,7 @@ class AdminCustomerFragment : Fragment() {
                 R.id.delete->{
                     println("delete")
                     model.removeCustomer()
+                    dataChangedBy= delete
                     true
                 }
                 R.id.logout->{
@@ -276,6 +291,16 @@ class AdminCustomerFragment : Fragment() {
         super.onStart()
 
         model.customersLiveData.observe(this,{customers->
+            if(customers.isEmpty()){
+                dataStatusTextView.visibility=View.VISIBLE
+                when(dataChangedBy){
+                    search-> dataStatusTextView.text=getString(R.string.couldnt_find_anything)
+                    delete-> dataStatusTextView.text=getString(R.string.empty)
+                }
+            }
+            else{
+                dataStatusTextView.visibility=View.INVISIBLE
+            }
             adapter.setNewList(customers)
 
         })
@@ -284,7 +309,23 @@ class AdminCustomerFragment : Fragment() {
             adapter.selectionListChanged(type)
         })
 
+    }
 
+    private fun setUpSelectionMenuSelectionOption(selectionCount:Int){
+        toolbar.title = "$selectionCount selected"
 
+        if(toolbar.navigationIcon==null) {
+            toolbar.navigationIcon =
+                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_close_24)
+            toolbar.setNavigationOnClickListener {
+                model.clearCustomerSelection(Type.Update)
+                clearSelectionMenu()
+            }
+        }
+    }
+
+    private fun clearSelectionMenu(){
+        toolbar.title = "Customers"
+        toolbar.navigationIcon = null
     }
 }

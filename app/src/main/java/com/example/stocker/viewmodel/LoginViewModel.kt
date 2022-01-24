@@ -40,11 +40,12 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                val customer = adminRepository.validateCustomer(name, password)
 
                if (customer != null) {
+                   Stocker.createInstance(customer)
                    _customerLoginStatusLiveData.postValue(_customerLoginStatusLiveData.value?.apply {
                        isHandled=false
                        state=State.Pass
                    })
-                   Stocker.createInstance(customer)
+
                } else {
                    _customerLoginStatusLiveData.postValue(_customerLoginStatusLiveData.value?.apply {
                        isHandled=false

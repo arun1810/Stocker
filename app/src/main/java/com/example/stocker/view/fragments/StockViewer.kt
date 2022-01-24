@@ -74,7 +74,7 @@ class StockViewer : DialogFragment(){
         val imgRes = data.first as Int
         val stock = data.second as Stock
 
-        dialog!!.setCancelable(false)
+        //dialog!!.setCancelable(false)
         toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
         toolbar.title="Stock"
         toolbar.setNavigationOnClickListener {
@@ -85,7 +85,7 @@ class StockViewer : DialogFragment(){
 
         stockImage.setImageResource(imgRes)
         stockName.text = stock.stockName
-        stockId.text="id: ${stock.stockID}"
+        stockId.text="Id: ${stock.stockID}"
         stock.count.apply {
             when(this){
                 0->{stockCount.text="Out of stock"}
@@ -93,10 +93,10 @@ class StockViewer : DialogFragment(){
                 else->{stockCount.text="$this in stock "}
             }
         }
-        stockMrpPrice.text="M.R.P: ₹ ${stock.price}"
+        stockMrpPrice.text="M.R.P.: ₹${stock.price}"
         val specialPrice = calcPrice(stock.price,stock.discount)
-        stockSpecialPrice.text="Special price: ₹ $specialPrice"
-        youSaveText.text="you save ₹ ${stock.price-specialPrice} (${stock.discount}%)"
+        stockSpecialPrice.text="Special price: ₹$specialPrice"
+        youSaveText.text="You save: ₹${stock.price-specialPrice}(${stock.discount}%)"
 
 
 

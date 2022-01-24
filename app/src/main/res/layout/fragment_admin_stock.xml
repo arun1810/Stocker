@@ -8,6 +8,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragments.AdminStockFragment">
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/data_status_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/admin_stock_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/couldnt_find_anything"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        />
+
    <include
        android:id="@+id/admin_stock_toolbar"
        layout="@layout/toolbar"
@@ -67,12 +81,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:tint="?attr/colorOnPrimary"
-        app:backgroundTint="?attr/colorPrimary"
+
         android:src="@drawable/ic_plus"
 
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintVertical_bias="0.95"
+        android:layout_margin="16dp"
+
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintVertical_bias="1"
         app:fabSize="normal"
 
 

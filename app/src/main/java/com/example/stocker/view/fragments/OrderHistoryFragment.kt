@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Stocker
@@ -27,7 +26,6 @@ import com.example.stocker.viewmodel.helper.cantRetrieveData
 import com.example.stocker.viewmodel.helper.deleteError
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 
 class OrderHistoryFragment : Fragment() {
@@ -38,6 +36,9 @@ class OrderHistoryFragment : Fragment() {
     private lateinit var priceSortBtn:SortImageButton
     private lateinit var searchMenu:SearchView
     private val model:CustomerViewModel by activityViewModels()
+
+    private lateinit var dataStatusTextView:MaterialTextView
+    private var dataChangedBy = delete
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +58,8 @@ class OrderHistoryFragment : Fragment() {
         val errorDismissBtn: MaterialButton = view.findViewById(R.id.banner_negative_btn)
         val errorTitle: MaterialTextView = view.findViewById(R.id.error_title)
         val banner = view.findViewById<ConstraintLayout>(R.id.banner)
+        dataStatusTextView=view.findViewById(R.id.data_status_textview)
+
 
         model.orderHistoryErrorStatus.observe(this,{status->
             status?.let {
@@ -110,12 +113,10 @@ class OrderHistoryFragment : Fragment() {
 
                     errorTitle.text = when (status.msg) {
 
-                        deleteError -> {
-                            "can't delete customer right now. try again"
-                        }
+
                         cantRetrieveData -> {
                             errorDismissBtn.visibility=View.GONE
-                            "can't get customers right now. try again"
+                            "can't get order history right now. try again"
                         }
                         else -> {
                             ""
@@ -151,10 +152,11 @@ class OrderHistoryFragment : Fragment() {
         ))
 
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+        toolbar.title=context?.getString(R.string.your_orders)
         toolbar.setNavigationOnClickListener {
             activity!!.onBackPressed()
         }
-        toolbar.inflateMenu(R.menu.customer_order_history_menu)
+        toolbar.inflateMenu(R.menu.admin_menu)
         searchMenu = toolbar.menu.findItem(R.id.order_search).actionView as SearchView
         searchMenu.queryHint="Stock ID"
         searchMenu.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
@@ -168,6 +170,11 @@ class OrderHistoryFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let{
                     //adapter.filter.filter(newText)
+                    dataChangedBy = if(newText==""){
+                        delete
+                    } else{
+                        search
+                    }
                     model.filterOrderHistoryByStockId(newText)
                 }
                 return false
@@ -176,14 +183,7 @@ class OrderHistoryFragment : Fragment() {
         })
         toolbar.setOnMenuItemClickListener { item->
             when(item.itemId){
-                R.id.order_clear->{
-                    if(model.clearOrderFilter()){
-                        model.join {
-                       recyclerView.smoothScrollToPosition(0)
-                        }
-                    }
-                    true
-                }
+
                 R.id.logout->{
                     Stocker.logout()
                     SharedPreferenceHelper.writeCustomerPreference(activity!!,null)
@@ -229,7 +229,22 @@ class OrderHistoryFragment : Fragment() {
         super.onStart()
 
         model.orderHistoryLiveData.observe(this,{
+            if(it.isEmpty()){
+                dataStatusTextView.visibility=View.VISIBLE
+                when(dataChangedBy){
+                    search-> dataStatusTextView.text=getString(R.string.couldnt_find_anything)
+                    delete-> dataStatusTextView.text=getString(R.string.empty)
+                }
+            }
+            else{
+                dataStatusTextView.visibility=View.INVISIBLE
+            }
             adapter.setNewList(it)
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        searchMenu.setQuery("",true)
     }
 }

@@ -1,6 +1,7 @@
 package com.example.stocker.view.adapter
 
 import android.content.Context
+import android.graphics.PointF
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,17 +27,34 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 
 
-class AdminStockAdapter(private val context: Context,private val selectedStocks:MutableList<Stock>,private val width:Int,val navController:NavController,private val selectionListener: SelectionListener): RecyclerView.Adapter<AdminStockAdapter.ViewHolder>(){
+class AdminStockAdapter(
+    private val context: Context,
+    private val selectedStocks: MutableList<Stock>,
+    private val width: Int,
+    val navController: NavController,
+    private val selectionListener: SelectionListener
+) : RecyclerView.Adapter<AdminStockAdapter.ViewHolder>() {
 
     private var oneSelectionActive = false
     private var multipleSelectionActive = false
-    private val diff = AsyncListDiffer(this, DiffCalc())
+    private var smoothScroller: LinearSmoothScroller
 
-    private var smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
-        override fun getVerticalSnapPreference(): Int {
-            return SNAP_TO_START
+    init {
+        println("init admin stock adapter")
+        smoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+
+            override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
+                return super.computeScrollVectorForPosition(targetPosition)
+            }
         }
     }
+
+    private val diff = AsyncListDiffer(this, DiffCalc())
+
+
     private val images = arrayOf(
         R.mipmap.bike1_foreground,
         R.mipmap.bike2_foreground,
@@ -63,10 +81,10 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
 
             if ((changeType != Type.Delete)) {
                 //recyclerView.scrollToPosition(0)
-                    recyclerView.post {
-                        smoothScroller.targetPosition=0
-                        recyclerView.layoutManager!!.startSmoothScroll(smoothScroller)
-                    }
+                recyclerView.post {
+                    smoothScroller.targetPosition = 0
+                    recyclerView.layoutManager!!.startSmoothScroll(smoothScroller)
+                }
 
                 //recyclerView.layoutManager!!.smoothScrollToPosition(recyclerView,RecyclerView.State)
             }
@@ -128,17 +146,15 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = diff.currentList
-            //val data = filteredList
-
+        //val data = filteredList
 
 
         holder.stockName.text = data[position].stockName
-        holder.stockPrice.text = "₹ ${data[position].price}"
+        holder.stockPrice.text = "₹${data[position].price}"
         holder.stockId.text = "id: ${data[position].stockID}"
 
 
-
-       // if (selectedStocks.contains(diff.currentList[position])) {
+        // if (selectedStocks.contains(diff.currentList[position])) {
         if (selectedStocks.contains(data[position])) {
             changeToSelectedState(holder)
         } else {
@@ -204,7 +220,7 @@ class AdminStockAdapter(private val context: Context,private val selectedStocks:
             if (!multipleSelectionActive) {
                 multipleSelectionActive = true
                 oneSelectionActive = false
-                selectionListener.onMultipleSelect()
+                selectionListener.onMultipleSelect(selectedStocks.size)
 
             }
         } else if (selectedStocks.size == 1) {
