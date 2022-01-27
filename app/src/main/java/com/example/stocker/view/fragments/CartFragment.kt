@@ -9,7 +9,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -51,10 +50,10 @@ class CartFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navHost = requireActivity().supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController  = navHost.navController
 
-        activity!!.onBackPressedDispatcher.addCallback(this,object:OnBackPressedCallback(true){
+        requireActivity().onBackPressedDispatcher.addCallback(this,object:OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 snackBar?.dismiss()
                 navController.popBackStack()
@@ -75,16 +74,16 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        model.cartErrorStatus.observe(this,{status->
+        model.cartErrorStatus.observe(viewLifecycleOwner) { status ->
             status?.let {
-                if(!status.isHandled) {
+                if (!status.isHandled) {
                     Snackbar.make(view, status.msg, Snackbar.LENGTH_LONG).setAction("close") {
                         status.isHandled = true
                     }.show()
                 }
             }
 
-        })
+        }
 
         stockLoaderProgeress = view.findViewById(R.id.stockLoaderProgress)
         stockLoaderProgeress.show()
@@ -99,13 +98,13 @@ class CartFragment : Fragment() {
         toolBar.title="Place Order"
         toolBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
         toolBar.setNavigationOnClickListener {
-            activity!!.onBackPressed()
+            requireActivity().onBackPressed()
 
         }
         val orderCountTextView = view.findViewById<TextView>(R.id.cart_order_count_textview)
         orderCountTextView.text = "${model.selectedArray.size} item(s) in your cart"
 
-        adapter = CartAdapter(context!!)
+        adapter = CartAdapter(requireContext())
         recycler.adapter = adapter
 
         lifecycleScope.launch {
@@ -118,11 +117,11 @@ class CartFragment : Fragment() {
 
 
         recycler.layoutManager = LinearLayoutManager(context)
-        val decor  =DividerItemDecoration(context!!,DividerItemDecoration.VERTICAL)
+        val decor  =DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL)
         //decor.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.divider)!!)
         decor.setDrawable(
             ColorDrawable(
-            MaterialColors.getColor(context!!,R.attr.colorOnSurface,context!!.getColor(R.color.darkAccent)))
+            MaterialColors.getColor(requireContext(),R.attr.colorOnSurface,requireContext().getColor(R.color.darkAccent)))
         )
         recycler.addItemDecoration(decor)
 
@@ -133,7 +132,7 @@ class CartFragment : Fragment() {
     }
 
     private fun buy(view:View){
-        if(NetworkConnectivity.isNetworkAvailable(context!!)){
+        if(NetworkConnectivity.isNetworkAvailable(requireContext())){
             if(isLoaded){
 
                 buyBtn.visibility=View.INVISIBLE
@@ -144,7 +143,7 @@ class CartFragment : Fragment() {
                     if(model.placeOrder(stockInCart.total)){
                         progress.hide()
                         // buyLayout.visibility=View.INVISIBLE
-                        Toast.makeText(context!!,"Order Placed",Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),"Order Placed",Toast.LENGTH_LONG).show()
                         navController.popBackStack()
 
 

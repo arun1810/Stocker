@@ -2,9 +2,7 @@ package com.example.stocker.view.fragments
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +10,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,8 +36,8 @@ const val search=-1
 const val delete=-2
 class AdminCustomerFragment : Fragment() {
 
-    val model :AdminViewModel by activityViewModels()
-    lateinit var adapter: CustomerAdapter
+    private val model :AdminViewModel by activityViewModels()
+    private lateinit var adapter: CustomerAdapter
     private lateinit var toolbar:MaterialToolbar
 
     private lateinit var dataStatusTextView:MaterialTextView
@@ -51,6 +50,7 @@ class AdminCustomerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        println("admin customer frag view created")
         if(model.selectedStocks.isNotEmpty()) model.clearStockSelection(Type.Nothing)
 
         return inflater.inflate(R.layout.fragment_admin_customer, container, false)
@@ -63,7 +63,7 @@ class AdminCustomerFragment : Fragment() {
         val recycler = view.findViewById<RecyclerView>(R.id.admin_customer_recycler)
         toolbar = view.findViewById(R.id.admin_customer_toolbar)
         val addCustomerFab=view.findViewById<FloatingActionButton>(R.id.admin_add_customer_floating_btn)
-        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
+        val navHost = requireActivity().supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
         val navController  = navHost.navController
         val dateSortBtn = view.findViewById<SortImageButton>(R.id.date_sort)
         val nameSort = view.findViewById<SortImageButton>(R.id.name_sort)
@@ -104,7 +104,7 @@ class AdminCustomerFragment : Fragment() {
 
 
 
-        adapter = CustomerAdapter(context!!,
+        adapter = CustomerAdapter(requireContext(),
             model.selectedCustomer,navController,object:SelectionListener{
             override fun onOneSelect() {
                 toolbar.menu.setGroupVisible(R.id.search_group,false)
@@ -124,7 +124,7 @@ class AdminCustomerFragment : Fragment() {
             }
         })
 
-        model.customerErrorStatus.observe(this){status->
+        model.customerErrorStatus.observe(viewLifecycleOwner){status->
             status?.let {
                 errorDismissBtn.setOnClickListener {
                     val x = banner.translationY
@@ -195,7 +195,7 @@ class AdminCustomerFragment : Fragment() {
                     ObjectAnimator.ofFloat(
                         banner,
                         "translationY",
-                        (DisplayUtil.dpToPixel(activity!!, 112).toFloat())
+                        (DisplayUtil.dpToPixel(requireActivity(), 112).toFloat())
                     ).apply {
                         duration = 1000
                         start()
@@ -253,8 +253,8 @@ class AdminCustomerFragment : Fragment() {
                     true
                 }
                 R.id.logout->{
-                    SharedPreferenceHelper.writeAdminPreference(activity!!,false)
-                    activity!!.finish()
+                    SharedPreferenceHelper.writeAdminPreference(requireActivity(),false)
+                    requireActivity().finish()
                     navController.navigate(R.id.action_adminCustomerFragment_to_loginActivity)
                     true
                 }
@@ -267,8 +267,8 @@ class AdminCustomerFragment : Fragment() {
         recycler.adapter = adapter
         recycler.layoutManager  = LinearLayoutManager(context)
         recycler.addItemDecoration(SimpleDecorator(
-            top=activity!!.resources.getDimensionPixelSize(R.dimen.gutter)/2,
-            side = activity!!.resources.getDimensionPixelSize(R.dimen.gutter)
+            top=requireActivity().resources.getDimensionPixelSize(R.dimen.gutter)/2,
+            side = requireActivity().resources.getDimensionPixelSize(R.dimen.gutter)
         ))
         recycler.addOnScrollListener(object:RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -290,24 +290,23 @@ class AdminCustomerFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        model.customersLiveData.observe(this,{customers->
-            if(customers.isEmpty()){
-                dataStatusTextView.visibility=View.VISIBLE
-                when(dataChangedBy){
-                    search-> dataStatusTextView.text=getString(R.string.couldnt_find_anything)
-                    delete-> dataStatusTextView.text=getString(R.string.empty)
+        model.customersLiveData.observe(this) { customers ->
+            if (customers.isEmpty()) {
+                dataStatusTextView.visibility = View.VISIBLE
+                when (dataChangedBy) {
+                    search -> dataStatusTextView.text = getString(R.string.couldnt_find_anything)
+                    delete -> dataStatusTextView.text = getString(R.string.empty)
                 }
-            }
-            else{
-                dataStatusTextView.visibility=View.INVISIBLE
+            } else {
+                dataStatusTextView.visibility = View.INVISIBLE
             }
             adapter.setNewList(customers)
 
-        })
+        }
 
-        model.customerSelectionState.observe(this,{type->
+        model.customerSelectionState.observe(this) { type ->
             adapter.selectionListChanged(type)
-        })
+        }
 
     }
 
@@ -316,7 +315,7 @@ class AdminCustomerFragment : Fragment() {
 
         if(toolbar.navigationIcon==null) {
             toolbar.navigationIcon =
-                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_close_24)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_close_24)
             toolbar.setNavigationOnClickListener {
                 model.clearCustomerSelection(Type.Update)
                 clearSelectionMenu()
@@ -327,5 +326,20 @@ class AdminCustomerFragment : Fragment() {
     private fun clearSelectionMenu(){
         toolbar.title = "Customers"
         toolbar.navigationIcon = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("admin customer frag destroyed")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        println("admin customer frag created")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        println("admin customer frag view destroyed")
     }
 }

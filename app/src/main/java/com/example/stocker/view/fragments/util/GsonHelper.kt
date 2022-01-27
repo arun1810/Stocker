@@ -7,8 +7,8 @@ class GsonHelper {
     companion object{
         private val gson = Gson()
 
-        fun <T>stringToObject(data:String,type:Class<T>)=gson.fromJson(data,type)
+        fun <T>stringToObject(data:String,type:Class<T>):T=gson.fromJson(data,type)
 
-        fun <T>objectToString(data:T) = gson.toJson(data)
+        fun <T>objectToString(data:T):String = gson.toJson(data)
     }
 }

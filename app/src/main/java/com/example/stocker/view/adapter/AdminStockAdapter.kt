@@ -5,8 +5,6 @@ import android.graphics.PointF
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
@@ -14,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.stocker.R
@@ -21,10 +20,7 @@ import com.example.stocker.pojo.Stock
 import com.example.stocker.view.fragments.util.Type
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.imageview.ShapeableImageView
-import java.util.regex.Pattern
 import kotlin.random.Random
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 
 
 class AdminStockAdapter(

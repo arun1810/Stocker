@@ -41,6 +41,7 @@ class AdminOrderHistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        println("Admin Order History view created")
         if(model.selectedCustomer.isNotEmpty()) model.clearCustomerSelection(Type.Nothing)
         if(model.selectedStocks.isNotEmpty()) model.clearStockSelection(Type.Nothing)
         return inflater.inflate(R.layout.fragment_admin_order_history, container, false)
@@ -53,7 +54,7 @@ class AdminOrderHistoryFragment : Fragment() {
         val toolbar = view.findViewById<MaterialToolbar>(R.id.admin_order_toolbar)
         val priceSort = view.findViewById<SortImageButton>(R.id.price_sort)
         val dateSortBtn = view.findViewById<SortImageButton>(R.id.date_sort)
-        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
+        val navHost = requireActivity().supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
         val navController  = navHost.navController
 
         val errorRetryBtn: MaterialButton = view.findViewById(R.id.banner_positive_btn)
@@ -62,7 +63,7 @@ class AdminOrderHistoryFragment : Fragment() {
         val banner = view.findViewById<ConstraintLayout>(R.id.banner)
         dataStatusTextView = view.findViewById(R.id.data_status_textview)
 
-        model.orderErrorStatus.observe(this,{status->
+        model.orderErrorStatus.observe(viewLifecycleOwner) { status ->
             status?.let {
                 errorDismissBtn.setOnClickListener {
                     val x = banner.translationY
@@ -117,7 +118,7 @@ class AdminOrderHistoryFragment : Fragment() {
 
 
                         cantRetrieveData -> {
-                            errorDismissBtn.visibility=View.GONE
+                            errorDismissBtn.visibility = View.GONE
                             "can't get order history right now. try again"
                         }
                         else -> {
@@ -128,15 +129,17 @@ class AdminOrderHistoryFragment : Fragment() {
                     ObjectAnimator.ofFloat(
                         banner,
                         "translationY",
-                        (DisplayUtil.dpToPixel(activity!!, 112).toFloat())
+                        (DisplayUtil.dpToPixel(requireActivity(), 112).toFloat())
                     ).apply {
                         duration = 1000
                         start()
                     }
-                } else{println("admin order history error  handled")}
+                } else {
+                    println("admin order history error  handled")
+                }
             }
 
-        })
+        }
 
 
 
@@ -165,12 +168,12 @@ class AdminOrderHistoryFragment : Fragment() {
             }
 
         }
-        adapter = OrderHistoryAdapter(context!!,navController, AdminMode)
+        adapter = OrderHistoryAdapter(requireContext(),navController, AdminMode)
         recycler. adapter = adapter
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.addItemDecoration(SimpleDecorator(
-            top=activity!!.resources.getDimensionPixelSize(R.dimen.gutter)/2,
-            side = activity!!.resources.getDimensionPixelSize(R.dimen.gutter)
+            top=requireActivity().resources.getDimensionPixelSize(R.dimen.gutter)/2,
+            side = requireActivity().resources.getDimensionPixelSize(R.dimen.gutter)
         ))
 
         toolbar.title = "Order History"
@@ -206,9 +209,9 @@ class AdminOrderHistoryFragment : Fragment() {
             when(item.itemId){
 
                 R.id.logout->{
-                    SharedPreferenceHelper.writeAdminPreference(activity!!,false)
+                    SharedPreferenceHelper.writeAdminPreference(requireActivity(),false)
                     navController.navigate(R.id.action_adminOrderHistoryFragment_to_loginActivity)
-                    activity!!.finish()
+                    requireActivity().finish()
 
                     true
                 }
@@ -223,24 +226,37 @@ class AdminOrderHistoryFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        model.orderHistoriesLiveData.observe(this,{orderHistory->
+        model.orderHistoriesLiveData.observe(this) { orderHistory ->
 
-            if(orderHistory.isEmpty()){
-                dataStatusTextView.visibility=View.VISIBLE
-                when(dataChangedBy){
-                    delete->dataStatusTextView.text=getString(R.string.empty)
-                    search-> dataStatusTextView.text=getString(R.string.couldnt_find_anything)
+            if (orderHistory.isEmpty()) {
+                dataStatusTextView.visibility = View.VISIBLE
+                when (dataChangedBy) {
+                    delete -> dataStatusTextView.text = getString(R.string.empty)
+                    search -> dataStatusTextView.text = getString(R.string.couldnt_find_anything)
                 }
-            }
-            else{
-                dataStatusTextView.visibility=View.INVISIBLE
+            } else {
+                dataStatusTextView.visibility = View.INVISIBLE
             }
 
             adapter.setNewList(orderHistory)
 
 
+        }
+    }
 
-        })
+    override fun onDestroy() {
+        super.onDestroy()
+        println("admin OrderHistory frag destroyed")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        println("admin OrderHistory frag created")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        println("admin OrderHistory frag view destroyed")
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.stocker.view.fragments
 
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableString
@@ -46,10 +45,10 @@ class AdminLoginFragment : Fragment() {
         val spannable = SpannableString(s)
         spannable.setSpan(RelativeSizeSpan(2f),0,5,0)
         spannable.setSpan(ForegroundColorSpan(
-            MaterialColors.getColor(context!!,android.R.attr.textColor,context!!.getColor(R.color.darkPrimaryTextColor))),6,23,0)
+            MaterialColors.getColor(requireContext(),android.R.attr.textColor,requireContext().getColor(R.color.darkPrimaryTextColor))),6,23,0)
         title.text=spannable
 
-        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navHost = requireActivity().supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController  = navHost.navController
 
         val passwordLayout = view.findViewById<TextInputLayout>(R.id.admin_login_password_layout)
@@ -86,42 +85,41 @@ class AdminLoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        model.adminLoginStatusLiveData.observe(this,{state->
+        model.adminLoginStatusLiveData.observe(this) { state ->
 
-                when (state.state) {
-                    LoginViewModel.State.Pass -> {
-                        if(! state.isHandled) {
-                            SharedPreferenceHelper.writeAdminPreference(activity!!, true)
+            when (state.state) {
+                LoginViewModel.State.Pass -> {
+                    if (!state.isHandled) {
+                        SharedPreferenceHelper.writeAdminPreference(requireActivity(), true)
 
-                            navController.navigate(R.id.action_adminLoginFragment_to_adminActivity)
-                            activity!!.finish()
-                        }
-                    }
-                    LoginViewModel.State.Fail -> {
-                        if(! state.isHandled) {
-                            val snackBar =
-                                Snackbar.make(view!!, "invalid password", Snackbar.LENGTH_LONG)
-                            snackBar.show()
-                        }
-                    }
-                    LoginViewModel.State.Nothing -> {
-                        //do nothing
+                        navController.navigate(R.id.action_adminLoginFragment_to_adminActivity)
+                        requireActivity().finish()
                     }
                 }
-            state.isHandled=true
-            state.state=LoginViewModel.State.Nothing
+                LoginViewModel.State.Fail -> {
+                    if (!state.isHandled) {
+                        val snackBar =
+                            Snackbar.make(requireView(), "invalid password", Snackbar.LENGTH_LONG)
+                        snackBar.show()
+                    }
+                }
+                LoginViewModel.State.Nothing -> {
+                    //do nothing
+                }
+            }
+            state.isHandled = true
+            state.state = LoginViewModel.State.Nothing
 
-        })
+        }
 
-        model.resultStatus.observe(this,{status->
+        model.resultStatus.observe(this) { status ->
             status?.let {
-                if(!status.isHandled) {
+                if (!status.isHandled) {
                     status.isHandled = true
-                    val snackBar = Snackbar.make(view!!, status.msg, Snackbar.LENGTH_INDEFINITE)
-                    .show()
+                     Snackbar.make(requireView(), status.msg, Snackbar.LENGTH_INDEFINITE).show()
                 }
             }
 
-        })
+        }
     }
 }

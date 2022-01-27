@@ -75,7 +75,7 @@
         />
     <dialog
         android:id="@+id/orderHistroyViewer"
-        android:name="com.example.stocker.view.fragments.OrderHistroyViewer"
+        android:name="com.example.stocker.view.fragments.OrderHistoryViewer"
         android:label="OrderHistroyViewer" />
     <dialog
         android:id="@+id/customerViewer"

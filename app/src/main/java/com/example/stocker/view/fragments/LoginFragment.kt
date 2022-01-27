@@ -28,7 +28,7 @@ class LoginFragment : Fragment() {
         val adminLoginBtn = view.findViewById<MaterialButton>(R.id.admin_login)
         val customerLoginBtn = view.findViewById<MaterialButton>(R.id.customer_login)
 
-        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navHost = requireActivity().supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController  = navHost.navController
 
         adminLoginBtn.setOnClickListener {

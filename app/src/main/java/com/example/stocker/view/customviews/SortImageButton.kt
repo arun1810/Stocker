@@ -1,7 +1,6 @@
 package com.example.stocker.view.customviews
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet

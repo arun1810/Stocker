@@ -8,9 +8,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
-import com.example.stocker.pojo.Stock
 import com.example.stocker.pojo.StockInCart
-import com.example.stocker.view.customviews.CustomTextView
 import com.google.android.material.textview.MaterialTextView
 
 class CartAdapter(private val context:Context):RecyclerView.Adapter<CartAdapter.ViewHolder>() {

@@ -14,7 +14,6 @@ import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.example.stocker.view.fragments.util.Mode
 import com.example.stocker.viewmodel.AdminViewModel
-import com.example.stocker.viewmodel.helper.Error
 import com.example.stocker.viewmodel.helper.otherError
 import com.example.stocker.viewmodel.helper.uniqueIdError
 import com.google.android.material.appbar.MaterialToolbar
@@ -24,8 +23,6 @@ import com.google.android.material.textfield.TextInputLayout
 
 
 class StockDetailsGetterFragment : DialogFragment() {
-
-    val invalidInput="InvalidInput"
 
     private fun Boolean.doIfTrue(lam:()->Unit){
         if(this){
@@ -108,26 +105,26 @@ class StockDetailsGetterFragment : DialogFragment() {
         }
 
 
-        model.stockDetailsGetterError.observe(this,{status->
+        model.stockDetailsGetterError.observe(this) { status ->
             status?.let {
-                if(!status.isHandled) {
-                    val msg = when(status.msg){
-                        uniqueIdError->{
+                if (!status.isHandled) {
+                    val msg = when (status.msg) {
+                        uniqueIdError -> {
                             "Given ID is not unique. Try another ID"
                         }
-                        otherError->{
+                        otherError -> {
                             "Something went wrong. Try again"
                         }
-                        else->{
+                        else -> {
                             ""
                         }
                     }
-                    Snackbar.make(view,msg, Snackbar.LENGTH_LONG).show()
-                    status.isHandled=true
+                    Snackbar.make(view, msg, Snackbar.LENGTH_LONG).show()
+                    status.isHandled = true
                 }
             }
 
-        })
+        }
 
         //dialog!!.setCancelable(false)
 
@@ -304,14 +301,14 @@ class StockDetailsGetterFragment : DialogFragment() {
                 Mode.Create -> {
                     model.addStock(stock)
                     model.join {
-                        Toast.makeText(context!!, "Stock added", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Stock added", Toast.LENGTH_LONG).show()
                         dialog?.cancel()
                     }
                 }
                 Mode.Update->{
                     model.updateStock(model.selectedStocks[0],stock)
                     model.join {
-                        Toast.makeText(context!!, "Stock updated", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Stock updated", Toast.LENGTH_LONG).show()
                         dialog?.cancel()
                     }
                 }

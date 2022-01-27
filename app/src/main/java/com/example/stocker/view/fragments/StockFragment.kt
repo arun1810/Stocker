@@ -10,14 +10,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.stocker.R
 import com.example.stocker.pojo.Stocker
@@ -32,7 +29,6 @@ import com.example.stocker.viewmodel.helper.deleteError
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 
 
@@ -67,7 +63,7 @@ class StockFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val navHost =
-            activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+            requireActivity().supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHost.navController
 
         val errorRetryBtn: MaterialButton = view.findViewById(R.id.banner_positive_btn)
@@ -79,7 +75,7 @@ class StockFragment : Fragment() {
 
 
 
-        model.stockErrorStatus.observe(this, { status ->
+        model.stockErrorStatus.observe(viewLifecycleOwner) { status ->
             status?.let {
                 errorDismissBtn.setOnClickListener {
                     val x = banner.translationY
@@ -147,7 +143,7 @@ class StockFragment : Fragment() {
                     ObjectAnimator.ofFloat(
                         banner,
                         "translationY",
-                        (DisplayUtil.dpToPixel(activity!!, 112).toFloat())
+                        (DisplayUtil.dpToPixel(requireActivity(), 112).toFloat())
                     ).apply {
                         duration = 1000
                         start()
@@ -155,7 +151,7 @@ class StockFragment : Fragment() {
                 }
             }
 
-        })
+        }
 
 
 
@@ -214,13 +210,13 @@ class StockFragment : Fragment() {
         }
 
         context?.let {
-            val bodyParams = DisplayUtil.getBodyParams(activity!!)
+            val bodyParams = DisplayUtil.getBodyParams(requireActivity())
             val spanCount: Int =
-                if (DisplayUtil.getOrientation(activity!!) == ORIENTATION_PORTRAIT) {
+                if (DisplayUtil.getOrientation(requireActivity()) == ORIENTATION_PORTRAIT) {
                     adapter = StockAdapter(
                         context = it,
                         selectedArray = model.selectedArray,
-                        width = DisplayUtil.dpToPixel(activity!!, bodyParams.columnSize * 2),
+                        width = DisplayUtil.dpToPixel(requireActivity(), bodyParams.columnSize * 2),
                         navController = navController
                     )
                     bodyParams.numberOfColumns / 2 //span count
@@ -228,13 +224,13 @@ class StockFragment : Fragment() {
                     adapter = StockAdapter(
                         context = it,
                         selectedArray = model.selectedArray,
-                        width = DisplayUtil.dpToPixel(activity!!, bodyParams.columnSize * 2),
+                        width = DisplayUtil.dpToPixel(requireActivity(), bodyParams.columnSize * 2),
                         navController = navController
                     )
 
                     bodyParams.numberOfColumns / 2 //span count
                 }
-            recycler.addItemDecoration(StockDecorator(activity!!.resources.getDimensionPixelSize(R.dimen.gutter)))
+            recycler.addItemDecoration(StockDecorator(requireActivity().resources.getDimensionPixelSize(R.dimen.gutter)))
             recycler.adapter = adapter
             recycler.itemAnimator = DefaultItemAnimator()
             layoutManager =
@@ -304,13 +300,13 @@ class StockFragment : Fragment() {
                 }
                 R.id.logutmenu -> {
                     Stocker.logout()
-                    SharedPreferenceHelper.writeCustomerPreference(activity!!, null)
+                    SharedPreferenceHelper.writeCustomerPreference(requireActivity(), null)
                     navController.navigate(R.id.action_stock_fragment_to_loginActivity)
 
                     //navController.popBackStack(R.id.stock_fragment,false)
                     //activity!!.supportFragmentManager.popBackStack()
                     //activity!!.onBackPressed()
-                    activity!!.finish()
+                    requireActivity().finish()
                     true
                 }
                 else -> {
@@ -326,7 +322,7 @@ class StockFragment : Fragment() {
 
 
 
-        model.stocksLiveData.observe(this, {
+        model.stocksLiveData.observe(this) {
             if (it.isEmpty()) {
                 dataStatusTextView.visibility = View.VISIBLE
                 when (dataChangedBy) {
@@ -337,14 +333,6 @@ class StockFragment : Fragment() {
                 dataStatusTextView.visibility = View.INVISIBLE
             }
             adapter.setNewList(it)
-        })
-
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-
+        }
     }
 }

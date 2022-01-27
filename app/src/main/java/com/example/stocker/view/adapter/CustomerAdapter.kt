@@ -4,8 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -15,12 +13,9 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
 import com.example.stocker.pojo.Customer
-import com.example.stocker.pojo.Stock
-import com.example.stocker.view.customviews.CustomTextView
 import com.example.stocker.view.fragments.util.Type
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.textview.MaterialTextView
-import java.util.regex.Pattern
 
 class CustomerAdapter(val context: Context,private val selectedCustomer:MutableList<Customer>,val navController: NavController ,private val selectionListener: SelectionListener): RecyclerView.Adapter<CustomerAdapter.ViewHolder>(){
 

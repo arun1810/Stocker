@@ -6,7 +6,9 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -19,7 +21,6 @@ import com.example.stocker.R
 import com.example.stocker.pojo.Stock
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
-import java.util.regex.Pattern
 import kotlin.random.Random
 
 class StockAdapter(

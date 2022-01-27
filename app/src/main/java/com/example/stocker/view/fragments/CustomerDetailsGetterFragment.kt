@@ -129,17 +129,17 @@ class CustomerDetailsGetterFragment : DialogFragment() {
             }
         }
 
-        model.customerDetailsGetterError.observe(this,{status->
+        model.customerDetailsGetterError.observe(this) { status ->
             status?.let {
-                if(!status.isHandled) {
-                    val msg = when(status.msg){
-                        uniqueIdError->{
+                if (!status.isHandled) {
+                    val msg = when (status.msg) {
+                        uniqueIdError -> {
                             "Given ID is not unique. Try another ID"
                         }
-                        otherError->{
+                        otherError -> {
                             "Something went wrong. Try again"
                         }
-                        else->{
+                        else -> {
                             ""
                         }
                     }
@@ -148,11 +148,11 @@ class CustomerDetailsGetterFragment : DialogFragment() {
                         show()
                     }
 
-                    status.isHandled=true
+                    status.isHandled = true
                 }
             }
 
-        })
+        }
 
 
         customerGenderToggleGrp.check(R.id.admin_customer_male)
@@ -327,7 +327,7 @@ class CustomerDetailsGetterFragment : DialogFragment() {
                 Mode.Create -> {
                     model.createNewCustomer(customer)
                     model.join {
-                        Toast.makeText(context!!, "Customer added", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Customer added", Toast.LENGTH_LONG).show()
                         dialog?.cancel()
                     }
                 }
@@ -339,7 +339,7 @@ class CustomerDetailsGetterFragment : DialogFragment() {
                     else {
                         model.updateCustomer(model.selectedCustomer[0], customer)
                         model.join {
-                            Toast.makeText(context!!, "Customer updated", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(), "Customer updated", Toast.LENGTH_LONG).show()
                             dialog?.cancel()
                         }
                     }

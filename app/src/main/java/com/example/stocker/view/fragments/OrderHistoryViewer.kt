@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -27,7 +26,7 @@ import com.google.android.material.textview.MaterialTextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class OrderHistroyViewer : DialogFragment() {
+class OrderHistoryViewer : DialogFragment() {
     lateinit var orderHistory:OrderHistory
 
     private lateinit var toolBar: MaterialToolbar
@@ -37,7 +36,7 @@ class OrderHistroyViewer : DialogFragment() {
     private val model:AdminViewModel by activityViewModels()
     private val stockNames= mutableListOf<String>()
     private lateinit var progress:CircularProgressIndicator
-    private lateinit var stockLoaderProgeress:CircularProgressIndicator
+    private lateinit var stockLoaderProgress:CircularProgressIndicator
     private lateinit var adapter:CartAdapter
 
 
@@ -69,15 +68,15 @@ class OrderHistroyViewer : DialogFragment() {
         val orderCountTextView = view.findViewById<TextView>(R.id.cart_order_count_textview)
         orderCountTextView.text = "${orderHistory.stockIds.size} item(s) in your cart"
 
-        adapter = CartAdapter(context!!)
+        adapter = CartAdapter(requireContext())
         // progress for buy which is not used in this fragment
         progress = view.findViewById(R.id.cart_progress)
         progress.hide()
         progress.visibility=View.GONE
 
-        stockLoaderProgeress = view.findViewById(R.id.stockLoaderProgress)
-        stockLoaderProgeress.bringToFront()
-        stockLoaderProgeress.show()
+        stockLoaderProgress = view.findViewById(R.id.stockLoaderProgress)
+        stockLoaderProgress.bringToFront()
+        stockLoaderProgress.show()
 
 
 
@@ -92,10 +91,10 @@ class OrderHistroyViewer : DialogFragment() {
         recycler = view.findViewById(R.id.cart_recycler)
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(context)
-        val decor  =DividerItemDecoration(context!!,DividerItemDecoration.VERTICAL)
+        val decor  =DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL)
         //decor.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.divider)!!)
         decor.setDrawable(ColorDrawable(
-            MaterialColors.getColor(context!!,R.attr.colorOnSurface,context!!.getColor(R.color.darkAccent))))
+            MaterialColors.getColor(requireContext(),R.attr.colorOnSurface,requireContext().getColor(R.color.darkAccent))))
         recycler.addItemDecoration(decor)
         //recycler.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
 
@@ -119,7 +118,7 @@ class OrderHistroyViewer : DialogFragment() {
                 price =orderHistory.stockPrices, stocksNames = orderHistory.stockNames)
             lifecycleScope.launch(Dispatchers.Main){
 
-                stockLoaderProgeress.hide()
+                stockLoaderProgress.hide()
                 adapter.setNewData(stockInCart)
 
             }

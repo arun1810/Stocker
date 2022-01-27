@@ -1,16 +1,9 @@
 package com.example.stocker.view.adapter
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -18,12 +11,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stocker.R
-import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
-import com.example.stocker.view.customviews.CustomTextView
-import com.example.stocker.view.util.DisplayUtil
 import com.google.android.material.textview.MaterialTextView
-import java.util.regex.Pattern
 
 const val AdminMode=1
 const val CustomerMode=2

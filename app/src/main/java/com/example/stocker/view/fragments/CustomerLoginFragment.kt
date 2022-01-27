@@ -2,7 +2,6 @@ package com.example.stocker.view.fragments
 
 
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableString
@@ -48,10 +47,10 @@ class CustomerLoginFragment : Fragment() {
          val s="Hello\nLogin to continue"
         val spannable = SpannableString(s)
         spannable.setSpan(RelativeSizeSpan(2f),0,5,0)
-        spannable.setSpan(ForegroundColorSpan(MaterialColors.getColor(context!!,android.R.attr.textColor,context!!.getColor(R.color.darkPrimaryTextColor))),6,23,0)
+        spannable.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireContext(),android.R.attr.textColor,requireContext().getColor(R.color.darkPrimaryTextColor))),6,23,0)
         title.text=spannable
 
-        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navHost = requireActivity().supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController  = navHost.navController
 
         val usernameLayout =view.findViewById<TextInputLayout>(R.id.customer_login_username_layout)
@@ -117,22 +116,22 @@ class CustomerLoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        model.customerLoginStatusLiveData.observe(this,{state->
+        model.customerLoginStatusLiveData.observe(this) { state ->
             when (state.state) {
                 LoginViewModel.State.Pass -> {
-                    if(! state.isHandled) {
+                    if (!state.isHandled) {
                         SharedPreferenceHelper.writeCustomerPreference(
-                            activity!!,
+                            requireActivity(),
                             GsonHelper.objectToString(Stocker.getInstance()!!.customer)
                         )
                         navController.navigate(R.id.action_customerLoginFragment_to_customerActivity)
-                        activity!!.finish()
+                        requireActivity().finish()
                     }
                 }
                 LoginViewModel.State.Fail -> {
-                    if(! state.isHandled) {
+                    if (!state.isHandled) {
                         val snackBar = Snackbar.make(
-                            view!!,
+                            requireView(),
                             "invalid username or password",
                             Snackbar.LENGTH_LONG
                         )
@@ -143,19 +142,19 @@ class CustomerLoginFragment : Fragment() {
                     //do nothing
                 }
             }
-            state.isHandled=true
-            state.state=LoginViewModel.State.Nothing
-        })
+            state.isHandled = true
+            state.state = LoginViewModel.State.Nothing
+        }
 
-        model.resultStatus.observe(this,{status->
+        model.resultStatus.observe(this) { status ->
             status?.let {
-                if(!status.isHandled) {
+                if (!status.isHandled) {
                     status.isHandled = true
-                    val snackBar = Snackbar.make(view!!, status.msg, Snackbar.LENGTH_LONG).show()
+                   Snackbar.make(requireView(), status.msg, Snackbar.LENGTH_LONG).show()
                 }
             }
 
-        })
+        }
 
     }
 

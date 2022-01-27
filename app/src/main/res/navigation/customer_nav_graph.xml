@@ -62,7 +62,7 @@
         tools:layout="@layout/activity_login" />
     <dialog
         android:id="@+id/orderHistroyViewer2"
-        android:name="com.example.stocker.view.fragments.OrderHistroyViewer"
+        android:name="com.example.stocker.view.fragments.OrderHistoryViewer"
         android:label="OrderHistroyViewer" />
     <dialog
         android:id="@+id/stockViewer2"

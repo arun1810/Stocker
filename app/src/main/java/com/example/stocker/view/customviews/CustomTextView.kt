@@ -1,9 +1,7 @@
 package com.example.stocker.view.customviews
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.AttributeSet
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.textfield.TextInputEditText

@@ -38,8 +38,8 @@ class AdminStockFragment : Fragment() {
     val model: AdminViewModel by activityViewModels()
     private lateinit var adapter: AdminStockAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
-    lateinit var searchMenu: SearchView
-    lateinit var recycler: RecyclerView
+    private lateinit var searchMenu: SearchView
+    private lateinit var recycler: RecyclerView
     private lateinit var toolbar: MaterialToolbar
 
     private lateinit var dataStatusTextView: MaterialTextView
@@ -50,6 +50,7 @@ class AdminStockFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        println("admin stock view created")
         // Inflate the layout for this fragment
         //activity!!.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         if (model.selectedCustomer.isNotEmpty()) model.clearCustomerSelection(Type.Nothing) //viewHolders will be updated since it is in another fragment.
@@ -64,7 +65,7 @@ class AdminStockFragment : Fragment() {
         toolbar = view.findViewById(R.id.admin_stock_toolbar)
         val addStockFab = view.findViewById<FloatingActionButton>(R.id.admin_add_stock_fab)
         val navHost =
-            activity!!.supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
+            requireActivity().supportFragmentManager.findFragmentById(R.id.admin_fragment_container) as NavHostFragment
         val navController = navHost.navController
         val countSort = view.findViewById<SortImageButton>(R.id.count_sort)
         val nameSort = view.findViewById<SortImageButton>(R.id.name_sort)
@@ -76,7 +77,7 @@ class AdminStockFragment : Fragment() {
         val banner = view.findViewById<ConstraintLayout>(R.id.banner)
         dataStatusTextView = view.findViewById(R.id.data_status_textview)
 
-        model.stockErrorStatus.observe(this, { status ->
+        model.stockErrorStatus.observe(viewLifecycleOwner) { status ->
             status?.let {
 
                 errorDismissBtn.setOnClickListener {
@@ -147,7 +148,7 @@ class AdminStockFragment : Fragment() {
                     ObjectAnimator.ofFloat(
                         banner,
                         "translationY",
-                        (DisplayUtil.dpToPixel(activity!!, 112).toFloat())
+                        (DisplayUtil.dpToPixel(requireActivity(), 112).toFloat())
                     ).apply {
                         duration = 1000
                         start()
@@ -157,7 +158,7 @@ class AdminStockFragment : Fragment() {
                 }
             }
 
-        })
+        }
 
 
         nameSort.ascIcon = R.drawable.ic_sort_alphabetical_ascending
@@ -235,9 +236,9 @@ class AdminStockFragment : Fragment() {
             when (item.itemId) {
 
                 R.id.logout -> {
-                    SharedPreferenceHelper.writeAdminPreference(activity!!, false)
+                    SharedPreferenceHelper.writeAdminPreference(requireActivity(), false)
                     navController.navigate(R.id.action_adminStockFragment_to_loginActivity)
-                    activity!!.finish()
+                    requireActivity().finish()
                     true
                 }
 
@@ -283,20 +284,20 @@ class AdminStockFragment : Fragment() {
         }
 
         context?.let {
-            val bodyParams = DisplayUtil.getBodyParams(activity!!)
+            val bodyParams = DisplayUtil.getBodyParams(requireActivity())
             val spanCount: Int =
-                if (DisplayUtil.getOrientation(activity!!) == Configuration.ORIENTATION_PORTRAIT) {
+                if (DisplayUtil.getOrientation(requireActivity()) == Configuration.ORIENTATION_PORTRAIT) {
                     adapter = AdminStockAdapter(
                         it,
                         model.selectedStocks,
-                        width = DisplayUtil.dpToPixel(activity!!, bodyParams.columnSize * 2),
+                        width = DisplayUtil.dpToPixel(requireActivity(), bodyParams.columnSize * 2),
                         navController,
 
                         selectionListener = selectionListener
                     )
                     recycler.addItemDecoration(
                         StockDecorator(
-                            activity!!.resources.getDimensionPixelSize(
+                            requireActivity().resources.getDimensionPixelSize(
                                 R.dimen.gutter
                             )
                         )
@@ -307,13 +308,13 @@ class AdminStockFragment : Fragment() {
                     adapter = AdminStockAdapter(
                         it,
                         model.selectedStocks,
-                        width = DisplayUtil.dpToPixel(activity!!, bodyParams.columnSize * 2),
+                        width = DisplayUtil.dpToPixel(requireActivity(), bodyParams.columnSize * 2),
                         navController,
                         selectionListener = selectionListener
                     )
                     recycler.addItemDecoration(
                         StockDecorator(
-                            activity!!.resources.getDimensionPixelSize(
+                            requireActivity().resources.getDimensionPixelSize(
                                 R.dimen.gutter
                             )
                         )
@@ -359,7 +360,7 @@ class AdminStockFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        model.stockLiveData.observe(this, { stocks ->
+        model.stockLiveData.observe(this) { stocks ->
             if (stocks.isEmpty()) {
                 dataStatusTextView.visibility = View.VISIBLE
                 when (dataChangedBy) {
@@ -371,11 +372,11 @@ class AdminStockFragment : Fragment() {
             }
             adapter.setNewList(stocks)
 
-        })
+        }
 
-        model.stockSelectionState.observe(this, { type ->
+        model.stockSelectionState.observe(this) { type ->
             adapter.selectionListChanged(type)
-        })
+        }
     }
 
     private fun setUpSelectionMenuSelectionOption(selectionCount: Int) {
@@ -383,7 +384,7 @@ class AdminStockFragment : Fragment() {
 
         if (toolbar.navigationIcon == null) {
             toolbar.navigationIcon =
-                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_close_24)
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_close_24)
             toolbar.setNavigationOnClickListener {
                 model.clearStockSelection(Type.Update)
                 clearSelectionMenu()
@@ -398,12 +399,16 @@ class AdminStockFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        println("admin stock frag destroyed")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("admin stock frag created")
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        println("admin stock frag view destroyed")
+    }
 }

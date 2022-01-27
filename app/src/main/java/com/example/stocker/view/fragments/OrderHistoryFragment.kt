@@ -51,7 +51,7 @@ class OrderHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navHost = activity!!.supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navHost = requireActivity().supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController  = navHost.navController
 
         val errorRetryBtn: MaterialButton = view.findViewById(R.id.banner_positive_btn)
@@ -61,7 +61,7 @@ class OrderHistoryFragment : Fragment() {
         dataStatusTextView=view.findViewById(R.id.data_status_textview)
 
 
-        model.orderHistoryErrorStatus.observe(this,{status->
+        model.orderHistoryErrorStatus.observe(viewLifecycleOwner) { status ->
             status?.let {
                 errorDismissBtn.setOnClickListener {
                     val x = banner.translationY
@@ -115,7 +115,7 @@ class OrderHistoryFragment : Fragment() {
 
 
                         cantRetrieveData -> {
-                            errorDismissBtn.visibility=View.GONE
+                            errorDismissBtn.visibility = View.GONE
                             "can't get order history right now. try again"
                         }
                         else -> {
@@ -126,7 +126,7 @@ class OrderHistoryFragment : Fragment() {
                     ObjectAnimator.ofFloat(
                         banner,
                         "translationY",
-                        (DisplayUtil.dpToPixel(activity!!, 112).toFloat())
+                        (DisplayUtil.dpToPixel(requireActivity(), 112).toFloat())
                     ).apply {
                         duration = 1000
                         start()
@@ -134,36 +134,33 @@ class OrderHistoryFragment : Fragment() {
                 }
             }
 
-        })
+        }
 
         toolbar = view.findViewById(R.id.order_history_toolbar)
         recyclerView = view.findViewById(R.id.recycler)
         priceSortBtn = view.findViewById(R.id.price_sort)
         dateSortBtn = view.findViewById(R.id.date_sort)
 
-        adapter = OrderHistoryAdapter(context!!,navController, CustomerMode)
+        adapter = OrderHistoryAdapter(requireContext(),navController, CustomerMode)
         val linearLayoutManager = LinearLayoutManager(activity)
 
         recyclerView.layoutManager =linearLayoutManager
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(SimpleDecorator(
-            top=activity!!.resources.getDimensionPixelSize(R.dimen.gutter)/2,
-            side = activity!!.resources.getDimensionPixelSize(R.dimen.gutter)
+            top=requireActivity().resources.getDimensionPixelSize(R.dimen.gutter)/2,
+            side = requireActivity().resources.getDimensionPixelSize(R.dimen.gutter)
         ))
 
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
         toolbar.title=context?.getString(R.string.your_orders)
         toolbar.setNavigationOnClickListener {
-            activity!!.onBackPressed()
+            requireActivity().onBackPressed()
         }
         toolbar.inflateMenu(R.menu.admin_menu)
         searchMenu = toolbar.menu.findItem(R.id.order_search).actionView as SearchView
         searchMenu.queryHint="Stock ID"
         searchMenu.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
-                    //model.filterOrderHistoryByStockId(query)
-                }
                 return true
             }
 
@@ -186,9 +183,9 @@ class OrderHistoryFragment : Fragment() {
 
                 R.id.logout->{
                     Stocker.logout()
-                    SharedPreferenceHelper.writeCustomerPreference(activity!!,null)
+                    SharedPreferenceHelper.writeCustomerPreference(requireActivity(),null)
                     navController.navigate(R.id.action_order_History_fragment_to_loginActivity)
-                    activity!!.finish()
+                    requireActivity().finish()
 
                     true
                 }

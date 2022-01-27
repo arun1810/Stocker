@@ -6,11 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.stocker.R
-import com.example.stocker.pojo.Customer
-import com.example.stocker.pojo.Stock
 import com.example.stocker.viewmodel.AdminViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.time.LocalDate
 
 class AdminActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +25,8 @@ class AdminActivity : AppCompatActivity() {
 
     }
 
-    private fun data(model:AdminViewModel){
+    /*
+    private fun prepareTestData(model:AdminViewModel){
         model.createNewCustomer(Customer("0A","A","pass",'F', LocalDate.now(),"1234567890"))
         model.createNewCustomer(Customer("0B","B","pass",'F', LocalDate.now(),"1234567890"))
 
@@ -81,4 +79,5 @@ class AdminActivity : AppCompatActivity() {
         model.addStock(Stock("#Z","X",234325,45646,2))
 
     }
+     */
 }

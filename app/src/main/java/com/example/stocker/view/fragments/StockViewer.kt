@@ -1,6 +1,5 @@
 package com.example.stocker.view.fragments
 
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,14 +15,14 @@ import kotlin.math.roundToInt
 
 class StockViewer : DialogFragment(){
 
-    lateinit var data:Pair<*,*>
-    lateinit var toolbar:MaterialToolbar
+    private lateinit var data:Pair<*,*>
+    private lateinit var toolbar:MaterialToolbar
     private lateinit var stockImage: ShapeableImageView
-    lateinit var  stockName: MaterialTextView
-    lateinit var stockId:MaterialTextView
-    lateinit var stockCount:MaterialTextView
+    private lateinit var  stockName: MaterialTextView
+    private lateinit var stockId:MaterialTextView
+    private lateinit var stockCount:MaterialTextView
     private lateinit var stockMrpPrice:MaterialTextView
-   lateinit var stockSpecialPrice:MaterialTextView
+    private lateinit var stockSpecialPrice:MaterialTextView
     private lateinit var youSaveText:MaterialTextView
 
 
