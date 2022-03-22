@@ -6,19 +6,31 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.stocker.di.componants.AdminRepoComponent
+import com.example.stocker.di.componants.CustomerRepoComponent
+import com.example.stocker.di.componants.DaggerAdminRepoComponent
+import com.example.stocker.di.componants.DaggerCustomerRepoComponent
+import com.example.stocker.di.module.AdminRepoModule
+import com.example.stocker.di.module.CustomerRepoModule
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 import com.example.stocker.repository.AdminRepository
+import com.example.stocker.repository.baseinterface.BaseAdminRepository
 import com.example.stocker.repository.helper.SortUtil
 import com.example.stocker.view.fragments.util.Type
 import com.example.stocker.viewmodel.helper.*
 import kotlinx.coroutines.*
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 class AdminViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val adminRepository = AdminRepository(getApplication())
+
+    lateinit var adminRepoComponent: AdminRepoComponent
+    @Inject
+    lateinit var adminRepository:BaseAdminRepository // = AdminRepository()
+       // BaseAdminRepository(getApplication())
 
     private var originalStocks = mutableListOf<Stock>()
     private var lastStockQuery = ""
@@ -72,9 +84,14 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     init {
         println("admin viewModel created")
 
+        adminRepoComponent = DaggerAdminRepoComponent.builder().adminRepoModule(AdminRepoModule(application)).build()
+        adminRepoComponent.inject(this)
+
         getAllCustomers()
         getAllStocks()
         getAllOrderHistory()
+
+       // adminRepoComponent =
     }
 
 

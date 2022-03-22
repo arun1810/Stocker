@@ -17,7 +17,7 @@ class DisplayUtil {
             return Display(height = pixelToDp(activity,size.height), width = pixelToDp(activity,size.width))
         }
 
-        fun getNumberOfColumn(screenWidth:Int):Int{
+         fun getNumberOfColumn(screenWidth:Int):Int{
             return when(screenWidth){
                 in 0..599 ->{
                    4
@@ -53,7 +53,7 @@ class DisplayUtil {
 
         private fun density(activity: Activity) = activity.resources.displayMetrics.density
 
-        fun getDisplaySize(activity: Activity): Display {
+        private fun getDisplaySize(activity: Activity): Display {
 
             val displayMetrics=activity.resources.displayMetrics
 
@@ -61,19 +61,20 @@ class DisplayUtil {
 
 
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                 val windowMetrics = activity.windowManager.currentWindowMetrics
                 val insets: Insets =
                     windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
 
 
-                return Display(
+                Display(
                     height = (windowMetrics.bounds.height() - insets.top - insets.bottom), // bounds gives size of match_parent . insets gives views surrounding it.
                     width =  (windowMetrics.bounds.width() - insets.left - insets.right)
                 )
-            } else {
+            }
+            else {
 
-                return Display(height =displayMetrics.heightPixels, width = displayMetrics.widthPixels )
+                Display(height =displayMetrics.heightPixels, width = displayMetrics.widthPixels )
 
             }
 

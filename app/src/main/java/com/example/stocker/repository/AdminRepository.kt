@@ -1,8 +1,8 @@
 package com.example.stocker.repository
 
-import android.content.Context
+import android.app.Application
+import com.example.stocker.App
 import com.example.stocker.model.BaseDataBase
-import com.example.stocker.model.StockerDataBase
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
@@ -11,13 +11,22 @@ import com.example.stocker.repository.baseinterface.BaseStockAndOrderHistoryProc
 import com.example.stocker.repository.helper.SortUtil
 import java.lang.Exception
 import java.util.regex.Pattern
+import javax.inject.Inject
 
-class AdminRepository(context: Context) : BaseAdminRepository,
+class AdminRepository constructor(
+    application: Application
+) : BaseAdminRepository,
     BaseStockAndOrderHistoryProcessor by StockAndOrderHistoryProcessor {
 
-    private val dataBase: BaseDataBase = StockerDataBase(context)
 
+    @Inject
+    lateinit var dataBase: BaseDataBase
+    //= StockerDataBase(context, stockTableHelper = stockTableHelper, orderHistoryTableHelper = orderHistoryTableHelper, customerTableHelper = customerTableHelper)
 
+    init {
+
+       (application as App).getAppComponent().injectAdminRepo(this)
+    }
     override fun validateCustomer(name: String, password: String): Customer? {
         return dataBase.validateCustomer(name, password)
     }

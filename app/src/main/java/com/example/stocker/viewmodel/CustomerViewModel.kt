@@ -5,17 +5,22 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.stocker.di.componants.CustomerRepoComponent
+import com.example.stocker.di.componants.DaggerCustomerRepoComponent
+import com.example.stocker.di.module.CustomerRepoModule
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 import com.example.stocker.pojo.StockInCart
 import com.example.stocker.pojo.Stocker
 import com.example.stocker.repository.CustomerRepository
+import com.example.stocker.repository.baseinterface.BaseCustomerRepository
 import com.example.stocker.repository.helper.SortUtil
 import com.example.stocker.viewmodel.helper.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class CustomerViewModel(application: Application) : AndroidViewModel(application) {
@@ -42,8 +47,12 @@ class CustomerViewModel(application: Application) : AndroidViewModel(application
 
     val selectedArray: HashMap<Stock, Int> = HashMap()
 
-    private val customerRepository =
-        CustomerRepository(application, Stocker.getInstance()!!.customer!!.customerId)
+    @Inject
+    lateinit var customerRepository :BaseCustomerRepository
+
+    lateinit var customerRepoComponent: CustomerRepoComponent
+    // = CustomerRepository(Stocker.getInstance()!!.customer!!.customerId)
+        //CustomerRepository(application, Stocker.getInstance()!!.customer!!.customerId)
     private var filterOnStocks = false
     private var filterOnOrders = false
 
@@ -57,6 +66,12 @@ class CustomerViewModel(application: Application) : AndroidViewModel(application
 
         getAllStocks()
         getAllOrderHistory()
+
+        customerRepoComponent = DaggerCustomerRepoComponent.builder().customerRepoModule(
+            CustomerRepoModule(customerId = Stocker.getInstance()!!.customer!!.customerId,application)
+        ).build()
+
+        customerRepoComponent.inject(this)
     }
 
     fun getAllStocks() {

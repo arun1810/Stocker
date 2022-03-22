@@ -1,4 +1,4 @@
-package com.example.stocker.model.helper
+package com.example.stocker.model.stockerhelper
 
 import android.content.ContentValues
 import android.database.Cursor

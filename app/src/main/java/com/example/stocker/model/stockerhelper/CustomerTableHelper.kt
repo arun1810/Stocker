@@ -1,4 +1,4 @@
-package com.example.stocker.model.helper
+package com.example.stocker.model.stockerhelper
 
 import android.content.ContentValues
 import android.database.Cursor
@@ -6,8 +6,9 @@ import android.database.sqlite.SQLiteDatabase
 import com.example.stocker.pojo.Customer
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
-class CustomerTableHelper {
+class CustomerTableHelper{
     companion object{
         const val customerTableName= "Customer"
         const val id="id"

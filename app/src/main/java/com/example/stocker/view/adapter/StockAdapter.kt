@@ -47,6 +47,7 @@ class StockAdapter(
     }
 
     private val diff = AsyncListDiffer(this, DiffCalc())
+
     private val images = arrayOf(
         R.mipmap.bike1_foreground,
         R.mipmap.bike2_foreground,

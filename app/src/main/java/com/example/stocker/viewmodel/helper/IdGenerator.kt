@@ -16,7 +16,7 @@ object IdGenerator {
 
         try{
            val response= client.newCall(request).execute()
-            var id = response.body()!!.string()
+            var id = response.body!!.string()
             id = id.subSequence(1,id.length-1).toString()
             return id
         }

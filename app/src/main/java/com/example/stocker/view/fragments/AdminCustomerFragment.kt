@@ -34,6 +34,7 @@ import com.google.android.material.textview.MaterialTextView
 
 const val search=-1
 const val delete=-2
+
 class AdminCustomerFragment : Fragment() {
 
     private val model :AdminViewModel by activityViewModels()

@@ -32,7 +32,7 @@ class ExampleInstrumentedTest {
     fun createDatabase(){
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         //val database  = StockerDataBase(appContext)
-        val adminRepository = AdminRepository(appContext)
+        //val adminRepository = AdminRepository(appContext)
         val customerRepository = CustomerRepository(appContext,"100")
 
         //customerRepository.placeOrder("qwerty",listOf("001"), listOf(2))

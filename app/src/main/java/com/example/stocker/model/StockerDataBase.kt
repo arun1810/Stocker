@@ -4,23 +4,28 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-import com.example.stocker.model.helper.CustomerTableHelper
-import com.example.stocker.model.helper.OrderHistoryTableHelper
-import com.example.stocker.model.helper.StockTableHelper
+import com.example.stocker.model.stockerhelper.CustomerTableHelper
+import com.example.stocker.model.stockerhelper.OrderHistoryTableHelper
+import com.example.stocker.model.stockerhelper.StockTableHelper
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
-import java.lang.Exception
 
-class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, version), BaseDataBase {
+class StockerDataBase(
+    context: Context,
+    private val stockTableHelper:StockTableHelper,
+    private val orderHistoryTableHelper: OrderHistoryTableHelper,
+    private val customerTableHelper: CustomerTableHelper
+    ):SQLiteOpenHelper(context, name,null, version), BaseDataBase {
+
 
 
     private val tag="StockerDB"
     private val adminPassword="pass12345"
 
-    private var stockTableHeper:StockTableHelper = StockTableHelper()
-    private var orderHistoryTableHelper: OrderHistoryTableHelper = OrderHistoryTableHelper()
-    private var customerTableHelper: CustomerTableHelper = CustomerTableHelper()
+    //private var stockTableHeper:StockTableHelper = StockTableHelper()
+    //private var orderHistoryTableHelper: OrderHistoryTableHelper = OrderHistoryTableHelper()
+    //private var customerTableHelper: CustomerTableHelper = CustomerTableHelper()
 
 
     companion object{
@@ -35,7 +40,7 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
          */
 
         if(db!=null){
-            stockTableHeper.createTable(db)
+            stockTableHelper.createTable(db)
             orderHistoryTableHelper.createTable(db)
             customerTableHelper.createTable(db)
 
@@ -85,26 +90,26 @@ class StockerDataBase(context: Context):SQLiteOpenHelper(context, name,null, ver
     }
 
     override fun addStock(stock: Stock): Boolean {
-        return stockTableHeper.add(this.writableDatabase,stock)
+        return stockTableHelper.add(this.writableDatabase,stock)
     }
 
     override fun deleteStock(stocks:List<Stock>): Boolean {
 
-        return stockTableHeper.delete(this.writableDatabase,stocks)
+        return stockTableHelper.delete(this.writableDatabase,stocks)
     }
 
     override fun updateStock(stock: Stock,oldId:String): Boolean {
-        return stockTableHeper.update(this.writableDatabase,stock,oldId)
+        return stockTableHelper.update(this.writableDatabase,stock,oldId)
     }
 
     override fun updateStocks(stocks: HashMap<Stock,Int>): Boolean {
 
-        return stockTableHeper.updateMultiple(this.writableDatabase,stocks)
+        return stockTableHelper.updateMultiple(this.writableDatabase,stocks)
     }
 
     override fun getAllStocks(): MutableList<Stock> {
 
-        return stockTableHeper.getAllData(this.readableDatabase)
+        return stockTableHelper.getAllData(this.readableDatabase)
     }
 
 

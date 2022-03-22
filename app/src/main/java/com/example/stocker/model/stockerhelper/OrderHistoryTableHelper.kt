@@ -1,4 +1,4 @@
-package com.example.stocker.model.helper
+package com.example.stocker.model.stockerhelper
 
 import android.content.ContentValues
 import android.database.Cursor
@@ -7,6 +7,7 @@ import com.example.stocker.pojo.OrderHistory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
+import javax.inject.Inject
 
 class OrderHistoryTableHelper{
     companion object{

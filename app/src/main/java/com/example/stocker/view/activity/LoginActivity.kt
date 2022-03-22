@@ -8,12 +8,12 @@ import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.Stocker
 import com.example.stocker.view.fragments.util.GsonHelper
 import com.example.stocker.view.fragments.util.SharedPreferenceHelper
+import dagger.internal.DaggerGenerated
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
         val str = SharedPreferenceHelper.readCustomerPreference(this)
 
         if(str!=null){

@@ -3,7 +3,7 @@ package com.example.stocker.repository.baseinterface
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 
-interface BaseCustomerRepository {
+interface BaseCustomerRepository:BaseStockAndOrderHistoryProcessor {
 
         fun getAllStocks():List<Stock>
         fun placeOrder(
