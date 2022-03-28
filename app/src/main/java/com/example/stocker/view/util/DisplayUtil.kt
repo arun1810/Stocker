@@ -2,8 +2,6 @@ package com.example.stocker.view.util
 
 import android.app.Activity
 import android.graphics.Insets
-import android.graphics.Point
-import android.util.DisplayMetrics
 import android.view.WindowInsets
 import com.example.stocker.R
 

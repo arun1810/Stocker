@@ -2,14 +2,10 @@ package com.example.stocker.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.stocker.di.componants.AdminRepoComponent
-import com.example.stocker.di.componants.DaggerAdminRepoComponent
-import com.example.stocker.di.module.AdminRepoModule
-import com.example.stocker.model.stockerhelper.CustomerTableHelper
-import com.example.stocker.model.stockerhelper.OrderHistoryTableHelper
-import com.example.stocker.model.stockerhelper.StockTableHelper
+import com.example.stocker.di.componants.AdminViewModelComponent
+import com.example.stocker.di.componants.DaggerAdminViewModelComponent
+import com.example.stocker.di.module.AdminViewModelModule
 import com.example.stocker.pojo.Stocker
-import com.example.stocker.repository.AdminRepository
 import com.example.stocker.repository.baseinterface.BaseAdminRepository
 import com.example.stocker.viewmodel.helper.Error
 import com.example.stocker.viewmodel.helper.validationError
@@ -27,7 +23,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
     enum class State{Pass,Fail,Nothing}
 
 
-    private var adminRepoComponent: AdminRepoComponent
+    private var adminViewModelComponent: AdminViewModelComponent
 
     @Inject
     lateinit var adminRepository: BaseAdminRepository
@@ -46,8 +42,8 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
     init {
         println("login viewModel created")
 
-        adminRepoComponent = DaggerAdminRepoComponent.builder().adminRepoModule(AdminRepoModule(application)).build()
-        adminRepoComponent.injectLoginViewModel(this)
+        adminViewModelComponent = DaggerAdminViewModelComponent.builder().adminViewModelModule(AdminViewModelModule(application)).build()
+        adminViewModelComponent.injectLoginViewModel(this)
 
     }
 

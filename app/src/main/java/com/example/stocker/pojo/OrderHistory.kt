@@ -1,17 +1,26 @@
 package com.example.stocker.pojo
 
+import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.stocker.model.room.type_converters.DateTypeConverter
+import com.example.stocker.model.room.type_converters.OrderHistoryTypeConverter
 import java.io.Serializable
 import java.time.LocalDate
 
+@Entity
+@TypeConverters(OrderHistoryTypeConverter::class,DateTypeConverter::class)
 data class OrderHistory(
-    val orderID:String,
-    val dateOfPurchase:LocalDate,
-    val customerId:String,
-    val stockIds:Array<String>,
-    val stockNames:Array<String>,
-    val counts:Array<Int>,
-    val stockPrices:Array<Long>,
-    val total: Long
+    @PrimaryKey @ColumnInfo(name = "id") @NonNull val orderID:String,
+    @ColumnInfo(name = "dataOfPurchase") @NonNull val dateOfPurchase:LocalDate,
+    @ColumnInfo(name = "customerid") @NonNull val customerId:String,
+    @ColumnInfo(name = "stockids") @NonNull val stockIds:Array<String>,
+    @ColumnInfo(name = "stocknames") @NonNull val stockNames:Array<String>,
+    @ColumnInfo(name= "counts") @NonNull val counts:Array<Int>,
+    @ColumnInfo(name = "stockprices") @NonNull val stockPrices:Array<Long>,
+    @ColumnInfo(name = "total") @NonNull val total: Long
 ) :Serializable{
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

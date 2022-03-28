@@ -1,10 +1,10 @@
-package com.example.stocker.model
+package com.example.stocker.model.base_interface
 
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 
-interface BaseDataBase {
+interface BaseRepository {
 
     fun addCustomer(customer: Customer): Boolean
     fun deleteCustomer(customers:List<Customer>): Boolean
@@ -16,7 +16,7 @@ interface BaseDataBase {
     fun addStock(stock: Stock): Boolean
     fun deleteStock(stocks:List<Stock>): Boolean
     fun updateStock(stock:Stock,oldId:String): Boolean
-    fun updateStocks(stocks:HashMap<Stock,Int>):Boolean
+    fun updateStockCount(stocks:HashMap<Stock,Int>):Boolean
     fun getAllStocks():MutableList<Stock>
 
     fun addOrderHistory(orderHistory:OrderHistory): Boolean

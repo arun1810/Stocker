@@ -2,7 +2,7 @@ package com.example.stocker.repository
 
 import android.app.Application
 import com.example.stocker.App
-import com.example.stocker.model.BaseDataBase
+import com.example.stocker.model.base_interface.BaseRepository
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
@@ -18,34 +18,32 @@ class AdminRepository constructor(
 ) : BaseAdminRepository,
     BaseStockAndOrderHistoryProcessor by StockAndOrderHistoryProcessor {
 
-
     @Inject
-    lateinit var dataBase: BaseDataBase
-    //= StockerDataBase(context, stockTableHelper = stockTableHelper, orderHistoryTableHelper = orderHistoryTableHelper, customerTableHelper = customerTableHelper)
+    lateinit var dataBaseRepository: BaseRepository
 
     init {
-
-       (application as App).getAppComponent().injectAdminRepo(this)
+        (application as App).getAppComponent().injectAdminRepo(this)
     }
+
     override fun validateCustomer(name: String, password: String): Customer? {
-        return dataBase.validateCustomer(name, password)
+        return dataBaseRepository.validateCustomer(name, password)
     }
 
     override fun validateAdmin(password: String): Boolean {
-        return dataBase.validateAdmin(password)
+        return dataBaseRepository.validateAdmin(password)
     }
 
 
     override fun createNewCustomer(customer: Customer) {
-        dataBase.addCustomer(customer)
+        dataBaseRepository.addCustomer(customer)
     }
 
     override fun updateCustomer(customer: Customer, oldId: String) {
-        dataBase.updateCustomer(customer, oldId)
+        dataBaseRepository.updateCustomer(customer, oldId)
     }
 
     override fun getAllCustomerData(): List<Customer> {
-        return dataBase.getAllCustomer()
+        return dataBaseRepository.getAllCustomer()
     }
 
     override fun getCustomer(customers: MutableList<Customer>, customerId: String): Customer {
@@ -94,34 +92,34 @@ class AdminRepository constructor(
     }
 
     override fun getAllOrderHistory(): List<OrderHistory> {
-        return dataBase.getAllOrderHistory()
+        return dataBaseRepository.getAllOrderHistory()
     }
 
     override fun getAllStock(): MutableList<Stock> {
-        return dataBase.getAllStocks()
+        return dataBaseRepository.getAllStocks()
     }
 
     override fun addStock(stock: Stock): Boolean {
-        return dataBase.addStock(stock)
+        return dataBaseRepository.addStock(stock)
     }
 
     override fun updateStock(stock: Stock, oldId: String): Boolean {
-        return dataBase.updateStock(stock, oldId)
+        return dataBaseRepository.updateStock(stock, oldId)
     }
 
     override fun buyStock(stock: Stock): Boolean {
-        return dataBase.addStock(stock)
+        return dataBaseRepository.addStock(stock)
     }
 
     override fun removeOrderHistory(orders: List<OrderHistory>): Boolean {
-        return dataBase.deleteOrderHistory(orders)
+        return dataBaseRepository.deleteOrderHistory(orders)
     }
 
     override fun removeCustomer(customers: List<Customer>): Boolean {
-        return dataBase.deleteCustomer(customers)
+        return dataBaseRepository.deleteCustomer(customers)
     }
 
     override fun removeStock(stocks: List<Stock>): Boolean {
-        return dataBase.deleteStock(stocks)
+        return dataBaseRepository.deleteStock(stocks)
     }
 }

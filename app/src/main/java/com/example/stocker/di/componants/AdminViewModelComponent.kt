@@ -1,17 +1,15 @@
 package com.example.stocker.di.componants
 
-import com.example.stocker.di.module.AdminRepoModule
+import com.example.stocker.di.module.AdminViewModelModule
 import com.example.stocker.di.scopes.AdminViewModelScope
-import com.example.stocker.repository.AdminRepository
 import com.example.stocker.repository.baseinterface.BaseAdminRepository
 import com.example.stocker.viewmodel.AdminViewModel
 import com.example.stocker.viewmodel.LoginViewModel
 import dagger.Component
-import javax.inject.Singleton
 
-@Component(modules = [AdminRepoModule::class])
+@Component(modules = [AdminViewModelModule::class])
 @AdminViewModelScope
-interface AdminRepoComponent {
+interface AdminViewModelComponent {
 
     fun getAdminRepository(): BaseAdminRepository
 

@@ -1,11 +1,12 @@
-package com.example.stocker.model.stockerhelper
+package com.example.stocker.model.stocker.stockerhelper
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import com.example.stocker.model.stocker.StockerDB
 import com.example.stocker.pojo.Stock
 
-class StockTableHelper {
+class StockTableHelper(private val db: StockerDB) {
 
 
     companion object{
@@ -18,14 +19,14 @@ class StockTableHelper {
 
     }
 
-    fun createTable(db:SQLiteDatabase){
-        db.execSQL("CREATE TABLE $stockTableName($id TEXT PRIMARY KEY,$name TEXT,$price INTEGER,$discount INTEGER,$count INTEGER)")
+    fun createTable(){
+        db.writableDatabase.execSQL("CREATE TABLE $stockTableName($id TEXT PRIMARY KEY,$name TEXT,$price INTEGER,$discount INTEGER,$count INTEGER)")
     }
 
-    fun getAllData(db:SQLiteDatabase):MutableList<Stock>{
+    fun getAllData():MutableList<Stock>{
         val stocks:MutableList<Stock> = mutableListOf()
 
-        val cursor = db.rawQuery("SELECT * FROM $stockTableName ",null)
+        val cursor = db.readableDatabase.rawQuery("SELECT * FROM $stockTableName ",null)
 
         while(cursor.moveToNext()){
             stocks.add(cursorToStock(cursor))
@@ -33,12 +34,13 @@ class StockTableHelper {
     return stocks
     }
 
-    fun add(db:SQLiteDatabase,stock:Stock):Boolean{
-        return db.insertOrThrow(stockTableName,"null",stockToContentValues(stock)) >0
+    fun add(stock:Stock):Boolean{
+        return db.writableDatabase.insertOrThrow(stockTableName,"null",stockToContentValues(stock)) >0
     }
 
-    fun delete(db:SQLiteDatabase,stocks:List<Stock>):Boolean{
+    fun delete(stocks:List<Stock>):Boolean{
 
+        val db = db.writableDatabase
         db.beginTransaction()
         var result=false
 
@@ -56,19 +58,20 @@ class StockTableHelper {
         return result
     }
 
-    fun update(db:SQLiteDatabase,stock:Stock,oldId:String):Boolean{
-        return db.updateWithOnConflict(stockTableName,stockToContentValues(stock),"$id=?",
+    fun update(stock:Stock,oldId:String):Boolean{
+        return db.writableDatabase.updateWithOnConflict(stockTableName,stockToContentValues(stock),"$id=?",
             arrayOf(oldId),SQLiteDatabase.CONFLICT_FAIL) >0
 
         //return db.replaceOrThrow(stockTableName,null,stockToContentValues(stock)) >0
     }
 
-    fun updateMultiple(db:SQLiteDatabase,stocks:HashMap<Stock,Int>):Boolean{
+    fun updateMultiple(stocks:HashMap<Stock,Int>):Boolean{
         var result=false
+        val db = db.writableDatabase
         db.beginTransaction()
         for((stock,count)in stocks ){
             stock.count-=count
-           if(update(db,stock,stock.stockID)){
+           if(update(stock,stock.stockID)){
               result=true
            }
             else{

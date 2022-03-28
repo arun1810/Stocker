@@ -1,14 +1,14 @@
-package com.example.stocker.model.stockerhelper
+package com.example.stocker.model.stocker.stockerhelper
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import com.example.stocker.model.stocker.StockerDB
 import com.example.stocker.pojo.Customer
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
-class CustomerTableHelper{
+class CustomerTableHelper(private val db: StockerDB){
     companion object{
         const val customerTableName= "Customer"
         const val id="id"
@@ -19,14 +19,14 @@ class CustomerTableHelper{
         const val mobileNumber="mobileNumber"
     }
 
-    fun createTable(db:SQLiteDatabase){
-        db.execSQL("CREATE TABLE $customerTableName($id TEXT PRIMARY KEY, $name TEXT, $password TEXT, $gender TEXT, $dob TEXT, $mobileNumber TEXT)")
+    fun createTable(){
+        db.writableDatabase.execSQL("CREATE TABLE $customerTableName($id TEXT PRIMARY KEY, $name TEXT, $password TEXT, $gender TEXT, $dob TEXT, $mobileNumber TEXT)")
     }
 
-    fun getAllData(db:SQLiteDatabase):MutableList<Customer>{
+    fun getAllData():MutableList<Customer>{
 
         val customers:MutableList<Customer> = ArrayList()
-        val cursor = db.rawQuery("SELECT * FROM $customerTableName",null)
+        val cursor = db.readableDatabase.rawQuery("SELECT * FROM $customerTableName",null)
 
 
         while(cursor.moveToNext()){
@@ -36,11 +36,13 @@ class CustomerTableHelper{
         return customers
     }
 
-    fun add(db:SQLiteDatabase,customer:Customer):Boolean{
-       return db.insertOrThrow(customerTableName,"null",customerToContentValues(customer)) >0
+    fun add(customer:Customer):Boolean{
+       return db.writableDatabase.insertOrThrow(customerTableName,"null",customerToContentValues(customer)) >0
     }
 
-    fun delete(db:SQLiteDatabase,customers:List<Customer>):Boolean{
+    fun delete(customers:List<Customer>):Boolean{
+
+        val db = db.writableDatabase
 
         db.beginTransaction()
         var result=false
@@ -59,19 +61,19 @@ class CustomerTableHelper{
         return result
     }
 
-    fun getCustomer(db:SQLiteDatabase,username:String):Customer?{
+    fun getCustomer(username:String):Customer?{
         val projections = arrayOf(id,name,password,gender,dob, mobileNumber)
         val selection = "$name =?"
         val selectionArgs= arrayOf(username)
-        val cursor = db.query(customerTableName,projections,selection,selectionArgs,null,null,null)
+        val cursor = db.readableDatabase.query(customerTableName,projections,selection,selectionArgs,null,null,null)
         return if(cursor.moveToNext()){
             cursorToCustomer(cursor)
         }
         else null
     }
 
-    fun update(db:SQLiteDatabase,customer:Customer,oldId:String):Boolean{
-        return db.updateWithOnConflict(
+    fun update(customer:Customer,oldId:String):Boolean{
+        return db.writableDatabase.updateWithOnConflict(
             customerTableName,customerToContentValues(customer),"${id}=?",
             arrayOf(oldId),SQLiteDatabase.CONFLICT_FAIL) >0
     }

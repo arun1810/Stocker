@@ -3,7 +3,6 @@ package com.example.stocker.view.adapter.decorator
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.roundToInt
 
 class SimpleDecorator (private val top:Int,private val side:Int): RecyclerView.ItemDecoration() {
 

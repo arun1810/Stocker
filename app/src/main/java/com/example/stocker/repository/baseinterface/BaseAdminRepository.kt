@@ -3,7 +3,6 @@ package com.example.stocker.repository.baseinterface
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
-import com.example.stocker.repository.StockAndOrderHistoryProcessor
 import com.example.stocker.repository.helper.SortUtil
 
 interface BaseAdminRepository :BaseStockAndOrderHistoryProcessor{

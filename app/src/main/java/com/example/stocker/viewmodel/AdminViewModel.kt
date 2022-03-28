@@ -6,16 +6,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.stocker.di.componants.AdminRepoComponent
-import com.example.stocker.di.componants.CustomerRepoComponent
-import com.example.stocker.di.componants.DaggerAdminRepoComponent
-import com.example.stocker.di.componants.DaggerCustomerRepoComponent
-import com.example.stocker.di.module.AdminRepoModule
-import com.example.stocker.di.module.CustomerRepoModule
+import com.example.stocker.di.componants.AdminViewModelComponent
+import com.example.stocker.di.componants.DaggerAdminViewModelComponent
+import com.example.stocker.di.module.AdminViewModelModule
 import com.example.stocker.pojo.Customer
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
-import com.example.stocker.repository.AdminRepository
 import com.example.stocker.repository.baseinterface.BaseAdminRepository
 import com.example.stocker.repository.helper.SortUtil
 import com.example.stocker.view.fragments.util.Type
@@ -27,7 +23,7 @@ import javax.inject.Inject
 class AdminViewModel(application: Application) : AndroidViewModel(application) {
 
 
-    lateinit var adminRepoComponent: AdminRepoComponent
+    lateinit var adminViewModelComponent: AdminViewModelComponent
     @Inject
     lateinit var adminRepository:BaseAdminRepository // = AdminRepository()
        // BaseAdminRepository(getApplication())
@@ -84,8 +80,7 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     init {
         println("admin viewModel created")
 
-        adminRepoComponent = DaggerAdminRepoComponent.builder().adminRepoModule(AdminRepoModule(application)).build()
-        adminRepoComponent.inject(this)
+        injectDependencies(application)
 
         getAllCustomers()
         getAllStocks()
@@ -102,6 +97,7 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
                 originalCustomers = data.toMutableList()
                 _customersLiveData.postValue(mutableListOf<Customer>().apply { addAll(data) })
             } catch (e: Exception) {
+                e.printStackTrace()
                 _customerError.postValue(_customerError.value?.apply {
                     isHandled = false
                     job.cancel()
@@ -590,5 +586,10 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     fun clearCustomerSelection(type: Type) {
         selectedCustomer.clear()
         _customerSelectionState.postValue(type)
+    }
+
+    private fun injectDependencies(application: Application){
+        adminViewModelComponent = DaggerAdminViewModelComponent.builder().adminViewModelModule(AdminViewModelModule(application)).build()
+        adminViewModelComponent.inject(this)
     }
 }

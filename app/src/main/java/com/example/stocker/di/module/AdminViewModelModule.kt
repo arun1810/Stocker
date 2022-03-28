@@ -6,12 +6,11 @@ import com.example.stocker.repository.AdminRepository
 import com.example.stocker.repository.baseinterface.BaseAdminRepository
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
-class AdminRepoModule(val application: Application) {
+class AdminViewModelModule(private val application: Application) {
 
     @Provides
     @AdminViewModelScope
-    fun provideAdminRepository():BaseAdminRepository = AdminRepository(application)
+    fun provideAdminRepository():BaseAdminRepository = AdminRepository(application = application)
 }

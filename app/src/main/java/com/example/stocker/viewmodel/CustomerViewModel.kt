@@ -5,14 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.stocker.di.componants.CustomerRepoComponent
-import com.example.stocker.di.componants.DaggerCustomerRepoComponent
-import com.example.stocker.di.module.CustomerRepoModule
+import com.example.stocker.di.componants.CustomerViewModelComponent
+import com.example.stocker.di.componants.DaggerCustomerViewModelComponent
+import com.example.stocker.di.module.CustomerViewModelModule
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 import com.example.stocker.pojo.StockInCart
 import com.example.stocker.pojo.Stocker
-import com.example.stocker.repository.CustomerRepository
 import com.example.stocker.repository.baseinterface.BaseCustomerRepository
 import com.example.stocker.repository.helper.SortUtil
 import com.example.stocker.viewmodel.helper.*
@@ -50,7 +49,7 @@ class CustomerViewModel(application: Application) : AndroidViewModel(application
     @Inject
     lateinit var customerRepository :BaseCustomerRepository
 
-    lateinit var customerRepoComponent: CustomerRepoComponent
+    private lateinit var customerViewModelComponent: CustomerViewModelComponent
     // = CustomerRepository(Stocker.getInstance()!!.customer!!.customerId)
         //CustomerRepository(application, Stocker.getInstance()!!.customer!!.customerId)
     private var filterOnStocks = false
@@ -63,15 +62,10 @@ class CustomerViewModel(application: Application) : AndroidViewModel(application
     private lateinit var selectedStockPrices: Array<Long>
 
     init {
+        injectDependencies(application)
 
         getAllStocks()
         getAllOrderHistory()
-
-        customerRepoComponent = DaggerCustomerRepoComponent.builder().customerRepoModule(
-            CustomerRepoModule(customerId = Stocker.getInstance()!!.customer!!.customerId,application)
-        ).build()
-
-        customerRepoComponent.inject(this)
     }
 
     fun getAllStocks() {
@@ -342,5 +336,13 @@ class CustomerViewModel(application: Application) : AndroidViewModel(application
                 })
             }
         }
+    }
+
+    private fun injectDependencies(application: Application){
+        customerViewModelComponent = DaggerCustomerViewModelComponent.builder().customerViewModelModule(
+            CustomerViewModelModule(customerId = Stocker.getInstance()!!.customer!!.customerId,application)
+        ).build()
+
+        customerViewModelComponent.inject(this)
     }
 }

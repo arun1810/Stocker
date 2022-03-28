@@ -6,13 +6,13 @@ import com.example.stocker.repository.CustomerRepository
 import com.example.stocker.repository.baseinterface.BaseCustomerRepository
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 
 @Module
-class CustomerRepoModule(val customerId:String,val application: Application) {
+class CustomerViewModelModule(val customerId:String, val application: Application) {
 
     @Provides
     @CustomerViewModelScope
-    fun provideCustomerRepository():BaseCustomerRepository = CustomerRepository(customerId = customerId,application)
+    fun provideCustomerRepository():BaseCustomerRepository =
+        CustomerRepository(customerId = customerId,application)
 }

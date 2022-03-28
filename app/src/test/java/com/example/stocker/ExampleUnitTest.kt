@@ -2,7 +2,7 @@ package com.example.stocker
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.example.stocker.model.StockerDataBase
+import com.example.stocker.model.stocker.StockerRepository
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -25,7 +25,7 @@ class ExampleUnitTest {
 
     @Test
     fun createDatabase(){
-        val database  = StockerDataBase(context)
+        //val database  = StockerRepository(context)
 
 
 

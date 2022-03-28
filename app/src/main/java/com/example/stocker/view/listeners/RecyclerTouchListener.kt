@@ -1,7 +1,6 @@
 package com.example.stocker.view.listeners
 
 import android.content.Context
-import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView
 

@@ -4,7 +4,6 @@ import android.app.Application
 import com.example.stocker.di.componants.AppComponent
 import com.example.stocker.di.componants.DaggerAppComponent
 import com.example.stocker.di.module.AppModule
-import com.example.stocker.di.module.DatabaseModule
 
 class App:Application() {
 
@@ -14,8 +13,9 @@ class App:Application() {
         super.onCreate()
 
        appComponent =  DaggerAppComponent.builder()
-           .appModule(AppModule(baseContext))
-           .databaseModule(DatabaseModule(baseContext))
+           .appModule(AppModule(baseContext,this))
+           //.stockerDatabaseModule(StockerDatabaseModule(baseContext))
+           //.roomDataBaseModule(RoomDataBaseModule())
            .build()
     }
 

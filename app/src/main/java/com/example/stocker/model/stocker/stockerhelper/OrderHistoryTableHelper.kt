@@ -1,15 +1,15 @@
-package com.example.stocker.model.stockerhelper
+package com.example.stocker.model.stocker.stockerhelper
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import com.example.stocker.model.stocker.StockerDB
 import com.example.stocker.pojo.OrderHistory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
-import javax.inject.Inject
 
-class OrderHistoryTableHelper{
+class OrderHistoryTableHelper(private val db: StockerDB){
     companion object{
         const val id="id"
         const val orderHistoryTableName= "OrderHistory"
@@ -22,8 +22,8 @@ class OrderHistoryTableHelper{
         const val total="total"
     }
 
-    fun createTable(db: SQLiteDatabase){
-        db.execSQL("CREATE TABLE $orderHistoryTableName(" +
+    fun createTable(){
+        db.writableDatabase.execSQL("CREATE TABLE $orderHistoryTableName(" +
                 "$id TEXT PRIMARY KEY," +
                 "$dateOfPurchase TEXT," +
                 "$customerId TEXT," +
@@ -35,9 +35,9 @@ class OrderHistoryTableHelper{
         )
     }
 
-    fun getAllData(db:SQLiteDatabase):MutableList<OrderHistory>{
+    fun getAllData():MutableList<OrderHistory>{
         val orderHistories = mutableListOf<OrderHistory>()
-        val cursor = db.rawQuery("SELECT * FROM $orderHistoryTableName",null)
+        val cursor = db.readableDatabase.rawQuery("SELECT * FROM $orderHistoryTableName",null)
 
         while(cursor.moveToNext()){
             orderHistories.add(cursorToOrderHistory(cursor))
@@ -45,9 +45,9 @@ class OrderHistoryTableHelper{
       return orderHistories
     }
 
-    fun getSpecificData(db:SQLiteDatabase,cusId:String):MutableList<OrderHistory>{
+    fun getSpecificData(cusId:String):MutableList<OrderHistory>{
         val orderHistories = mutableListOf<OrderHistory>()
-        val cursor = db.rawQuery("SELECT * FROM $orderHistoryTableName WHERE ${customerId}=?",
+        val cursor = db.readableDatabase.rawQuery("SELECT * FROM $orderHistoryTableName WHERE ${customerId}=?",
             arrayOf(cusId)
         )
         while(cursor.moveToNext()){
@@ -58,12 +58,13 @@ class OrderHistoryTableHelper{
         return orderHistories
     }
 
-    fun add(db:SQLiteDatabase,orderHistory:OrderHistory):Boolean{
-        return db.insertWithOnConflict(orderHistoryTableName,"null",orderHistoryToContentValues(orderHistory),SQLiteDatabase.CONFLICT_IGNORE)!=-1L
+    fun add(orderHistory:OrderHistory):Boolean{
+        return db.writableDatabase.insertWithOnConflict(orderHistoryTableName,"null",orderHistoryToContentValues(orderHistory),SQLiteDatabase.CONFLICT_IGNORE)!=-1L
     }
 
-    fun delete(db:SQLiteDatabase,orders:List<OrderHistory>):Boolean{
+    fun delete(orders:List<OrderHistory>):Boolean{
 
+        val db = db.writableDatabase
         db.beginTransaction()
         var result=false
 
@@ -81,8 +82,8 @@ class OrderHistoryTableHelper{
         return result
     }
 
-    fun update(db:SQLiteDatabase,orderHistory:OrderHistory):Boolean{
-        return db.update(orderHistoryTableName,orderHistoryToContentValues(orderHistory),null,null) >0
+    fun update(orderHistory:OrderHistory):Boolean{
+        return db.writableDatabase.update(orderHistoryTableName,orderHistoryToContentValues(orderHistory),null,null) >0
     }
 
 

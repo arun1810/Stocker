@@ -2,7 +2,7 @@ package com.example.stocker.repository
 
 import android.app.Application
 import com.example.stocker.App
-import com.example.stocker.model.BaseDataBase
+import com.example.stocker.model.base_interface.BaseRepository
 import com.example.stocker.pojo.OrderHistory
 import com.example.stocker.pojo.Stock
 import com.example.stocker.repository.baseinterface.BaseCustomerRepository
@@ -17,7 +17,7 @@ class CustomerRepository constructor
 
 
     @Inject
-    lateinit var database:BaseDataBase
+    lateinit var database: BaseRepository
 
     //= StockerDataBase(context)
 
@@ -47,7 +47,7 @@ class CustomerRepository constructor
             counts = counts,
             stockPrices = stockPrices,
             total = total)
-        val result = (database.addOrderHistory(orderHistory) && database.updateStocks(stocks))
+        val result = (database.addOrderHistory(orderHistory) && database.updateStockCount(stocks))
         return  result to orderHistory
     }
 

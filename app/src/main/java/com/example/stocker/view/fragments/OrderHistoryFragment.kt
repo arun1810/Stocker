@@ -23,7 +23,6 @@ import com.example.stocker.view.fragments.util.SharedPreferenceHelper
 import com.example.stocker.view.util.DisplayUtil
 import com.example.stocker.viewmodel.CustomerViewModel
 import com.example.stocker.viewmodel.helper.cantRetrieveData
-import com.example.stocker.viewmodel.helper.deleteError
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
@@ -225,19 +224,18 @@ class OrderHistoryFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        model.orderHistoryLiveData.observe(this,{
-            if(it.isEmpty()){
-                dataStatusTextView.visibility=View.VISIBLE
-                when(dataChangedBy){
-                    search-> dataStatusTextView.text=getString(R.string.couldnt_find_anything)
-                    delete-> dataStatusTextView.text=getString(R.string.empty)
+        model.orderHistoryLiveData.observe(this) {
+            if (it.isEmpty()) {
+                dataStatusTextView.visibility = View.VISIBLE
+                when (dataChangedBy) {
+                    search -> dataStatusTextView.text = getString(R.string.couldnt_find_anything)
+                    delete -> dataStatusTextView.text = getString(R.string.empty)
                 }
-            }
-            else{
-                dataStatusTextView.visibility=View.INVISIBLE
+            } else {
+                dataStatusTextView.visibility = View.INVISIBLE
             }
             adapter.setNewList(it)
-        })
+        }
     }
 
     override fun onDestroy() {
